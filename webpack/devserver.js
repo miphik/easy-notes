@@ -1,8 +1,8 @@
-module.exports = function() {
-  return {
-    devServer: {
-      stats: 'errors-only',
-      overlay: true,
-    },
-  };
+module.exports = function () {
+    return {
+        devServer: {
+            stats:   'errors-only',
+            overlay: true,
+        },
+    };
 };

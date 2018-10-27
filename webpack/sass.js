@@ -1,17 +1,20 @@
-module.exports = function(paths) {
-  return {
-    module: {
-      rules: [
-        {
-          test: /\.scss$/,
-          include: paths,
-          use: [
-            'style-loader',
-            'css-loader',
-            'sass-loader',
-          ],
+const postcss = require('./postcss');
+
+module.exports = function (paths) {
+    return {
+        module: {
+            rules: [
+                {
+                    test:    /\.scss$/,
+                    include: paths,
+                    use:     [
+                        'style-loader',
+                        'css-loader',
+                        'sass-loader',
+                        postcss,
+                    ],
+                },
+            ],
         },
-      ],
-    },
-  };
+    };
 };
