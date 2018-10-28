@@ -6,7 +6,7 @@ module.exports = function ({paths, options}) {
                     test:    /\.(js|jsx)$/,
                     include: paths,
                     enforce: 'pre',
-                    loader:  'babel-loader',
+                    loader:  'eslint-loader',
                     options,
                 },
             ],
