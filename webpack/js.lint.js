@@ -3,10 +3,10 @@ module.exports = function ({paths, options}) {
         module: {
             rules: [
                 {
-                    test:    /\.js$/,
+                    test:    /\.(js|jsx)$/,
                     include: paths,
                     enforce: 'pre',
-                    loader:  'eslint-loader',
+                    loader:  'babel-loader',
                     options,
                 },
             ],

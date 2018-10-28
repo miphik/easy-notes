@@ -6,27 +6,32 @@ const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+// const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+// const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const fs = require('fs');
 const pug = require('./webpack/pug');
 const devserver = require('./webpack/devserver');
 const sass = require('./webpack/sass');
+const styl = require('./webpack/styl');
 const extractCSS = require('./webpack/css.extract');
 const css = require('./webpack/css');
 const sourceMap = require('./webpack/sourceMap');
-const lintJS = require('./webpack/js.lint');
+// const lintJS = require('./webpack/js.lint');
 const lintCSS = require('./webpack/sass.lint');
 const images = require('./webpack/images');
 const babel = require('./webpack/babel');
 const favicon = require('./webpack/favicon');
 
+const NODE_ENV = process.env.NODE_ENV || 'prod';
+
 const appDirectory = fs.realpathSync(process.cwd());
 const resolveApp = relativePath => path.resolve(appDirectory, relativePath);
 const PATHS = {
-    source: path.join(__dirname, 'source'),
-    build:  path.join(__dirname, 'build'),
+    source: resolveApp('source'),
+    build:  resolveApp('build'),
+    public: resolveApp('public'),
 };
-/*const HTML_PLUGIN_MINIFY_OPTIONS = {
+/* const HTML_PLUGIN_MINIFY_OPTIONS = {
     removeComments:                true,
     collapseWhitespace:            true,
     removeRedundantAttributes:     true,
@@ -41,16 +46,38 @@ const PATHS = {
 const common = merge([
     {
         entry: {
-            index: `${PATHS.source}/pages/index/index.js`,
-            // 'blog':  PATHS.source + '/pages/blog/blog.js',
+            index: (NODE_ENV === 'dev' ? [
+                'react-dev-utils/webpackHotDevClient',
+            ] : []).concat([`${PATHS.source}/index.js`]),
         },
         output: {
-            path:                          PATHS.build,
-            filename:                      './js/[name].js',
-            pathinfo:                      true,
-            chunkFilename:                 'static/js/[id].js',
+            path:          PATHS.build,
+            filename:      './js/[name].js',
+            pathinfo:      true,
+            chunkFilename: 'static/js/[id].js',
+            publicPath:    '/',
             // Point sourcemap entries to original disk location
-            devtoolModuleFilenameTemplate: info => path.resolve(info.absoluteResourcePath),
+            // devtoolModuleFilenameTemplate: info => path.resolve(info.absoluteResourcePath),
+        },
+        resolve: {
+            // This allows you to set a fallback for where Webpack should look for modules.
+            // We placed these paths second because we want `node_modules` to "win"
+            // if there are any conflicts. This matches Node resolution mechanism.
+            modules:    ['node_modules'],
+            // JSX is not recommended, see:
+            // https://github.com/facebookincubator/create-react-app/issues/290
+            extensions: ['.js', '.json', '.jsx'],
+            // Enable aliases to use utils as separate packages.
+            // We might convert project to monorepo in the future.
+            // https://github.com/lerna/lerna
+            alias:      {
+                components: path.resolve(__dirname, './source/components'),
+                pages:      path.resolve(__dirname, './source/pages'),
+                actions:    path.resolve(__dirname, './source/actions'),
+                utils:      path.resolve(__dirname, './source/utils'),
+                source:     path.resolve(__dirname, './source'),
+            },
+            symlinks: false,
         },
         plugins: [
             new CleanWebpackPlugin([PATHS.build], {
@@ -59,14 +86,18 @@ const common = merge([
                 dry:     false,
                 exclude: [],
             }),
-            new webpack.ProvidePlugin({
+            new webpack.DefinePlugin({
+                NODE_ENV: JSON.stringify(NODE_ENV),
+                __DEV__:  NODE_ENV === 'dev',
                 // $:      'jquery',
                 // jQuery: 'jquery',
             }),
             new HtmlWebpackPlugin({
-                filename: 'index.html',
-                chunks:   ['index', 'common'],
-                template: `${PATHS.source}/pages/index/index.pug`,
+                inject:         true,
+                chunks:         ['index', 'common'],
+                filename:       `${PATHS.build}/index.html`,
+                template:       `${PATHS.public}/index.html`,
+                chunksSortMode: 'none',
             }),
             /* new HtmlWebpackPlugin({
                 filename: 'blog.html',
@@ -112,13 +143,13 @@ module.exports = function (env, argv) {
         common.plugins.push(new webpack.optimize.ModuleConcatenationPlugin());
         common.plugins.push(new webpack.optimize.OccurrenceOrderPlugin());
         common.plugins.push(new OptimizeCssAssetsPlugin());
-        common.plugins.push(new UglifyJsPlugin({
+        /* common.plugins.push(new UglifyJsPlugin({
             parallel:      4,
             sourceMap:     true,
             uglifyOptions: {
-                inline: false,
-                ecma:   8,
-                output: {
+                inline:   false,
+                ecma:     8,
+                output:   {
                     comments: false, // remove comments
                 },
                 compress: {
@@ -135,7 +166,8 @@ module.exports = function (env, argv) {
                     join_vars:     true,
                 },
             },
-        }));
+        }));*/
+        // common.plugins.push(new BundleAnalyzerPlugin());
         return merge([
             common,
             extractCSS(),
@@ -143,10 +175,13 @@ module.exports = function (env, argv) {
         ]);
     }
     if (argv.mode === 'development') {
+        common.devtool = 'cheap-module-source-map';
+        // common.plugins.push(new BundleAnalyzerPlugin());
         return merge([
             common,
             devserver(),
             sass(),
+            styl(),
             css(),
             sourceMap(),
         ]);

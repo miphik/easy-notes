@@ -15,6 +15,15 @@ module.exports = function (paths) {
                     }),
                 },
                 {
+                    test:    /\.styl$/,
+                    include: paths,
+                    use:     ExtractTextPlugin.extract({
+                        publicPath: '../',
+                        fallback:   'style-loader',
+                        use:        ['css-loader', 'stylus-loader', postcss],
+                    }),
+                },
+                {
                     test:    /\.css$/,
                     include: paths,
                     use:     ExtractTextPlugin.extract({
