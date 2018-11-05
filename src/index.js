@@ -3,7 +3,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
-import 'source/styles/index.styl';
+import 'src/styles/index.styl';
 
 // configure({enforceActions: 'observed'});
 

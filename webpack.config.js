@@ -27,7 +27,7 @@ const NODE_ENV = process.env.NODE_ENV || 'prod';
 const appDirectory = fs.realpathSync(process.cwd());
 const resolveApp = relativePath => path.resolve(appDirectory, relativePath);
 const PATHS = {
-    source: resolveApp('source'),
+    source: resolveApp('src'),
     build:  resolveApp('build'),
     public: resolveApp('public'),
 };
@@ -71,11 +71,11 @@ const common = merge([
             // We might convert project to monorepo in the future.
             // https://github.com/lerna/lerna
             alias:      {
-                components: path.resolve(__dirname, './source/components'),
-                pages:      path.resolve(__dirname, './source/pages'),
-                actions:    path.resolve(__dirname, './source/actions'),
-                utils:      path.resolve(__dirname, './source/utils'),
-                source:     path.resolve(__dirname, './source'),
+                components: path.resolve(__dirname, './src/components'),
+                pages:      path.resolve(__dirname, './src/pages'),
+                actions:    path.resolve(__dirname, './src/actions'),
+                utils:      path.resolve(__dirname, './src/utils'),
+                src:        path.resolve(__dirname, './src'),
             },
             symlinks: false,
         },

@@ -9,13 +9,13 @@ import {injectIntl} from 'react-intl';
 import {
     NavLink, Route, Switch, withRouter,
 } from 'react-router-dom';
-import {ABOUT_PATH, HOME_PATH} from 'source/constants/routes';
-import About from 'source/pages/About';
+import {ABOUT_PATH, HOME_PATH} from 'src/constants/routes';
+import About from 'src/pages/About';
 // import {onlyUpdateForKeys} from 'recompose';
 // import store from 'store';
 // import {unsetToken} from '../../utils/TokenManger';
 // import AppBreadcrumbs from '../AppBreadcrumbs';
-import Home from 'source/pages/Home';
+import Home from 'src/pages/Home';
 // import Header from './Header';
 // import Menu from './Menu';
 
