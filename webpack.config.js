@@ -45,6 +45,7 @@ const PATHS = {
 };*/
 const common = merge([
     {
+        target: 'electron-renderer',
         entry: {
             index: (NODE_ENV === 'dev' ? [
                 'react-dev-utils/webpackHotDevClient',

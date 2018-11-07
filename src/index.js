@@ -4,6 +4,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
 import 'src/styles/index.styl';
+const fs = require('fs');
 
 // configure({enforceActions: 'observed'});
 

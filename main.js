@@ -37,14 +37,14 @@ function createMainWindow() {
     const window = new BrowserWindow({
         width:          1200,
         height:         800,
-        webPreferences: {
+        /*webPreferences: {
             //preload:                        `${__dirname}/preload.js`,
             plugins:                        true,
             nodeIntegration:                false,
             contextIsolation:               true,
             allowRunningInsecureContent:    false,
             allowDisplayingInsecureContent: true,
-        },
+        },*/
         allowRunningInsecureContent: false,
         minWidth:                    880,
         show:                        true,
