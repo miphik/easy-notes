@@ -45,13 +45,13 @@ const PATHS = {
 };*/
 const common = merge([
     {
-        target: 'electron-renderer',
-        entry: {
+        target:       'electron-renderer',
+        entry:        {
             index: (NODE_ENV === 'dev' ? [
                 'react-dev-utils/webpackHotDevClient',
             ] : []).concat([`${PATHS.source}/index.js`]),
         },
-        output: {
+        output:       {
             path:          PATHS.build,
             filename:      './js/[name].js',
             pathinfo:      true,
@@ -60,7 +60,7 @@ const common = merge([
             // Point sourcemap entries to original disk location
             // devtoolModuleFilenameTemplate: info => path.resolve(info.absoluteResourcePath),
         },
-        resolve: {
+        resolve:      {
             // This allows you to set a fallback for where Webpack should look for modules.
             // We placed these paths second because we want `node_modules` to "win"
             // if there are any conflicts. This matches Node resolution mechanism.
@@ -78,9 +78,9 @@ const common = merge([
                 utils:      path.resolve(__dirname, './src/utils'),
                 src:        path.resolve(__dirname, './src'),
             },
-            symlinks: false,
+            symlinks:   false,
         },
-        plugins: [
+        plugins:      [
             new CleanWebpackPlugin([PATHS.build], {
                 root:    resolveApp('/'),
                 verbose: true,
@@ -134,6 +134,7 @@ const common = merge([
 
 
 module.exports = function (env, argv) {
+    common.mode = argv.mode;
     if (argv.mode === 'production') {
         common.plugins.push(new MiniCssExtractPlugin({
             // Options similar to the same options in webpackOptions.output

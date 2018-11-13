@@ -60,7 +60,7 @@ function createMainWindow() {
         window.loadURL('http://localhost:8080');
     } else {
         window.loadURL(url.format({
-            pathname: path.join(__dirname, 'build', 'index.html'),
+            pathname: path.resolve(__dirname, 'build', 'index.html'),
             protocol: 'file',
             slashes:  true,
         }));

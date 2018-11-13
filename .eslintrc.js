@@ -3,13 +3,12 @@ const path = require('path');
 module.exports = {
 
     settings: {
+        //"import/parser": "babel-eslint",
         // This is needed to stop VS Code from reporting that it cannot find modules
         // https://github.com/benmosher/eslint-plugin-import/issues/799
         // https://github.com/AtomLinter/linter-eslint/issues/610
         'import/resolver': {
-            webpack: {
-                config: 'config/webpackConfig/webpack.config.dev.js',
-            },
+            'node': {paths: [path.resolve(__dirname)],}
         },
     },
 
