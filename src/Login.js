@@ -5,7 +5,12 @@ import {hot} from 'react-hot-loader';
 class Login extends PureComponent {
     render() {
         return (
+            <div>
+
             <div>LOGIN</div>
+            <div>YandexDisc</div>
+            <div>LOGIN</div>
+            </div>
         );
     }
 }
