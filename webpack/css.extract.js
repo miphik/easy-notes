@@ -1,4 +1,5 @@
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const theme = require('./less.theme');
 const postcss = require('./postcss');
 
 module.exports = function (paths) {
@@ -21,6 +22,26 @@ module.exports = function (paths) {
                         publicPath: '../',
                         fallback:   'style-loader',
                         use:        ['css-loader', 'stylus-loader', postcss],
+                    }),
+                },
+                {
+                    test:    /\.less$/,
+                    include: paths,
+                    use:     ExtractTextPlugin.extract({
+                        publicPath: '../',
+                        fallback:   'style-loader',
+                        use:        [
+                            'css-loader',
+                            {
+                                loader:  'less-loader',
+                                options: {
+                                    sourceMap:         true,
+                                    modifyVars:        theme,
+                                    javascriptEnabled: true,
+                                },
+                            },
+                            // postcss,
+                        ],
                     }),
                 },
                 {

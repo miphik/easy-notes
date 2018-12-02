@@ -1,3 +1,4 @@
+import {Button} from 'antd';
 import PropTypes from 'prop-types';
 /* eslint-disable import/no-extraneous-dependencies */
 import React from 'react';
@@ -19,7 +20,10 @@ export default class Home extends React.PureComponent {
         return (
             <div>
                 <div>HOME</div>
-                <NavLink to={WEBDAV_AUTH_PATH}>WEBDAV</NavLink>
+                <Button>
+
+                    <NavLink to={WEBDAV_AUTH_PATH}>WEBDAV</NavLink>
+                </Button>
             </div>
         );
     }

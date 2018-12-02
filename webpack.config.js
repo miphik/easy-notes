@@ -15,6 +15,7 @@ const sass = require('./webpack/sass');
 const styl = require('./webpack/styl');
 const extractCSS = require('./webpack/css.extract');
 const css = require('./webpack/css');
+const less = require('./webpack/less');
 const sourceMap = require('./webpack/sourceMap');
 // const lintJS = require('./webpack/js.lint');
 const lintCSS = require('./webpack/sass.lint');
@@ -72,11 +73,13 @@ const common = merge([
             // We might convert project to monorepo in the future.
             // https://github.com/lerna/lerna
             alias:      {
-                components: path.resolve(__dirname, './src/components'),
-                pages:      path.resolve(__dirname, './src/pages'),
-                actions:    path.resolve(__dirname, './src/actions'),
-                utils:      path.resolve(__dirname, './src/utils'),
-                src:        path.resolve(__dirname, './src'),
+                components:                    path.resolve(__dirname, './src/components'),
+                pages:                         path.resolve(__dirname, './src/pages'),
+                actions:                       path.resolve(__dirname, './src/actions'),
+                utils:                         path.resolve(__dirname, './src/utils'),
+                src:                           path.resolve(__dirname, './src'),
+                // TODO REMOVE ONCE ISSUE IS FIXED: https://github.com/ant-design/ant-design/issues/12011
+                '@ant-design/icons/lib/dist$': path.resolve(__dirname, './src/icons.js'),
             },
             symlinks: false,
         },
@@ -208,6 +211,7 @@ module.exports = function (env, argv) {
             sass(),
             styl(),
             css(),
+            less(),
             sourceMap(),
         ]);
     }

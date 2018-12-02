@@ -31,7 +31,6 @@
       }
     ],
     "@babel/plugin-proposal-object-rest-spread",
-    "lodash",
     [
       "import",
       {
