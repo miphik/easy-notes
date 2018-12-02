@@ -6,8 +6,8 @@ const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
-// const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
-// const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+const TerserPlugin = require('terser-webpack-plugin');
 const fs = require('fs');
 const pug = require('./webpack/pug');
 const devserver = require('./webpack/devserver');
@@ -45,13 +45,13 @@ const PATHS = {
 };*/
 const common = merge([
     {
-        target:       'electron-renderer',
-        entry:        {
+        target: 'electron-renderer',
+        entry:  {
             index: (NODE_ENV === 'dev' ? [
                 'react-dev-utils/webpackHotDevClient',
             ] : []).concat([`${PATHS.source}/index.js`]),
         },
-        output:       {
+        output: {
             path:          PATHS.build,
             filename:      './js/[name].js',
             pathinfo:      true,
@@ -60,7 +60,7 @@ const common = merge([
             // Point sourcemap entries to original disk location
             // devtoolModuleFilenameTemplate: info => path.resolve(info.absoluteResourcePath),
         },
-        resolve:      {
+        resolve: {
             // This allows you to set a fallback for where Webpack should look for modules.
             // We placed these paths second because we want `node_modules` to "win"
             // if there are any conflicts. This matches Node resolution mechanism.
@@ -78,9 +78,9 @@ const common = merge([
                 utils:      path.resolve(__dirname, './src/utils'),
                 src:        path.resolve(__dirname, './src'),
             },
-            symlinks:   false,
+            symlinks: false,
         },
-        plugins:      [
+        plugins: [
             new CleanWebpackPlugin([PATHS.build], {
                 root:    resolveApp('/'),
                 verbose: true,
@@ -145,13 +145,36 @@ module.exports = function (env, argv) {
         common.plugins.push(new webpack.optimize.ModuleConcatenationPlugin());
         common.plugins.push(new webpack.optimize.OccurrenceOrderPlugin());
         common.plugins.push(new OptimizeCssAssetsPlugin());
+        common.plugins.push(new TerserPlugin({
+            terserOptions: {
+                parallel:  4,
+                sourceMap: true,
+                ecma:      8,
+                output:    {
+                    comments: false, // remove comments
+                },
+                compress: {
+                    unused:        true,
+                    dead_code:     true, // big one--strip code that will never execute
+                    warnings:      false, // good for prod apps so users can't peek behind curtain
+                    drop_debugger: true,
+                    conditionals:  true,
+                    evaluate:      true,
+                    drop_console:  true, // strips console statements
+                    sequences:     true,
+                    booleans:      true,
+                    if_return:     true,
+                    join_vars:     true,
+                },
+            },
+        }));
         /* common.plugins.push(new UglifyJsPlugin({
             parallel:      4,
             sourceMap:     true,
             uglifyOptions: {
-                inline:   false,
-                ecma:     8,
-                output:   {
+                inline: false,
+                ecma:   8,
+                output: {
                     comments: false, // remove comments
                 },
                 compress: {
@@ -169,7 +192,7 @@ module.exports = function (env, argv) {
                 },
             },
         }));*/
-        // common.plugins.push(new BundleAnalyzerPlugin());
+        common.plugins.push(new BundleAnalyzerPlugin());
         return merge([
             common,
             extractCSS(),

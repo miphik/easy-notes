@@ -1,6 +1,6 @@
 // import 'animate.css';
 // import {configure} from 'mobx';
-import '@babel/polyfill';
+import "regenerator-runtime/runtime";
 import React from 'react';
 import ReactDOM from 'react-dom';
 import {AUTH_KEY} from 'src/constants/storage';
@@ -19,6 +19,6 @@ if (__DEV__) {
 const rootEl = document.getElementById('app-mount');
 const render = Elem => ReactDOM.render(<Elem/>, rootEl);
 (async () => {
-    const key = await Storage.has(AUTH_KEY);
-    render(key ? App : Login);
+    // const key = await Storage.has(AUTH_KEY);
+    render(App);
 })();

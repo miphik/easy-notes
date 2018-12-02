@@ -1,8 +1,6 @@
 import PropTypes from 'prop-types';
 /* eslint-disable import/no-extraneous-dependencies */
 import React from 'react';
-import {NavLink} from 'react-router-dom';
-import {WEBDAV_AUTH_PATH} from 'src/constants/routes';
 import './styles.styl';
 
 export default class Home extends React.PureComponent {
@@ -17,10 +15,7 @@ export default class Home extends React.PureComponent {
     render() {
         // const {} = this.props;
         return (
-            <div>
-                <div>HOME</div>
-                <NavLink to={WEBDAV_AUTH_PATH}>WEBDAV</NavLink>
-            </div>
+            <div>WEBDAV</div>
         );
     }
 }

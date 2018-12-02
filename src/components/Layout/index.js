@@ -9,13 +9,14 @@ import {injectIntl} from 'react-intl';
 import {
     NavLink, Route, Switch, withRouter,
 } from 'react-router-dom';
-import {ABOUT_PATH, HOME_PATH} from 'src/constants/routes';
+import {ABOUT_PATH, HOME_PATH, WEBDAV_AUTH_PATH} from 'src/constants/routes';
 import About from 'src/pages/About';
 // import {onlyUpdateForKeys} from 'recompose';
 // import store from 'store';
 // import {unsetToken} from '../../utils/TokenManger';
 // import AppBreadcrumbs from '../AppBreadcrumbs';
 import Home from 'src/pages/Home';
+import WebdavAuth from 'src/pages/WebdavAuth';
 // import Header from './Header';
 // import Menu from './Menu';
 
@@ -83,6 +84,7 @@ class AppLayout extends Component {
                     <Switch>
                         <Route exact path={ABOUT_PATH} component={About} />
                         <Route exact path={HOME_PATH} component={Home} />
+                        <Route exact path={WEBDAV_AUTH_PATH} component={WebdavAuth}/>
                         <Route exact component={() => <div>NOT FOUND</div>}/>
                         {/* routes.map(route => <Route key={route.path} {...route} />)*/}
                     </Switch>

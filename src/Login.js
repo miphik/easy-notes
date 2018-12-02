@@ -1,15 +1,13 @@
 import React, {PureComponent} from 'react';
-import {hot} from 'react-hot-loader';
+import {NavLink} from 'react-router-dom';
+import {WEBDAV_AUTH_PATH} from 'src/constants/routes';
 
-@hot(module)
 class Login extends PureComponent {
     render() {
         return (
             <div>
-
-            <div>LOGIN</div>
-            <div>YandexDisc</div>
-            <div>LOGIN</div>
+                <div>LOGIN</div>
+                <div>LOGIN</div>
             </div>
         );
     }
