@@ -1,0 +1,15 @@
+@import "./../../styles/variables";
+
+.WebdavAuthForm
+  &__input_path
+  &__input_password
+    max-width: 300px;
+
+  &__submit
+    width: 100%
+
+  .ant-radio-group
+    label.ant-radio-button-wrapper-checked
+      background-color $mainColor
+      color $mainOpposite
+      border-color darken($mainColor, 5)

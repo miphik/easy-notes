@@ -5,9 +5,13 @@ export default class Storage {
 
     };
 
-    static get = (data, onlyLocalStorage = false) => {
+    static setAsync = storage.set;
+
+    static get = (key, onlyLocalStorage = false) => {
 
     };
+
+    static getAsync = storage.get;
 
     static has = async key => {
         const result = await new Promise((resolve, reject) => {
@@ -18,4 +22,6 @@ export default class Storage {
         });
         return result;
     };
+
+    static hasAsync = storage.has;
 }

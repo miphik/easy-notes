@@ -1,16 +1,19 @@
 import React, {PureComponent} from 'react';
 // import {Provider} from 'mobx-react';
-import {hot} from 'react-hot-loader';
+import {hot} from 'react-hot-loader/root';
 import {IntlProvider} from 'react-intl';
 import {BrowserRouter as Router, Route} from 'react-router-dom';
 import Layout from 'src/components/Layout';
+import RemoteStorageService from 'src/utils/RemoteStorageService';
 // import {LocaleProvider} from 'antd';
 // import enUS from 'antd/lib/locale-provider/en_US';
 // import 'antd/lib/button/style/index.css';
 // import 'app/styles/base.styl';
 // import stores from './store';
 
-@hot(module)
+RemoteStorageService.auth();
+
+@hot
 class App extends PureComponent {
     render() {
         return (

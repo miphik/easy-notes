@@ -1,21 +1,11 @@
-import PropTypes from 'prop-types';
-/* eslint-disable import/no-extraneous-dependencies */
 import React from 'react';
 import './styles.styl';
+import WebdavAuthForm from './WebdavAuthForm';
 
-export default class Home extends React.PureComponent {
-    static propTypes = {
-        active: PropTypes.bool,
-    };
-
-    static defaultProps = {
-        active: false,
-    };
-
+export default class WebdavAuth extends React.PureComponent {
     render() {
-        // const {} = this.props;
         return (
-            <div>WEBDAV</div>
+            <div><WebdavAuthForm typeValue={{}}/></div>
         );
     }
 }

@@ -1,0 +1,1 @@
+export const YANDEX_WEBDAV_URL = 'https://webdav.yandex.ru';

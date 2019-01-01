@@ -1,14 +1,21 @@
 const {
     app, BrowserWindow, Menu, shell, ipcMain, Tray, session,
 } = require('electron');
-//const {setContentSecurityPolicy} = require('electron-util');
+// const {setContentSecurityPolicy} = require('electron-util');
 const path = require('path');
 const url = require('url');
+const storage = require('electron-json-storage');
 
-const isDevelopment = process.env.NODE_ENV !== 'production';
-let logger = () => {};
-let is = () => {};
-/*if (isDevelopment) {
+const BOUNDS_KEY = 'WINDOW_POSITION';
+const PORT = process.env.PORT || 8080;
+const IP = process.env.IP || '127.0.0.1';
+const isDevelopment = process.env.NODE_ENV !== undefined || process.env.NODE_ENV !== 'production';
+const logger = () => {};
+const is = () => {};
+
+console.log(`START develop mode is: ${isDevelopment}, NODE_ENV is: ${process.env.NODE_ENV}`);
+
+/* if (isDevelopment) {
     logger = require('electron-timber');
     is = require('electron-util').is;
 }*/
@@ -33,11 +40,14 @@ app.on('web-contents-created', (event, contents) => {
     });
 });
 
-function createMainWindow() {
-    const window = new BrowserWindow({
-        width:          1200,
-        height:         800,
-        /*webPreferences: {
+function createMainWindow(data = {}) {
+    mainWindow = new BrowserWindow({
+        width:                       data.bounds && data.bounds.width ? data.bounds.width : 1280,
+        x:                           data.bounds && data.bounds.x ? data.bounds.x : null,
+        // fullscreen:   true,
+        height:                      data.bounds && data.bounds.height ? data.bounds.height : 880,
+        y:                           data.bounds && data.bounds.y ? data.bounds.y : null,
+        /* webPreferences: {
             //preload:                        `${__dirname}/preload.js`,
             plugins:                        true,
             nodeIntegration:                false,
@@ -53,31 +63,45 @@ function createMainWindow() {
         backgroundColor:             '#fff',
     });
 
+    if (data.isMaximized) mainWindow.maximize();
+
+    mainWindow.on('close', () => storage.set(BOUNDS_KEY, {
+        bounds:      mainWindow.getBounds(),
+        isMaximized: mainWindow.isMaximized(),
+    }, error => {
+        if (error) throw error;
+    }));
+
     if (isDevelopment) {
-        window.webContents.openDevTools();
+        mainWindow.webContents.openDevTools();
     }
     if (isDevelopment) {
-        window.loadURL('http://localhost:8080');
+        mainWindow.loadURL(`http://${IP}:${PORT}`);
     } else {
-        window.loadURL(url.format({
+        mainWindow.loadURL(url.format({
             pathname: path.resolve(__dirname, 'build', 'index.html'),
             protocol: 'file',
-            slashes:  true,
+            slashes:  false,
         }));
     }
 
-    window.on('closed', () => {
+    mainWindow.webContents.on('did-finish-load', () => {
+        mainWindow.show();
+        mainWindow.focus();
+    });
+
+    mainWindow.on('closed', () => {
         mainWindow = null;
     });
 
-    window.webContents.on('devtools-opened', () => {
-        window.focus();
+    mainWindow.webContents.on('devtools-opened', () => {
+        mainWindow.focus();
         setImmediate(() => {
-            window.focus();
+            mainWindow.focus();
         });
     });
 
-    return window;
+    return mainWindow;
 }
 
 // quit application when all windows are closed
@@ -89,16 +113,26 @@ app.on('window-all-closed', () => {
 });
 
 app.on('activate', () => {
+    storage.get(BOUNDS_KEY, (error, data) => {
+        if (error) throw error;
+
+        console.log('DATA LOADED ACTIVATE', data);
+        if (mainWindow === null) {
+            mainWindow = createMainWindow(data);
+        }
+    });
     // on macOS it is common to re-create a window even after all windows have been closed
-    if (mainWindow === null) {
-        mainWindow = createMainWindow();
-    }
 });
 
 // create main BrowserWindow when electron is ready
 app.on('ready', () => {
-    mainWindow = createMainWindow();
-    /*if (isDevelopment) {
+    storage.get(BOUNDS_KEY, (error, data) => {
+        if (error) throw error;
+
+        console.log('DATA LOADED', data);
+        mainWindow = createMainWindow(data);
+    });
+    /* if (isDevelopment) {
         logger.log(`Windows: ${is.windows}`);
         logger.log(`Linux: ${is.linux}`);
         logger.log(`MacOS: ${is.macos}`);

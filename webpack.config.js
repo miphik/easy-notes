@@ -79,7 +79,7 @@ const common = merge([
                 utils:                         path.resolve(__dirname, './src/utils'),
                 src:                           path.resolve(__dirname, './src'),
                 // TODO REMOVE ONCE ISSUE IS FIXED: https://github.com/ant-design/ant-design/issues/12011
-                '@ant-design/icons/lib/dist$': path.resolve(__dirname, './src/icons.js'),
+                //'@ant-design/icons/lib/dist$': path.resolve(__dirname, './src/icons.js'),
             },
             symlinks: false,
         },
