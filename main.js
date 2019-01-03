@@ -47,6 +47,9 @@ function createMainWindow(data = {}) {
         // fullscreen:   true,
         height:                      data.bounds && data.bounds.height ? data.bounds.height : 880,
         y:                           data.bounds && data.bounds.y ? data.bounds.y : null,
+        webPreferences: {
+            webSecurity: false
+        },
         /* webPreferences: {
             //preload:                        `${__dirname}/preload.js`,
             plugins:                        true,

@@ -1,0 +1,29 @@
+package easy_note;
+
+syntax = "proto3";
+
+message Note {
+     required int64 id = 1;
+     repeated int64 parent_id = 2;
+     required string title = 3;
+     repeated string tags = 4;
+     enum NoteType {
+         TEXT = 0;
+         HTML = 1;
+         MARKDOWN = 2;
+         CODE = 3;
+     }
+     required NoteType note_type = 5 [default=TEXT];
+     required string updated_at = 6;
+     required string created_at = 7;
+}
+
+message NoteFull {
+    extend Note {
+        required string text = 8;
+    }
+}
+
+message NotesList {
+    repeated Note notes = 1;
+}

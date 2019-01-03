@@ -17,6 +17,7 @@ import About from 'src/pages/About';
 // import AppBreadcrumbs from '../AppBreadcrumbs';
 import Home from 'src/pages/Home';
 import WebdavAuth from 'src/pages/WebdavAuth';
+import {setIntl} from 'utils/LocaleService';
 // import Header from './Header';
 // import Menu from './Menu';
 
@@ -36,6 +37,11 @@ import styles from './Layout.styl';
 // @onlyUpdateForKeys(['profileStore', 'error', 'location'])
 // @observer
 class AppLayout extends Component {
+    constructor(props) {
+        super(props);
+        setIntl(props.intl);
+    }
+
     componentDidMount() {
         // const {profileStore} = this.props;
         // profileStore.fetchUserProfile({

@@ -2,16 +2,6 @@ const path = require('path');
 
 module.exports = {
 
-    settings: {
-        //"import/parser": "babel-eslint",
-        // This is needed to stop VS Code from reporting that it cannot find modules
-        // https://github.com/benmosher/eslint-plugin-import/issues/799
-        // https://github.com/AtomLinter/linter-eslint/issues/610
-        'import/resolver': {
-            'node': {paths: [path.resolve(__dirname)],}
-        },
-    },
-
     'parser':        'babel-eslint',
     'extends':       [
         'airbnb',
@@ -72,16 +62,30 @@ module.exports = {
         ],
     },
     globals:         {
-        'Blob':      true,
-        'document':  true,
-        'window':    true,
-        'Number':    true,
-        'isNaN':     true,
-        'APP_TOKEN': true,
-        '__DEV__':   true,
-        'API_PORT':  true,
-        'API_URL':   true,
-        'require':   true,
-        'FormData':  true,
+        'Blob':         true,
+        'document':     true,
+        'window':       true,
+        'Number':       true,
+        'isNaN':        true,
+        'APP_TOKEN':    true,
+        '__DEV__':      true,
+        'API_PORT':     true,
+        'API_URL':      true,
+        'require':      true,
+        'FormData':     true,
+        'Notification': true,
     },
+
+    settings: {
+        //"import/parser": "babel-eslint",
+        // This is needed to stop VS Code from reporting that it cannot find modules
+        // https://github.com/benmosher/eslint-plugin-import/issues/799
+        // https://github.com/AtomLinter/linter-eslint/issues/610
+        'import/resolver': {
+            webpack: {
+                config: path.resolve('./webpack/webpack.config.base.js'),
+            },
+            'node':  {paths: [path.resolve(__dirname)],}
+        },
+    }
 };

@@ -1,31 +1,42 @@
-import {
-    Button, Form, Icon, Input, Radio,
-} from 'antd';
+import {Button, Icon,} from 'antd';
+import CustomForm from 'components/Form/CustomForm';
+import FormField from 'components/Form/FormField';
+import simpleForm from 'components/Form/simpleForm';
 import PropTypes from 'prop-types';
 import React from 'react';
 import {FormattedMessage as Fm} from 'react-intl';
+import {YANDEX_WEBDAV_URL} from 'src/constants/general';
+import InputField from 'utils/simpleForm/InputField';
+import ToogleListField from 'utils/simpleForm/ToogleListField';
+import {required} from 'utils/simpleForm/validators';
 import './styles.styl';
-import {YANDEX_WEBDAV_URL} from '../../constants/general';
-
-const FormItem = Form.Item;
-const RadioButton = Radio.Button;
-const RadioGroup = Radio.Group;
 
 const WEBDAV_CUSTOM_TYPE = 'custom';
 const WEBDAV_YANDEX_TYPE = 'yandex';
 const WEBDAV_TYPES = [
     {
-        title: <Fm id="WEBDAV_TYPES.custom" defaultMessage="Custom url"/>,
+        label: <Fm id="WEBDAV_TYPES.custom" defaultMessage="Custom url"/>,
         value: WEBDAV_CUSTOM_TYPE,
     },
     {
-        title: <Fm id="WEBDAV_TYPES.yandex" defaultMessage="Yandex Disk"/>,
+        label: <Fm id="WEBDAV_TYPES.yandex" defaultMessage="Yandex Disk"/>,
         value: WEBDAV_YANDEX_TYPE,
-        url:   YANDEX_WEBDAV_URL,
+        url: YANDEX_WEBDAV_URL,
     },
 ];
 
+@simpleForm('WebdavAuthForm')
 class WebdavAuthForm extends React.PureComponent {
+
+    constructor(props) {
+        super(props);
+        this.urlInputRef = React.createRef();
+    }
+
+    state = {
+        webdavType: WEBDAV_CUSTOM_TYPE,
+    };
+
     static propTypes = {
         active: PropTypes.bool,
     };
@@ -34,85 +45,83 @@ class WebdavAuthForm extends React.PureComponent {
         active: false,
     };
 
-    onFormValuesChange = (props, values) => {
-        console.log(2113221321, props, values);
-        const {form} = this.props;
-        const {setFieldsValue} = form;
-    };
+    static getDerivedStateFromProps(nextProps, prevState) {
+        const {formValues, changeField} = nextProps;
+        const {webdavType} = prevState;
+        if (formValues.type && formValues.type !== webdavType) {
+            if (formValues.type && formValues.type !== WEBDAV_CUSTOM_TYPE) {
+                const webdavType = WEBDAV_TYPES.find(item => item.value === formValues.type);
+                if (webdavType && webdavType.url) changeField('url', webdavType.url);
+            } else {
+                changeField('url', '');
+            }
+        }
+        return null;
+    }
+
+    componentDidUpdate(prevProps, prevState) {
+        if (prevProps.formValues.type !== this.props.formValues.type) {
+            if (this.props.formValues.type === WEBDAV_CUSTOM_TYPE) {
+                this.urlInputRef.current.focus();
+            }
+            this.setState({webdavType: this.props.formValues.type});
+        }
+    }
+
+    onFormSubmit = this.props.onSubmitForm(values => {
+        const {resetForm, onSubmit} = this.props;
+        if (onSubmit(values)) resetForm();
+    });
 
     render() {
-        const {form} = this.props;
-        const {getFieldDecorator, getFieldValue} = form;
-        const typeValue = getFieldValue('type');
-        console.log(111111, form, typeValue);
+        const {formValues} = this.props;
+        const type = formValues.type || WEBDAV_CUSTOM_TYPE;
         return (
-            <Form onSubmit={this.handleSubmit} className="WebdavAuthForm">
-                <FormItem>
-                    {getFieldDecorator('type', {
-                        initialValue:   WEBDAV_CUSTOM_TYPE,
-                        onValuesChange: this.onFormValuesChange,
-                        rules:          [{required: true, message: 'Please input the Url!'}],
-                    })(
-                        <RadioGroup size="small">
-                            {WEBDAV_TYPES.map(type => (
-                                <RadioButton
-                                    value={type.value}
-                                    key={type.value}
-                                >
-                                    {type.title}
-                                </RadioButton>
-                            ))}
-                        </RadioGroup>,
-                    )}
-                </FormItem>
-                <FormItem>
-                    {getFieldDecorator('url', {
-                        rules: [{required: true, message: 'Please input the Url!'}],
-                    })(
-                        <Input
-                            disabled={typeValue !== WEBDAV_CUSTOM_TYPE}
-                            className="WebdavAuthForm__input_url"
-                            prefix={<Icon type="cloud-o" style={{color: 'rgba(0,0,0,.25)'}}/>}
-                            placeholder="Url"
-                        />,
-                    )}
-                </FormItem>
-                <FormItem>
-                    {getFieldDecorator('user', {
-                        rules: [{required: true, message: 'Please input the Username!'}],
-                    })(
-                        <Input
-                            className="WebdavAuthForm__input_path"
-                            prefix={<Icon type="user" style={{color: 'rgba(0,0,0,.25)'}}/>}
-                            placeholder="Username"
-                        />,
-                    )}
-                </FormItem>
-                <FormItem>
-                    {getFieldDecorator('pass', {
-                        rules: [{required: true, message: 'Please input your Password!'}],
-                    })(
-                        <Input
-                            className="WebdavAuthForm__input_password"
-                            prefix={<Icon type="lock" style={{color: 'rgba(0,0,0,.25)'}}/>}
-                            type="password"
-                            placeholder="Password"
-                        />,
-                    )}
-                </FormItem>
-                <Button className="WebdavAuthForm__submit" type="primary" htmlType="submit">
+            <CustomForm layout="vertical" onSubmit={this.onFormSubmit} className="WebdavAuthForm">
+                <FormField
+                    size="small"
+                    defaultValue={WEBDAV_CUSTOM_TYPE}
+                    name="type"
+                    options={WEBDAV_TYPES}
+                    Component={ToogleListField}
+                />
+                <FormField
+                    name="url"
+                    label="Url"
+                    validators={required}
+                    required
+                    autoFocus
+                    inputRef={this.urlInputRef}
+                    disabled={type !== WEBDAV_CUSTOM_TYPE}
+                    placeholder="Url"
+                    prefix={<Icon type="cloud-o" style={{color: 'rgba(0,0,0,.25)'}}/>}
+                    Component={InputField}
+                />
+                <FormField
+                    name="username"
+                    label="Username"
+                    validators={required}
+                    required
+                    placeholder="Username"
+                    prefix={<Icon type="user" style={{color: 'rgba(0,0,0,.25)'}}/>}
+                    Component={InputField}
+                />
+                <FormField
+                    name="password"
+                    label="Password"
+                    validators={required}
+                    required
+                    type="password"
+                    placeholder="Password"
+                    prefix={<Icon type="user" style={{color: 'rgba(0,0,0,.25)'}}/>}
+                    Component={InputField}
+                />
+                <Button className="WebdavAuthForm__submit" type="primary" onClick={this.onFormSubmit}>
                     Log in
                 </Button>
-            </Form>
+            </CustomForm>
         );
     }
 }
 
-export default Form.create({
-    onFieldsChange(props, values) {
-        props.typeValue.type = values.type;
-    },
-    mapPropsToFields(props) {
-        console.log(props);
-    },
-})(WebdavAuthForm);
+export default WebdavAuthForm;

@@ -24,4 +24,6 @@ export default class Storage {
     };
 
     static hasAsync = storage.has;
+
+    static removeAsync = storage.remove;
 }

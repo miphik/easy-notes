@@ -10,8 +10,8 @@ module.exports = function (paths) {
                     use:     [
                         'style-loader',
                         'css-loader',
-                        'stylus-loader',
                         postcss,
+                        'stylus-loader',
                     ],
                 },
             ],
