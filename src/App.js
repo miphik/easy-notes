@@ -5,8 +5,8 @@ import {hot} from 'react-hot-loader/root';
 import {IntlProvider} from 'react-intl';
 import {BrowserRouter as Router, Route} from 'react-router-dom';
 import Layout from 'src/components/Layout';
-import RemoteStorageService from 'utils/RemoteStorageService';
-import SerializationService from 'utils/SerializationService';
+import RemoteStoreService from 'services/RemoteStoreService';
+import SerializationService from 'services/SerializationService';
 // import {LocaleProvider} from 'antd';
 
 // import enUS from 'antd/lib/locale-provider/en_US';
@@ -24,7 +24,7 @@ class App extends PureComponent {
     componentDidMount() {
         const setStateRemoteStorage = () => this.setState({remoteStorageInited: true});
         const setStateSerialization = () => this.setState({serializationInited: true});
-        RemoteStorageService.auth(setStateRemoteStorage, setStateRemoteStorage);
+        RemoteStoreService.auth(setStateRemoteStorage, setStateRemoteStorage);
         SerializationService.init(setStateSerialization);
     }
 

@@ -1,7 +1,7 @@
 import {Button, message, notification} from 'antd';
 import React from 'react';
-import DesktopNotificationService from 'utils/DesktopNotificationService';
-import {formatMessageIntl} from 'utils/LocaleService';
+import DesktopNotificationService from 'services/DesktopNotificationService';
+import {formatMessageIntl} from 'services/LocaleService';
 
 export const showLittleNotification = (text, type = 'success') => {
     message[type](formatMessageIntl(text));

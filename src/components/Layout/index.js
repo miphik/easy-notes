@@ -9,6 +9,7 @@ import {injectIntl} from 'react-intl';
 import {
     NavLink, Route, Switch, withRouter,
 } from 'react-router-dom';
+import {setIntl} from 'services/LocaleService';
 import {ABOUT_PATH, HOME_PATH, WEBDAV_AUTH_PATH} from 'src/constants/routes';
 import About from 'src/pages/About';
 // import {onlyUpdateForKeys} from 'recompose';
@@ -17,11 +18,10 @@ import About from 'src/pages/About';
 // import AppBreadcrumbs from '../AppBreadcrumbs';
 import Home from 'src/pages/Home';
 import WebdavAuth from 'src/pages/WebdavAuth';
-import {setIntl} from 'utils/LocaleService';
+import styles from './Layout.styl';
+
 // import Header from './Header';
 // import Menu from './Menu';
-
-import styles from './Layout.styl';
 
 // const {Content, Sider} = Layout;
 // const MESSAGES = {
@@ -47,9 +47,9 @@ class AppLayout extends Component {
         // profileStore.fetchUserProfile({
         // Remove splash screen after load
         // successCallback: () => setTimeout(() => {
-        //const splash = document.getElementsByClassName('splash')[0];
-        //splash.classList.add('splash_hide');
-        //setTimeout(() => (splash.style.display = 'none'), 500);
+        // const splash = document.getElementsByClassName('splash')[0];
+        // splash.classList.add('splash_hide');
+        // setTimeout(() => (splash.style.display = 'none'), 500);
         // }, 500),
         // });
     }
@@ -88,8 +88,8 @@ class AppLayout extends Component {
                 </div>
                 <section className="msp-content-inner">
                     <Switch>
-                        <Route exact path={ABOUT_PATH} component={About} />
-                        <Route exact path={HOME_PATH} component={Home} />
+                        <Route exact path={ABOUT_PATH} component={About}/>
+                        <Route exact path={HOME_PATH} component={Home}/>
                         <Route exact path={WEBDAV_AUTH_PATH} component={WebdavAuth}/>
                         <Route exact component={() => <div>NOT FOUND</div>}/>
                         {/* routes.map(route => <Route key={route.path} {...route} />)*/}

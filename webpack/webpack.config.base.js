@@ -50,6 +50,7 @@ module.exports = {
             components: path.resolve(__dirname, './../src/components'),
             pages:      path.resolve(__dirname, './../src/pages'),
             actions:    path.resolve(__dirname, './../src/actions'),
+            services:   path.resolve(__dirname, './../src/services'),
             utils:      path.resolve(__dirname, './../src/utils'),
             src:        path.resolve(__dirname, './../src'),
             // TODO REMOVE ONCE ISSUE IS FIXED: https://github.com/ant-design/ant-design/issues/12011

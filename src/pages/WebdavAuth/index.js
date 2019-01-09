@@ -4,9 +4,9 @@ import React from 'react';
 import {FormattedMessage as Fm} from 'react-intl';
 import {withRouter} from 'react-router-dom';
 import {HOME_PATH} from 'src/constants/routes';
-import {formatMessageIntl} from 'utils/LocaleService';
-import {showNotification} from 'utils/NotificationService';
-import RemoteStorageService from 'utils/RemoteStorageService';
+import {formatMessageIntl} from 'services/LocaleService';
+import {showNotification} from 'services/NotificationService';
+import RemoteStoreService from 'services/RemoteStoreService';
 import './styles.styl';
 
 const MESSAGES = {
@@ -23,7 +23,7 @@ const MESSAGES = {
 @withRouter
 class WebdavAuth extends React.PureComponent {
     onFormSubmit = values => {
-        RemoteStorageService.logIn(values.url, values.username, values.password, err => {
+        RemoteStoreService.logIn(values.url, values.username, values.password, err => {
             showNotification(
                 formatMessageIntl(MESSAGES.webdavAuthError),
                 err.toString(),
@@ -47,10 +47,10 @@ class WebdavAuth extends React.PureComponent {
         return false;
     };
 
-    onLogOut = () => RemoteStorageService.logOut(() => this.forceUpdate());
+    onLogOut = () => RemoteStoreService.logOut(() => this.forceUpdate());
 
     render() {
-        const wdIsAuth = RemoteStorageService.isAuth();
+        const wdIsAuth = RemoteStoreService.isAuth();
         return (
             <div>
                 {wdIsAuth ? (

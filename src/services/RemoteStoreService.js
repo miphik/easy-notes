@@ -1,4 +1,4 @@
-import Storage from 'src/utils/LocalStorage';
+import LocalStorageService from 'services/LocalStorageService';
 import {createClient} from 'webdav';
 
 const WEBDAV_CREDENTIALS = 'WEBDAV_CREDENTIALS';
@@ -7,11 +7,11 @@ const WEBDAV_PROJECT_MAIN_FILE = `${WEBDAV_PROJECT_PATH}/index`;
 
 let webdavClient;
 
-export default class RemoteStorageService {
+export default class RemoteStoreService {
     static auth = (success, error) => {
-        Storage.hasAsync(WEBDAV_CREDENTIALS, (hasError, hasKey) => {
+        LocalStorageService.hasAsync(WEBDAV_CREDENTIALS, (hasError, hasKey) => {
             if (!hasError && hasKey) {
-                Storage.getAsync(WEBDAV_CREDENTIALS, (getError, data) => {
+                LocalStorageService.getAsync(WEBDAV_CREDENTIALS, (getError, data) => {
                     if (!getError && data.url && data.user && data.pass) {
                         webdavClient = createClient(
                             data.url,
@@ -20,8 +20,8 @@ export default class RemoteStorageService {
                                 password: data.pass,
                             },
                         );
-                        RemoteStorageService.getDirectoryContent('/', error, () => {
-                            RemoteStorageService.createMainDirectory(error, success);
+                        RemoteStoreService.getDirectoryContent('/', error, () => {
+                            RemoteStoreService.createMainDirectory(error, success);
                         });
                     } else if (error) error(getError);
                 });
@@ -31,13 +31,13 @@ export default class RemoteStorageService {
 
     static logOut = (callback = () => {}) => {
         webdavClient = null;
-        Storage.removeAsync(WEBDAV_CREDENTIALS, {}, callback);
+        LocalStorageService.removeAsync(WEBDAV_CREDENTIALS, {}, callback);
     };
 
     static isAuth = () => !!webdavClient;
 
     static logIn = (url, user, pass, error, success) => {
-        Storage.setAsync(WEBDAV_CREDENTIALS, {url, user, pass}, setError => {
+        LocalStorageService.setAsync(WEBDAV_CREDENTIALS, {url, user, pass}, setError => {
             if (!setError) {
                 webdavClient = createClient(
                     url,
@@ -46,8 +46,8 @@ export default class RemoteStorageService {
                         password: pass,
                     },
                 );
-                RemoteStorageService.getDirectoryContent('/', error, () => {
-                    RemoteStorageService.createMainDirectory(error, success);
+                RemoteStoreService.getDirectoryContent('/', error, () => {
+                    RemoteStoreService.createMainDirectory(error, success);
                 });
             } else if (error) error(setError);
         });
@@ -68,7 +68,7 @@ export default class RemoteStorageService {
     };
 
     static createMainDirectory = (error = () => {}, success = () => {}) => {
-        RemoteStorageService.getDirectoryContent(WEBDAV_PROJECT_PATH, () => {
+        RemoteStoreService.getDirectoryContent(WEBDAV_PROJECT_PATH, () => {
             webdavClient.createDirectory(WEBDAV_PROJECT_PATH)
                 .then(success)
                 .catch(error);
@@ -93,5 +93,14 @@ export default class RemoteStorageService {
         webdavClient.putFileContents(WEBDAV_PROJECT_MAIN_FILE, data, {overwrite: true})
             .then(success)
             .catch(error);
+    };
+
+    static readNote = (data, error = () => {}, success = () => {}) => {
+    };
+
+    static writeNote = (data, error = () => {}, success = () => {}) => {
+    };
+
+    static deleteNote = (data, error = () => {}, success = () => {}) => {
     };
 }

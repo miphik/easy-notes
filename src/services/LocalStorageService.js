@@ -1,6 +1,6 @@
 import storage from 'electron-json-storage';
 
-export default class Storage {
+export default class LocalStorageService {
     static set = (data, onlyLocalStorage = false) => {
 
     };

@@ -5,8 +5,8 @@ import React from 'react';
 import {NavLink} from 'react-router-dom';
 import {WEBDAV_AUTH_PATH} from 'src/constants/routes';
 import './styles.styl';
-import RemoteStorageService from 'utils/RemoteStorageService';
-import SerializationService from 'utils/SerializationService';
+import RemoteStoreService from 'services/RemoteStoreService';
+import SerializationService from 'services/SerializationService';
 
 export default class Home extends React.PureComponent {
     static propTypes = {
@@ -19,8 +19,8 @@ export default class Home extends React.PureComponent {
 
     render() {
         // const {} = this.props;
-        const wbIsAuth = RemoteStorageService.isAuth();
-        if (wbIsAuth) RemoteStorageService.getNotesList(() => {}, data => {
+        const wbIsAuth = RemoteStoreService.isAuth();
+        if (wbIsAuth) RemoteStoreService.getNotesList(() => {}, data => {
             const notes = SerializationService.convertStringToNotesList(data);
             console.log(2222, notes);
         });
