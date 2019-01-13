@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 /* eslint-disable import/no-extraneous-dependencies */
 import React from 'react';
 import {NavLink} from 'react-router-dom';
+import {syncRemoteAndLocalData} from 'services/SyncService';
 import {WEBDAV_AUTH_PATH} from 'src/constants/routes';
 import './styles.styl';
 import RemoteStoreService from 'services/RemoteStoreService';
@@ -20,10 +21,11 @@ export default class Home extends React.PureComponent {
     render() {
         // const {} = this.props;
         const wbIsAuth = RemoteStoreService.isAuth();
-        if (wbIsAuth) RemoteStoreService.getNotesList(() => {}, data => {
+        if (wbIsAuth) syncRemoteAndLocalData();
+        /*if (wbIsAuth) RemoteStoreService.getNotesList(() => {}, data => {
             const notes = SerializationService.convertStringToNotesList(data);
             console.log(2222, notes);
-        });
+        });*/
         /*const text = SerializationService.convertNotesListToString([{title: '435435435 drgdfgварекпарое'}]);
         console.log(1111, text);
         RemoteStorageService.saveNotesList(text, data => console.log(222, data), data => console.log(333, data));*/

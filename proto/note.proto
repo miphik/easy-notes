@@ -3,8 +3,8 @@ package easy_note;
 syntax = "proto3";
 
 message Note {
-     required int64 id = 1;
-     repeated int64 parent_id = 2;
+     required string uuid = 1;
+     required string parent_uuid = 2;
      required string title = 3;
      repeated string tags = 4;
      enum NoteType {
@@ -16,11 +16,12 @@ message Note {
      required NoteType note_type = 5 [default=TEXT];
      required string updated_at = 6;
      required string created_at = 7;
+     required bool is_deleted = 8;
 }
 
 message NoteFull {
     extend Note {
-        required string text = 8;
+        required string text = 9;
     }
 }
 

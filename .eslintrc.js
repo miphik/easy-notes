@@ -17,16 +17,17 @@ module.exports = {
             'jsx': true,
         },
     },
-    'plugins':       ['import', 'react', 'jsx-a11y', 'promise'],
+    'plugins':       ['flowtype', 'import', 'react', 'jsx-a11y', 'promise'],
     'rules':         {
-        'react/forbid-prop-types':               [0, {'forbid': []}],
-        'import/no-unresolved':                  [
+        'array-callback-return':                     ['off', {allowImplicit: false}],
+        'react/forbid-prop-types':                   [0, {'forbid': []}],
+        'import/no-unresolved':                      [
             2,
             {caseSensitive: false},
         ],
-        'import/no-extraneous-dependencies':     ['error', {'devDependencies': true}],
-        'jsx-a11y/click-events-have-key-events': 'off',
-        'indent':                                [
+        'import/no-extraneous-dependencies':         ['error', {'devDependencies': true}],
+        'jsx-a11y/click-events-have-key-events':     'off',
+        'indent':                                    [
             2,
             4,
             {
@@ -34,11 +35,11 @@ module.exports = {
                 'ignoredNodes': ['ConditionalExpression'],
             },
         ],
-        'function-paren-newline':                ['error', 'consistent'],
-        'spaced-comment':                        [2, 'always'],
-        'react/jsx-indent':                      [2, 4],
-        'react/jsx-indent-props':                [2, 4],
-        'react/jsx-tag-spacing':                 [
+        'function-paren-newline':                    ['error', 'consistent'],
+        'spaced-comment':                            [2, 'always'],
+        'react/jsx-indent':                          [2, 4],
+        'react/jsx-indent-props':                    [2, 4],
+        'react/jsx-tag-spacing':                     [
             2,
             {
                 'closingSlash':      'never',
@@ -47,19 +48,55 @@ module.exports = {
                 'beforeClosing':     'allow',
             },
         ],
-        'max-len':                               ['error', {'code': 120}],
-        'arrow-parens':                          ['error', 'as-needed'],
-        'no-return-assign':                      ['warn', 'always'],
-        'key-spacing':                           ['error', {'align': 'value'}],
-        'object-curly-spacing':                  ['error', 'never'],
-        'no-underscore-dangle':                  'off',
-        'no-duplicate-imports':                  'error',
-        'react/jsx-filename-extension':          [
+        'max-len':                                   ['error', {'code': 120}],
+        'arrow-parens':                              ['error', 'as-needed'],
+        'no-return-assign':                          ['off', 'except-parens'],
+        'key-spacing':                               ['error', {'align': 'value'}],
+        'object-curly-spacing':                      ['error', 'never'],
+        'no-underscore-dangle':                      'off',
+        'no-duplicate-imports':                      'error',
+        'react/jsx-filename-extension':              [
             1,
             {
                 'extensions': ['.js', '.jsx'],
             },
         ],
+        'flowtype/boolean-style':                    [
+            2,
+            'boolean'
+        ],
+        'flowtype/define-flow-type':                 1,
+        'flowtype/generic-spacing':                  [
+            2,
+            'never'
+        ],
+        'flowtype/no-primitive-constructor-types':   2,
+        'flowtype/no-types-missing-file-annotation': 2,
+        'flowtype/no-weak-types':                    2,
+        'flowtype/object-type-delimiter':            [
+            2,
+            'comma'
+        ],
+        'flowtype/require-parameter-type':           2,
+        'flowtype/require-valid-file-annotation':    2,
+        'flowtype/semi':                             [
+            2,
+            'always'
+        ],
+        'flowtype/space-before-generic-bracket':     [
+            2,
+            'never'
+        ],
+        'flowtype/type-id-match':                    [
+            2,
+            '^([A-Z][a-z0-9]+)+Type$'
+        ],
+        'flowtype/union-intersection-spacing':       [
+            2,
+            'always'
+        ],
+        'flowtype/use-flow-type':                    1,
+        'flowtype/valid-syntax':                     1
     },
     globals:         {
         'Blob':         true,
@@ -74,6 +111,10 @@ module.exports = {
         'require':      true,
         'FormData':     true,
         'Notification': true,
+        'expect':       true,
+        'test':         true,
+        'jest':         true,
+        'describe':     true,
     },
 
     settings: {
@@ -87,5 +128,8 @@ module.exports = {
             },
             'node':  {paths: [path.resolve(__dirname)],}
         },
+    },
+    env: {
+        node: true,
     }
 };
