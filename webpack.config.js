@@ -1,3 +1,4 @@
+require('@babel/register');
 const merge = require('webpack-merge');
 const webpack = require('webpack');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
@@ -6,32 +7,19 @@ const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPl
 const TerserPlugin = require('terser-webpack-plugin');
 
 const base = require('./webpack/webpack.config.base');
-const pug = require('./webpack/pug');
+const pug = require('./webpack/loaders/pug');
 const devserver = require('./webpack/devserver');
-const sass = require('./webpack/sass');
-const styl = require('./webpack/styl');
-const extractCSS = require('./webpack/css.extract');
-const css = require('./webpack/css');
-const less = require('./webpack/less');
-const sourceMap = require('./webpack/sourceMap');
+const sass = require('./webpack/loaders/sass');
+const styl = require('./webpack/loaders/styl');
+const extractCSS = require('./webpack/loaders/css.extract');
+const css = require('./webpack/loaders/css');
+const less = require('./webpack/loaders/less');
 // const lintJS = require('./webpack/js.lint');
-const lintCSS = require('./webpack/sass.lint');
-const images = require('./webpack/images');
-const babel = require('./webpack/babel');
+const lintCSS = require('./webpack/loaders/sass.lint');
+const images = require('./webpack/loaders/images');
+const babel = require('./webpack/loaders/babel');
 const favicon = require('./webpack/favicon');
 
-/* const HTML_PLUGIN_MINIFY_OPTIONS = {
-    removeComments:                true,
-    collapseWhitespace:            true,
-    removeRedundantAttributes:     true,
-    useShortDoctype:               true,
-    removeEmptyAttributes:         true,
-    removeStyleLinkTypeAttributes: true,
-    keepClosingSlash:              true,
-    minifyJS:                      true,
-    minifyCSS:                     true,
-    minifyURLs:                    true,
-};*/
 const common = merge([
     base,
     pug(),
@@ -117,7 +105,6 @@ module.exports = function (env, argv) {
             styl(),
             css(),
             less(),
-            sourceMap(),
         ]);
     }
 };

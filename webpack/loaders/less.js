@@ -1,4 +1,4 @@
-const theme = require('./less.theme');
+const theme = require('../less.theme');
 
 module.exports = function (paths) {
     return {

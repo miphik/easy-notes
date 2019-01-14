@@ -1,5 +1,5 @@
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
-const theme = require('./less.theme');
+const theme = require('../less.theme');
 const postcss = require('./postcss');
 
 module.exports = function (paths) {

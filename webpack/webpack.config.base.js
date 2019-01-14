@@ -1,25 +1,35 @@
+import PATHS from './paths';
+
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const webpack = require('webpack');
 const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 
 const path = require('path');
-const fs = require('fs');
 
 const NODE_ENV = process.env.NODE_ENV || 'prod';
 
-const appDirectory = fs.realpathSync(process.cwd());
-const resolveApp = relativePath => path.resolve(appDirectory, relativePath);
-const PATHS = {
-    source: resolveApp('src'),
-    build:  resolveApp('build'),
-    public: resolveApp('public'),
+const HTML_PLUGIN_MINIFY_OPTIONS = {
+    removeComments:                true,
+    collapseWhitespace:            true,
+    removeRedundantAttributes:     true,
+    useShortDoctype:               true,
+    removeEmptyAttributes:         true,
+    removeStyleLinkTypeAttributes: true,
+    keepClosingSlash:              true,
+    minifyJS:                      true,
+    minifyCSS:                     true,
+    minifyURLs:                    true,
+    collapseInlineTagWhitespace:   true,
+    preserveLineBreaks:            true,
+    removeAttributeQuotes:         true,
 };
 
 module.exports = {
-    mode:   'development',
-    target: 'electron-renderer',
-    entry:  {
+    mode:    'development',
+    target:  'electron-renderer',
+    devtool: 'source-map',
+    entry:   {
         index: (
                    NODE_ENV === 'dev' ? [
                        'react-dev-utils/webpackHotDevClient',
@@ -39,7 +49,7 @@ module.exports = {
         // This allows you to set a fallback for where Webpack should look for modules.
         // We placed these paths second because we want `node_modules` to "win"
         // if there are any conflicts. This matches Node resolution mechanism.
-        modules:    ['node_modules'],
+        modules:    ['src', 'node_modules'],
         // JSX is not recommended, see:
         // https://github.com/facebookincubator/create-react-app/issues/290
         extensions: ['.js', '.json', '.jsx'],
@@ -51,6 +61,7 @@ module.exports = {
             pages:      path.resolve(__dirname, './../src/pages'),
             actions:    path.resolve(__dirname, './../src/actions'),
             services:   path.resolve(__dirname, './../src/services'),
+            types:      path.resolve(__dirname, './../src/types'),
             utils:      path.resolve(__dirname, './../src/utils'),
             src:        path.resolve(__dirname, './../src'),
             // TODO REMOVE ONCE ISSUE IS FIXED: https://github.com/ant-design/ant-design/issues/12011
@@ -58,9 +69,19 @@ module.exports = {
         },
         symlinks: false,
     },
+
+    performance: {
+        hints:             'warning',
+        maxAssetSize:      450000,
+        maxEntrypointSize: 8500000,
+        assetFilter:       assetFilename => (
+            assetFilename.endsWith('.css') || assetFilename.endsWith('.js')
+        ),
+    },
     plugins: [
+        new webpack.ProgressPlugin(),
         new CleanWebpackPlugin([PATHS.build], {
-            root:    resolveApp('/'),
+            root:    PATHS.root,
             verbose: true,
             dry:     false,
             exclude: [],
@@ -77,6 +98,7 @@ module.exports = {
             filename:       `${PATHS.build}/index.html`,
             template:       `${PATHS.public}/index.html`,
             chunksSortMode: 'none',
+            minify:         HTML_PLUGIN_MINIFY_OPTIONS,
         }),
         /* new HtmlWebpackPlugin({
             filename: 'blog.html',

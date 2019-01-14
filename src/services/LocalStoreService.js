@@ -3,9 +3,9 @@ import * as electron from 'electron';
 import * as fs from 'fs';
 import * as path from 'path';
 import SerializationService from 'services/SerializationService';
-import type {NoteType} from 'src/types/NoteType';
+import type {NoteType} from 'types/NoteType';
 
-const LOCAL_PROJECT_PATH = '/easy-notes';
+const LOCAL_PROJECT_PATH = 'easy-notes';
 const INDEX_FILE_NAME = 'index';
 const LOCAL_PROJECT_MAIN_FILE = `${LOCAL_PROJECT_PATH}/${INDEX_FILE_NAME}`;
 

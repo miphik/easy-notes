@@ -1,4 +1,5 @@
 const path = require('path');
+process.chdir(__dirname);
 
 module.exports = {
 
@@ -17,13 +18,30 @@ module.exports = {
             'jsx': true,
         },
     },
+    'env':           {
+        'browser': true,
+        'node':    true,
+        'mocha':   true,
+        'es6':     true,
+        'jest':    true,
+    },
     'plugins':       ['flowtype', 'import', 'react', 'jsx-a11y', 'promise'],
     'rules':         {
         'array-callback-return':                     ['off', {allowImplicit: false}],
         'react/forbid-prop-types':                   [0, {'forbid': []}],
         'import/no-unresolved':                      [
             2,
-            {caseSensitive: false},
+            {
+                caseSensitive: false,
+                'ignore':      [
+                    'components/',
+                    'pages/',
+                    'actions/',
+                    'services/',
+                    'types/',
+                    'utils/',
+                ]
+            },
         ],
         'import/no-extraneous-dependencies':         ['error', {'devDependencies': true}],
         'jsx-a11y/click-events-have-key-events':     'off',
@@ -116,20 +134,17 @@ module.exports = {
         'jest':         true,
         'describe':     true,
     },
-
-    settings: {
+    settings:        {
         //"import/parser": "babel-eslint",
         // This is needed to stop VS Code from reporting that it cannot find modules
         // https://github.com/benmosher/eslint-plugin-import/issues/799
         // https://github.com/AtomLinter/linter-eslint/issues/610
         'import/resolver': {
+            'node':  {paths: [path.resolve(__dirname)],},
             webpack: {
-                config: path.resolve('./webpack/webpack.config.base.js'),
+                config:         path.resolve('./webpack/webpack.config.base.js'),
+                'config-index': 1
             },
-            'node':  {paths: [path.resolve(__dirname)],}
         },
-    },
-    env: {
-        node: true,
     }
 };
