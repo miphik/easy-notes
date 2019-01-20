@@ -1,25 +1,31 @@
 // @flow
 import LocalStorageService from 'services/LocalStorageService';
+import type {SerializationServiceType} from 'services/SerializationService';
 import SerializationService from 'services/SerializationService';
-import type {NoteType} from 'src/types/NoteType';
+import type {CategoryType, NoteType} from 'src/types/NoteType';
 import {createClient} from 'webdav';
 
 const WEBDAV_CREDENTIALS = 'WEBDAV_CREDENTIALS';
 const WEBDAV_PROJECT_PATH = '/easy-notes';
-const WEBDAV_PROJECT_MAIN_FILE = `${WEBDAV_PROJECT_PATH}/index`;
+const WEBDAV_PROJECT_MAIN_FILE = `${WEBDAV_PROJECT_PATH}/notes.index`;
+const WEBDAV_PROJECT_CATEGORIES_MAIN_FILE = `${WEBDAV_PROJECT_PATH}/categories.index`;
 
 let webdavClient;
 let serializationService = SerializationService;
 
-export const setSerializationService = serializeService => serializationService = serializeService;
+export const setSerializationService = (serializeService: SerializationServiceType) => {
+    serializationService = serializeService;
+};
 
 export type RemoteStoreType = {
     saveNotesList: (data: Array<NoteType>, error: (err: Error) => void, success: () => void) => void,
+    saveCategoriesList: (data: Array<CategoryType>, error: (err: Error) => void, success: () => void) => void,
     getNotesList: (error: (err: Error) => void, success: (notes: Array<NoteType>) => void) => void,
+    getCategoriesList: (error: (err: Error) => void, success: (notes: Array<CategoryType>) => void) => void,
 };
 
 export default class RemoteStoreService {
-    static isClientInitialized = (error = () => {}) => {
+    static isClientInitialized = (error: () => {} = () => {}) => {
         if (!webdavClient) {
             error('WEBDAV client isn\'t initialized');
             return false;
@@ -27,7 +33,7 @@ export default class RemoteStoreService {
         return true;
     };
 
-    static auth = (success, error) => {
+    static auth = (success: () => {}, error: () => {}) => {
         LocalStorageService.hasAsync(WEBDAV_CREDENTIALS, (hasError, hasKey) => {
             if (!hasError && hasKey) {
                 LocalStorageService.getAsync(WEBDAV_CREDENTIALS, (getError, data) => {
@@ -48,7 +54,7 @@ export default class RemoteStoreService {
         });
     };
 
-    static logOut = (callback = () => {}) => {
+    static logOut = (callback: () => {} = () => {}) => {
         webdavClient = null;
         LocalStorageService.removeAsync(WEBDAV_CREDENTIALS, {}, callback);
     };
@@ -72,18 +78,22 @@ export default class RemoteStoreService {
         });
     };
 
-    static getDirectoryContent = (directory = '/', error = () => {}, success = () => {}) => {
+    static getDirectoryContent = (
+        directory: string = '/',
+        error: () => {} = () => {},
+        success: () => {} = () => {},
+    ) => {
         if (!RemoteStoreService.isClientInitialized(error)) return;
         webdavClient
             .getDirectoryContents(directory)
             .then(success)
-            .catch(err => {
+            .catch((err: Error) => {
                 if (directory === '/') webdavClient = null;
                 error(err);
             });
     };
 
-    static createMainDirectory = (error = () => {}, success = () => {}) => {
+    static createMainDirectory = (error: () => {} = () => {}, success: () => {} = () => {}) => {
         RemoteStoreService.getDirectoryContent(WEBDAV_PROJECT_PATH, () => {
             webdavClient.createDirectory(WEBDAV_PROJECT_PATH)
                 .then(success)
@@ -91,19 +101,42 @@ export default class RemoteStoreService {
         }, success);
     };
 
-    static getNotesList = (error = () => {}, success = () => {}) => {
+    static getNotesList = (error: () => {} = () => {}, success: () => {} = () => {}): Array<NoteType> => {
         if (!RemoteStoreService.isClientInitialized(error)) return;
         webdavClient.getFileContents(WEBDAV_PROJECT_MAIN_FILE)
-            .then(data => {
+            .then((data: string) => {
                 // @TODO Is it possible to have an error here?
                 const notesList = serializationService.convertStringToNotesList(data);
-                console.info('READ FROM REMOTE STORAGE', data, notesList);
-                success(notesList);
+                console.info('READ NOTES FROM REMOTE STORAGE', data, notesList);
+                return success(notesList);
             })
-            .catch(error);
+            .catch((err: Error) => {
+                // Just if file hasn't found
+                if (err.response && err.response.status && err.response.status === 404) success([]);
+                else error(err);
+            });
     };
 
-    static saveNotesList = (data, error = () => {}, success = () => {}) => {
+    static getCategoriesList = (
+        error: () => {} = () => {},
+        success: (categories: Array<CategoryType>) => {} = () => {},
+    ): Array<CategoryType> => {
+        if (!RemoteStoreService.isClientInitialized(error)) return;
+        webdavClient.getFileContents(WEBDAV_PROJECT_CATEGORIES_MAIN_FILE)
+            .then((data: string) => {
+                // @TODO Is it possible to have an error here?
+                const categoriesList = serializationService.convertStringToCategoriesList(data);
+                console.info('READ CATEGORIES FROM REMOTE STORAGE', data, categoriesList);
+                return success(categoriesList);
+            })
+            .catch((err: Error) => {
+                // Just if file hasn't found
+                if (err.response && err.response.status && err.response.status === 404) success([]);
+                else error(err);
+            });
+    };
+
+    static saveNotesList = (data: Array<NoteType>, error: () => {} = () => {}, success: () => {} = () => {}) => {
         if (!RemoteStoreService.isClientInitialized(error)) return;
         // @TODO Is it possible to have an error here?
         const notesAsString = serializationService.convertNotesListToString(data);
@@ -112,11 +145,24 @@ export default class RemoteStoreService {
             .catch(error);
     };
 
-    static readNote = (noteUUID, error = () => {}, success = () => {}) => {
+    static saveCategoriesList = (
+        data: Array<CategoryType>,
+        error: () => {} = () => {},
+        success: () => {} = () => {},
+    ) => {
+        if (!RemoteStoreService.isClientInitialized(error)) return;
+        // @TODO Is it possible to have an error here?
+        const categoriesAsString = serializationService.convertCategoriesListToString(data);
+        webdavClient.putFileContents(WEBDAV_PROJECT_CATEGORIES_MAIN_FILE, categoriesAsString, {overwrite: true})
+            .then(success)
+            .catch(error);
+    };
+
+    static readNote = (noteUUID: string, error = () => {}, success = () => {}) => {
         if (!RemoteStoreService.isClientInitialized(error)) return;
     };
 
-    static writeNote = (note, error = () => {}, success = () => {}) => {
+    static writeNote = (note: NoteType, error = () => {}, success = () => {}) => {
         if (!RemoteStoreService.isClientInitialized(error)) return;
     };
 

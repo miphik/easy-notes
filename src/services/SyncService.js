@@ -9,11 +9,11 @@ import {mergeIndex} from 'services/MergeService';
 import {showNotification} from 'services/NotificationService';
 import type {RemoteStoreType} from 'services/RemoteStoreService';
 import RemoteStoreService from 'services/RemoteStoreService';
-import type {NoteType} from 'src/types/NoteType';
+import type {CategoryType, NoteType} from 'src/types/NoteType';
 
-const ADD_NEW_NOTE_OPERATION = 'ADD';
-const UPDATE_NEW_NOTE_OPERATION = 'UPDATE';
-const DELETE_NEW_NOTE_OPERATION = 'DELETE';
+export const ADD_NEW_NOTE_OPERATION = 'ADD';
+export const UPDATE_NEW_NOTE_OPERATION = 'UPDATE';
+export const DELETE_NEW_NOTE_OPERATION = 'DELETE';
 const MESSAGES = {
     localNoteNotFound: (noteUUID: string) => (
         <Fm
@@ -41,9 +41,17 @@ const MESSAGES = {
         id="syncRemoteAndLocalData.localReadNotesError"
         defaultMessage="Can't read local notes"
     />,
+    localReadCategoriesError: <Fm
+        id="syncRemoteAndLocalData.localReadCategoriesError"
+        defaultMessage="Can't read local categories"
+    />,
     remoteReadNotesError: <Fm
         id="syncRemoteAndLocalData.remoteReadNotesError"
         defaultMessage="Can't read remote notes"
+    />,
+    remoteReadCategoriesError: <Fm
+        id="syncRemoteAndLocalData.remoteReadCategoriesError"
+        defaultMessage="Can't read remote categories"
     />,
     localDeleteNoteError: (noteUUID: string) => (
         <Fm
@@ -67,6 +75,9 @@ type NotesType = {
 };
 type NotificationServiceType = {
     showNotification: (title: string, text: string, ff: boolean) => void
+};
+type CategoriesType = {
+    categories: Array<CategoryType>,
 };
 
 let remoteStorageService: RemoteStoreType = RemoteStoreService;
@@ -102,12 +113,12 @@ const showMergeConflictDialog = () => {
 };
 
 const syncData = (remoteNotes: Array<NoteType> = [], localNotes: Array<NoteType> = []) => {
-    if (!remoteNotes && !localNotes) {
+    if (!remoteNotes.length && !localNotes.length) {
         remoteStorageService.saveNotesList([]);
         localStorageService.saveNotesList([]);
-    } else if (!remoteNotes && localNotes) {
+    } else if (!remoteNotes.length && localNotes.length) {
         remoteStorageService.saveNotesList(localNotes);
-    } else if (remoteNotes && !localNotes) {
+    } else if (remoteNotes.length && !localNotes.length) {
         localStorageService.saveNotesList(remoteNotes);
     } else {
         const {mergedIndex, updateOperations} = mergeIndex(remoteNotes, localNotes);
@@ -172,7 +183,56 @@ const syncData = (remoteNotes: Array<NoteType> = [], localNotes: Array<NoteType>
     }
 };
 
+const syncCategoriesData = (remoteCategories: Array<CategoryType> = [], localCategories: Array<CategoryType> = []) => {
+    if (!remoteCategories.length && !localCategories.length) {
+        remoteStorageService.saveCategoriesList([]);
+        localStorageService.saveCategoriesList([]);
+    } else if (!remoteCategories.length && localCategories.length) {
+        remoteStorageService.saveCategoriesList(remoteCategories);
+    } else if (remoteCategories.length && !localCategories.length) {
+        localStorageService.saveCategoriesList(remoteCategories);
+    } else {
+        const {mergedIndex} = mergeIndex(remoteCategories, localCategories);
+        remoteStorageService.saveCategoriesList(mergedIndex);
+        localStorageService.saveCategoriesList(mergedIndex);
+    }
+};
+
 export const syncRemoteAndLocalData = () => {
+    // Sync categories
+    remoteStorageService.getCategoriesList((err: Error) => {
+        notificationService.showNotification(
+            formatMessageIntl(
+                MESSAGES.localReadCategoriesError,
+                err.toString(),
+                {
+                    type:     'error',
+                    duration: 10,
+                },
+            ),
+        );
+    }, (remoteCategories: CategoriesType) => {
+        localStorageService.getCategoriesList(
+            (err: Error) => {
+                notificationService.showNotification(
+                    formatMessageIntl(
+                        MESSAGES.remoteReadCategoriesError,
+                        err.toString(),
+                        {
+                            type:     'error',
+                            duration: 10,
+                        },
+                    ),
+                );
+            },
+            (localCategories: CategoriesType) => syncCategoriesData(
+                remoteCategories.categories,
+                localCategories.categories,
+            ),
+        );
+    });
+
+    // Sync notes
     remoteStorageService.getNotesList((err: Error) => {
         notificationService.showNotification(
             formatMessageIntl(

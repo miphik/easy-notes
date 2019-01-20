@@ -1,11 +1,11 @@
-import PATHS from './paths';
-
+require('@babel/register');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const webpack = require('webpack');
 const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 
 const path = require('path');
+const PATHS = require('./paths');
 
 const NODE_ENV = process.env.NODE_ENV || 'prod';
 

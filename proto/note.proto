@@ -2,9 +2,19 @@ package easy_note;
 
 syntax = "proto3";
 
+message Category {
+    required string uuid = 1;
+    required string parent_uuid = 2;
+    required string title = 3;
+    optional string description = 4;
+    required string updated_at = 6;
+    required string created_at = 7;
+    required bool is_deleted = 8;
+}
+
 message Note {
      required string uuid = 1;
-     required string parent_uuid = 2;
+     required string category_uuid = 2;
      required string title = 3;
      repeated string tags = 4;
      enum NoteType {
@@ -26,5 +36,9 @@ message NoteFull {
 }
 
 message NotesList {
-    repeated Note notes = 1;
+     repeated Note notes = 1;
+}
+
+message CategoriesList {
+    repeated Category categories = 1;
 }

@@ -13,4 +13,4 @@ if (__DEV__) {
 
 const rootEl = document.getElementById('app-mount');
 const render = Elem => ReactDOM.render(<Elem/>, rootEl);
-render(App);
+if (rootEl) render(App);

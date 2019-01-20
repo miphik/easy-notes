@@ -80,12 +80,12 @@
     "@babel/preset-react": "^7.0.0",
     "@babel/register": "^7.0.0",
     "@babel/runtime": "^7.2.0",
-    "@types/jest": "^23.3.12",
+    "@types/jest": "^23.3.13",
     "babel-cli": "^6.26.0",
     "babel-core": "7.0.0-bridge.0",
     "babel-eslint": "^10.0.1",
     "babel-jest": "^23.6.0",
-    "babel-loader": "^8.0.4",
+    "babel-loader": "^8.0.5",
     "babel-plugin-import": "^1.11.0",
     "babel-plugin-lodash": "^3.3.4",
     "babel-preset-flow": "^6.23.0",
@@ -95,13 +95,13 @@
     "cross-spawn": "^6.0.5",
     "css-loader": "^2.1.0",
     "debug": "^4.1.1",
-    "electron": "^4.0.0",
-    "electron-builder": "^20.38.4",
+    "electron": "^4.0.1",
+    "electron-builder": "^20.38.5",
     "electron-reload": "^1.4.0",
     "electron-timber": "^0.5.1",
     "electron-util": "^0.10.2",
     "electron-webpack": "^2.6.1",
-    "eslint": "^5.11.1",
+    "eslint": "^5.12.1",
     "eslint-config-airbnb": "^17.1.0",
     "eslint-import-resolver-webpack": "^0.10.1",
     "eslint-loader": "^2.1.1",
@@ -109,7 +109,7 @@
     "eslint-plugin-import": "^2.14.0",
     "eslint-plugin-jsx-a11y": "^6.1.2",
     "eslint-plugin-promise": "^4.0.1",
-    "eslint-plugin-react": "^7.12.0",
+    "eslint-plugin-react": "^7.12.4",
     "extract-text-webpack-plugin": "^4.0.0-beta.0",
     "favicons-webpack-plugin": "0.0.9",
     "file-loader": "^3.0.1",
@@ -128,23 +128,24 @@
     "prop-types": "^15.6.2",
     "pug": "^2.0.3",
     "pug-loader": "^2.4.0",
-    "react-dev-utils": "^7.0.0",
+    "react-dev-utils": "^7.0.1",
     "react-hot-loader": "^4.6.3",
+    "react-test-renderer": "^16.7.0",
     "react-testing-library": "^5.4.4",
     "run-electron": "^0.1.0",
     "sass-loader": "^7.1.0",
     "style-loader": "^0.23.1",
-    "stylelint": "^9.9.0",
+    "stylelint": "^9.10.1",
     "stylelint-webpack-plugin": "^0.10.5",
     "stylus": "^0.54.5",
     "stylus-loader": "^3.0.2",
     "terser-webpack-plugin": "^1.2.1",
     "uglifyjs-webpack-plugin": "^2.1.1",
-    "webpack": "^4.28.3",
+    "webpack": "^4.28.4",
     "webpack-bundle-analyzer": "^3.0.3",
-    "webpack-cli": "^3.1.2",
+    "webpack-cli": "^3.2.1",
     "webpack-dev-server": "^3.1.14",
-    "webpack-merge": "^4.1.5"
+    "webpack-merge": "^4.2.1"
   },
   "dependencies": {
     "antd": "3.8.4",
@@ -156,27 +157,9 @@
     "protobufjs": "^6.8.8",
     "react": "^16.7.0",
     "react-dom": "^16.7.0",
-    "react-intl": "^2.7.2",
+    "react-intl": "^2.8.0",
     "react-router-dom": "^4.3.1",
     "store": "^2.0.12",
-    "webdav": "^2.2.0"
-  },
-  "jest": {
-    "transform": {
-      "^.+\\.js$": "babel-jest"
-    },
-    "rootDir": "__test__",
-    "globals": {
-      "__DEV__": true
-    },
-    "moduleNameMapper": {
-      "\\.(css|less|styl)$": "<rootDir>/__mocks__/styleStub.js",
-      "components/(.*)$": "<rootDir>/../src/components/$1",
-      "pages/(.*)$": "<rootDir>/../src/pages/$1",
-      "actions/(.*)$": "<rootDir>/../src/actions/$1",
-      "services/(.*)$": "<rootDir>/../src/services/$1",
-      "utils/(.*)$": "<rootDir>/../src/utils/$1",
-      "src/(.*)$": "<rootDir>/../src/$1"
-    }
+    "webdav": "^2.2.1"
   }
 }
