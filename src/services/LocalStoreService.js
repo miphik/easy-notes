@@ -9,8 +9,6 @@ import type {CategoryType, NoteType} from 'types/NoteType';
 const LOCAL_PROJECT_PATH = 'easy-notes';
 const INDEX_FILE_NAME = 'notes.index';
 const INDEX_CATEGORIES_FILE_NAME = 'categories.index';
-const LOCAL_PROJECT_MAIN_FILE = `${LOCAL_PROJECT_PATH}/${INDEX_FILE_NAME}`;
-const LOCAL_PROJECT_CATEGORIES_MAIN_FILE = `${LOCAL_PROJECT_PATH}/${INDEX_CATEGORIES_FILE_NAME}`;
 
 const USER_DATA_PATH_TEMP = (
     electron.app
@@ -23,6 +21,8 @@ const LOCAL_PROJECT_FULL_PATH = path.resolve(USER_DATA_PATH, LOCAL_PROJECT_PATH)
 if (!fs.existsSync(LOCAL_PROJECT_FULL_PATH)) {
     fs.mkdirSync(LOCAL_PROJECT_FULL_PATH);
 }
+const LOCAL_PROJECT_MAIN_FILE = `${LOCAL_PROJECT_FULL_PATH}/${INDEX_FILE_NAME}`;
+const LOCAL_PROJECT_CATEGORIES_MAIN_FILE = `${LOCAL_PROJECT_FULL_PATH}/${INDEX_CATEGORIES_FILE_NAME}`;
 
 let serializationService = SerializationService;
 

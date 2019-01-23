@@ -203,7 +203,7 @@ export const loadLocalData = () => {
         (err: Error) => {
             notificationService.showNotification(
                 formatMessageIntl(
-                    MESSAGES.remoteReadCategoriesError,
+                    MESSAGES.localReadCategoriesError,
                     err.toString(),
                     {
                         type:     'error',
@@ -218,7 +218,7 @@ export const loadLocalData = () => {
         (err: Error) => {
             notificationService.showNotification(
                 formatMessageIntl(
-                    MESSAGES.remoteReadNotesError,
+                    MESSAGES.localReadNotesError,
                     err.toString(),
                     {
                         type:     'error',
@@ -236,7 +236,7 @@ export const syncRemoteAndLocalData = () => {
     remoteStorageService.getCategoriesList((err: Error) => {
         notificationService.showNotification(
             formatMessageIntl(
-                MESSAGES.localReadCategoriesError,
+                MESSAGES.remoteReadCategoriesError,
                 err.toString(),
                 {
                     type:     'error',
@@ -249,7 +249,7 @@ export const syncRemoteAndLocalData = () => {
             (err: Error) => {
                 notificationService.showNotification(
                     formatMessageIntl(
-                        MESSAGES.remoteReadCategoriesError,
+                        MESSAGES.localReadCategoriesError,
                         err.toString(),
                         {
                             type:     'error',
@@ -269,7 +269,7 @@ export const syncRemoteAndLocalData = () => {
     remoteStorageService.getNotesList((err: Error) => {
         notificationService.showNotification(
             formatMessageIntl(
-                MESSAGES.localReadNotesError,
+                MESSAGES.remoteReadNotesError,
                 err.toString(),
                 {
                     type:     'error',
@@ -281,7 +281,7 @@ export const syncRemoteAndLocalData = () => {
         localStorageService.getNotesList((err: Error) => {
             notificationService.showNotification(
                 formatMessageIntl(
-                    MESSAGES.remoteReadNotesError,
+                    MESSAGES.localReadNotesError,
                     err.toString(),
                     {
                         type:     'error',

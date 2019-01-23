@@ -7,7 +7,7 @@ import {BrowserRouter as Router, Route} from 'react-router-dom';
 import Layout from 'components/Layout';
 import RemoteStoreService from 'services/RemoteStoreService';
 import SerializationService from 'services/SerializationService';
-import stores from './store';
+import stores from 'stores';
 // import {LocaleProvider} from 'antd';
 
 // import enUS from 'antd/lib/locale-provider/en_US';
@@ -32,12 +32,14 @@ class App extends PureComponent {
         const {remoteStorageInited, serializationInited} = this.state;
         return (
             <Provider {...stores}>
-                <IntlProvider key="en" locale="en">
-                    <Router>
-                        {serializationInited ? <Route exact path="*" component={Layout}/> : null}
-                    </Router>
-                </IntlProvider>
-                <Spinner size="big" show={!serializationInited && !remoteStorageInited} fullSize/>
+                <React.Fragment>
+                    <IntlProvider key="en" locale="en">
+                        <Router>
+                            {serializationInited ? <Route exact path="*" component={Layout}/> : null}
+                        </Router>
+                    </IntlProvider>
+                    <Spinner size="big" show={!serializationInited && !remoteStorageInited} fullSize/>
+                </React.Fragment>
             </Provider>
         );
     }
