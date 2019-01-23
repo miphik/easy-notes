@@ -124,7 +124,6 @@ export default class RemoteStoreService {
         if (!RemoteStoreService.isClientInitialized(error)) return;
         webdavClient.getFileContents(WEBDAV_PROJECT_CATEGORIES_MAIN_FILE)
             .then((data: string) => {
-                // @TODO Is it possible to have an error here?
                 const categoriesList = serializationService.convertStringToCategoriesList(data);
                 console.info('READ CATEGORIES FROM REMOTE STORAGE', data, categoriesList);
                 return success(categoriesList);
@@ -138,7 +137,6 @@ export default class RemoteStoreService {
 
     static saveNotesList = (data: Array<NoteType>, error: () => {} = () => {}, success: () => {} = () => {}) => {
         if (!RemoteStoreService.isClientInitialized(error)) return;
-        // @TODO Is it possible to have an error here?
         const notesAsString = serializationService.convertNotesListToString(data);
         webdavClient.putFileContents(WEBDAV_PROJECT_MAIN_FILE, notesAsString, {overwrite: true})
             .then(success)
@@ -151,7 +149,6 @@ export default class RemoteStoreService {
         success: () => {} = () => {},
     ) => {
         if (!RemoteStoreService.isClientInitialized(error)) return;
-        // @TODO Is it possible to have an error here?
         const categoriesAsString = serializationService.convertCategoriesListToString(data);
         webdavClient.putFileContents(WEBDAV_PROJECT_CATEGORIES_MAIN_FILE, categoriesAsString, {overwrite: true})
             .then(success)

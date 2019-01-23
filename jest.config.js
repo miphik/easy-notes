@@ -27,6 +27,7 @@ module.exports = {
         'pages/(.*)$':         '<rootDir>/../src/pages/$1',
         'actions/(.*)$':       '<rootDir>/../src/actions/$1',
         'services/(.*)$':      '<rootDir>/../src/services/$1',
+        'stores/(.*)$':        '<rootDir>/../src/stores/$1',
         'utils/(.*)$':         '<rootDir>/../src/utils/$1',
         'src/(.*)$':           '<rootDir>/../src/$1',
     },

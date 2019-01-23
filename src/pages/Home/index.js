@@ -1,13 +1,18 @@
 import {Button, Icon} from 'antd';
+import {inject} from 'mobx-react';
 import PropTypes from 'prop-types';
 /* eslint-disable import/no-extraneous-dependencies */
 import React from 'react';
 import {NavLink} from 'react-router-dom';
-import {syncRemoteAndLocalData} from 'services/SyncService';
+import {loadLocalData, syncRemoteAndLocalData} from 'services/SyncService';
 import {WEBDAV_AUTH_PATH} from 'src/constants/routes';
 import './styles.styl';
 import RemoteStoreService from 'services/RemoteStoreService';
 import SerializationService from 'services/SerializationService';
+
+@inject(stores => ({
+    //profile:          stores.profileStore.profile,
+}))
 
 export default class Home extends React.PureComponent {
     static propTypes = {
@@ -22,6 +27,7 @@ export default class Home extends React.PureComponent {
         // const {} = this.props;
         const wbIsAuth = RemoteStoreService.isAuth();
         if (wbIsAuth) syncRemoteAndLocalData();
+        else loadLocalData();
         /*if (wbIsAuth) RemoteStoreService.getNotesList(() => {}, data => {
             const notes = SerializationService.convertStringToNotesList(data);
             console.log(2222, notes);

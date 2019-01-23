@@ -63,7 +63,11 @@ export default class LocalStoreService {
     };
 
     static saveNotesList = (data: Array<NoteType>, error: () => {} = () => {}, success: () => {} = () => {}) => {
-        console.log('SAVE_NOTES_LIST', data);
+        const notes = serializationService.convertNotesListToString(data);
+        fs.writeFile(LOCAL_PROJECT_MAIN_FILE, notes, (errW: Error) => {
+            if (errW) error(errW);
+            else success();
+        });
     };
 
     static getCategoriesList = (error: () => {} = () => {}, success: () => {} = () => {}): Array<CategoryType> => {
@@ -86,7 +90,11 @@ export default class LocalStoreService {
         error: () => {} = () => {},
         success: () => {} = () => {},
     ) => {
-        console.log('SAVE_CATEGORIES_LIST', data);
+        const categories = serializationService.convertCategoriesListToString(data);
+        fs.writeFile(LOCAL_PROJECT_CATEGORIES_MAIN_FILE, categories, (errW: Error) => {
+            if (errW) error(errW);
+            else success();
+        });
     };
 
     static readNote = (noteUUID, error: () => {} = () => {}, success: () => {} = () => {}) => {

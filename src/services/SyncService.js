@@ -198,6 +198,39 @@ const syncCategoriesData = (remoteCategories: Array<CategoryType> = [], localCat
     }
 };
 
+export const loadLocalData = () => {
+    localStorageService.getCategoriesList(
+        (err: Error) => {
+            notificationService.showNotification(
+                formatMessageIntl(
+                    MESSAGES.remoteReadCategoriesError,
+                    err.toString(),
+                    {
+                        type:     'error',
+                        duration: 10,
+                    },
+                ),
+            );
+        },
+        (localCategories: CategoriesType) => {},
+    );
+    localStorageService.getNotesList(
+        (err: Error) => {
+            notificationService.showNotification(
+                formatMessageIntl(
+                    MESSAGES.remoteReadNotesError,
+                    err.toString(),
+                    {
+                        type:     'error',
+                        duration: 10,
+                    },
+                ),
+            );
+        },
+        (localNotes: NotesType) => {},
+    );
+};
+
 export const syncRemoteAndLocalData = () => {
     // Sync categories
     remoteStorageService.getCategoriesList((err: Error) => {

@@ -61,6 +61,7 @@ module.exports = {
             pages:      path.resolve(__dirname, './../src/pages'),
             actions:    path.resolve(__dirname, './../src/actions'),
             services:   path.resolve(__dirname, './../src/services'),
+            stores:     path.resolve(__dirname, './../src/stores'),
             types:      path.resolve(__dirname, './../src/types'),
             utils:      path.resolve(__dirname, './../src/utils'),
             src:        path.resolve(__dirname, './../src'),

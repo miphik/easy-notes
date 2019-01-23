@@ -1,6 +1,7 @@
 // @flow
 import {load, Root} from 'protobufjs';
 import type {CategoryType, NoteType} from 'types/NoteType';
+import LZString from 'lz-string';
 
 let NoteMessage = null;
 let NoteFullMessage = null;
@@ -42,20 +43,22 @@ class SerializationService {
     static convertNotesListToString = (notes: Array<NoteType>): string => {
         const notesList = NotesListMessage.create({notes: notes.map((note: NoteType) => NoteMessage.create(note))});
         const buffer = NotesListMessage.encode(notesList).finish();
-        return buffer.toString();
+        return LZString.compress(buffer.toString());
     };
 
-    static convertStringToNotesList = (data: string) => NotesListMessage.decode(Buffer.from(data));
+    static convertStringToNotesList = (data: string) => NotesListMessage.decode(Buffer.from(LZString.decompress(data)));
 
     static convertCategoriesListToString = (categories: Array<CategoryType>) => {
         const categoriesList = CategoriesListMessage.create({
             categories: categories.map((category: CategoryType) => CategoryMessage.create(category)),
         });
         const buffer = CategoriesListMessage.encode(categoriesList).finish();
-        return buffer.toString();
+        return LZString.compress(buffer.toString());
     };
 
-    static convertStringToCategoriesList = (data: string) => CategoriesListMessage.decode(Buffer.from(data));
+    static convertStringToCategoriesList = (data: string) => {
+        return CategoriesListMessage.decode(Buffer.from(LZString.decompress(data)));
+    };
 }
 
 export default SerializationService;
