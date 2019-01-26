@@ -26,8 +26,6 @@ export default class Home extends React.PureComponent {
     render() {
         // const {} = this.props;
         const wbIsAuth = RemoteStoreService.isAuth();
-        if (wbIsAuth) syncRemoteAndLocalData();
-        else loadLocalData();
         /*if (wbIsAuth) RemoteStoreService.getNotesList(() => {}, data => {
             const notes = SerializationService.convertStringToNotesList(data);
             console.log(2222, notes);

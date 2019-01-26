@@ -106,7 +106,15 @@ export default class RemoteStoreService {
         webdavClient.getFileContents(WEBDAV_PROJECT_MAIN_FILE)
             .then((data: string) => {
                 // @TODO Is it possible to have an error here?
-                const notesList = serializationService.convertStringToNotesList(data);
+                let notesList = [];
+                try {
+                    notesList = serializationService.convertStringToNotesList(data);
+                } catch (e) {
+                    // @TODO Usually it means that we have different formats saved into a cloud and in the code
+                    // better to give choice either override or give a user the chance to handle that situation
+                    RemoteStoreService.saveNotesList([]);
+                    return null;
+                }
                 console.info('READ NOTES FROM REMOTE STORAGE', data, notesList);
                 return success(notesList);
             })
@@ -124,7 +132,15 @@ export default class RemoteStoreService {
         if (!RemoteStoreService.isClientInitialized(error)) return;
         webdavClient.getFileContents(WEBDAV_PROJECT_CATEGORIES_MAIN_FILE)
             .then((data: string) => {
-                const categoriesList = serializationService.convertStringToCategoriesList(data);
+                let categoriesList = [];
+                try {
+                    categoriesList = serializationService.convertStringToCategoriesList(data);
+                } catch (ignore) {
+                    // @TODO Usually it means that we have different formats saved into a cloud and in the code
+                    // better to give choice either override or give a user the chance to handle that situation
+                    RemoteStoreService.saveCategoriesList([]);
+                    return null;
+                }
                 console.info('READ CATEGORIES FROM REMOTE STORAGE', data, categoriesList);
                 return success(categoriesList);
             })

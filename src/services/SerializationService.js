@@ -46,7 +46,10 @@ class SerializationService {
         return LZString.compress(buffer.toString());
     };
 
-    static convertStringToNotesList = (data: string) => NotesListMessage.decode(Buffer.from(LZString.decompress(data)));
+    static convertStringToNotesList = (data: string): Array<NoteType> => {
+        if (data === '') return [];
+        return NotesListMessage.decode(Buffer.from(LZString.decompress(data)));
+    };
 
     static convertCategoriesListToString = (categories: Array<CategoryType>) => {
         const categoriesList = CategoriesListMessage.create({
@@ -56,7 +59,8 @@ class SerializationService {
         return LZString.compress(buffer.toString());
     };
 
-    static convertStringToCategoriesList = (data: string) => {
+    static convertStringToCategoriesList = (data: string): Array<CategoryType> => {
+        if (data === '') return [];
         return CategoriesListMessage.decode(Buffer.from(LZString.decompress(data)));
     };
 }

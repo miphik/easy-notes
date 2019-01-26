@@ -1,4 +1,5 @@
 // import {Icon, Layout} from 'antd';
+import {inject} from 'mobx-react';
 // import logo from 'app/images/logo-3-white.png';
 // import Routes from 'app/js/components/Layout/Routes';
 // import {PREVIOUS_PATH, redirectToLogin} from 'app/js/utils/ApiUtils';
@@ -10,6 +11,8 @@ import {
     NavLink, Route, Switch, withRouter,
 } from 'react-router-dom';
 import {setIntl} from 'services/LocaleService';
+import RemoteStoreService from 'services/RemoteStoreService';
+import {loadLocalData, syncRemoteAndLocalData} from 'services/SyncService';
 import {ABOUT_PATH, HOME_PATH, WEBDAV_AUTH_PATH} from 'src/constants/routes';
 import About from 'src/pages/About';
 // import {onlyUpdateForKeys} from 'recompose';
@@ -30,10 +33,9 @@ import styles from './Layout.styl';
 
 @withRouter
 @injectIntl
-// @inject(stores => ({
-//     profileStore: stores.profileStore,
-//     error:        stores.profileStore.error,
-// }))
+@inject(stores => ({
+    syncCategories: stores.categoryStore.syncCategories,
+}))
 // @onlyUpdateForKeys(['profileStore', 'error', 'location'])
 // @observer
 class AppLayout extends Component {
@@ -54,21 +56,25 @@ class AppLayout extends Component {
         // });
     }
 
-    /* componentWillReceiveProps(nextProps) {
-        setIntl(nextProps.intl);
+    componentWillReceiveProps(nextProps) {
+        const {syncCategories} = nextProps;
+        const wbIsAuth = RemoteStoreService.isAuth();
+        if (wbIsAuth) syncCategories();
+        else loadLocalData();
+        /* setIntl(nextProps.intl);
         const {
             profileStore: {error},
         } = nextProps;
         if (error) {
             unsetToken();
             redirectToLogin();
-        }
-    }*/
+        }*/
+    }
 
     render() {
         // const {} = this.props;
         return (
-            <div>
+            <div style={{marginTop: 50}}>
                 <div>
                     <NavLink to="/">
                         <div className={styles.ul}>

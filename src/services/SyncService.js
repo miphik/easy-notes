@@ -183,18 +183,25 @@ const syncData = (remoteNotes: Array<NoteType> = [], localNotes: Array<NoteType>
     }
 };
 
-const syncCategoriesData = (remoteCategories: Array<CategoryType> = [], localCategories: Array<CategoryType> = []) => {
+const syncCategoriesData = (
+    remoteCategories: Array<CategoryType> = [],
+    localCategories: Array<CategoryType> = [],
+    successCallback: () => {} = () => {},
+) => {
     if (!remoteCategories.length && !localCategories.length) {
         remoteStorageService.saveCategoriesList([]);
         localStorageService.saveCategoriesList([]);
     } else if (!remoteCategories.length && localCategories.length) {
-        remoteStorageService.saveCategoriesList(remoteCategories);
+        remoteStorageService.saveCategoriesList(localCategories);
+        successCallback(localCategories);
     } else if (remoteCategories.length && !localCategories.length) {
         localStorageService.saveCategoriesList(remoteCategories);
+        successCallback(remoteCategories);
     } else {
         const {mergedIndex} = mergeIndex(remoteCategories, localCategories);
         remoteStorageService.saveCategoriesList(mergedIndex);
         localStorageService.saveCategoriesList(mergedIndex);
+        successCallback(mergedIndex);
     }
 };
 
@@ -231,9 +238,9 @@ export const loadLocalData = () => {
     );
 };
 
-export const syncRemoteAndLocalData = () => {
-    // Sync categories
+export const syncRemoteAndLocalCategories = (successCallback: () => {} = () => {}) => {
     remoteStorageService.getCategoriesList((err: Error) => {
+        console.log(1111, err);
         notificationService.showNotification(
             formatMessageIntl(
                 MESSAGES.remoteReadCategoriesError,
@@ -261,10 +268,13 @@ export const syncRemoteAndLocalData = () => {
             (localCategories: CategoriesType) => syncCategoriesData(
                 remoteCategories.categories,
                 localCategories.categories,
+                successCallback,
             ),
         );
     });
+};
 
+export const syncRemoteAndLocalData = () => {
     // Sync notes
     remoteStorageService.getNotesList((err: Error) => {
         notificationService.showNotification(
