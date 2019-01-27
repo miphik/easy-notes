@@ -1,5 +1,5 @@
 // import {Icon, Layout} from 'antd';
-import {inject} from 'mobx-react';
+import {inject, observer} from 'mobx-react';
 // import logo from 'app/images/logo-3-white.png';
 // import Routes from 'app/js/components/Layout/Routes';
 // import {PREVIOUS_PATH, redirectToLogin} from 'app/js/utils/ApiUtils';
@@ -11,8 +11,6 @@ import {
     NavLink, Route, Switch, withRouter,
 } from 'react-router-dom';
 import {setIntl} from 'services/LocaleService';
-import RemoteStoreService from 'services/RemoteStoreService';
-import {loadLocalData, syncRemoteAndLocalData} from 'services/SyncService';
 import {ABOUT_PATH, HOME_PATH, WEBDAV_AUTH_PATH} from 'src/constants/routes';
 import About from 'src/pages/About';
 // import {onlyUpdateForKeys} from 'recompose';
@@ -33,11 +31,18 @@ import styles from './Layout.styl';
 
 @withRouter
 @injectIntl
-@inject(stores => ({
-    syncCategories: stores.categoryStore.syncCategories,
-}))
+@inject(stores => (
+    {
+        syncCategories:      stores.categoryStore.syncCategories,
+        loadLocalCategories: stores.categoryStore.loadLocalCategories,
+        syncNotes:           stores.noteStore.syncNotes,
+        loadLocalNotes:      stores.noteStore.loadLocalNotes,
+        remoteStoreIsAuth:   stores.remoteAuthStore.isAuth,
+        remoteStoreIsInited: stores.remoteAuthStore.isInited,
+    }
+))
 // @onlyUpdateForKeys(['profileStore', 'error', 'location'])
-// @observer
+@observer
 class AppLayout extends Component {
     constructor(props) {
         super(props);
@@ -45,6 +50,13 @@ class AppLayout extends Component {
     }
 
     componentDidMount() {
+        const {
+            remoteStoreIsInited, remoteStoreIsAuth, loadLocalCategories, loadLocalNotes,
+        } = this.props;
+        if (remoteStoreIsInited && !remoteStoreIsAuth) {
+            loadLocalCategories();
+            loadLocalNotes();
+        }
         // const {profileStore} = this.props;
         // profileStore.fetchUserProfile({
         // Remove splash screen after load
@@ -57,10 +69,21 @@ class AppLayout extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        const {syncCategories} = nextProps;
-        const wbIsAuth = RemoteStoreService.isAuth();
+        const {
+            remoteStoreIsAuth, remoteStoreIsInited, syncCategories, syncNotes,
+        } = nextProps;
+        const {remoteStoreIsAuth: remoteStoreIsAuthPrev, remoteStoreIsInited: remoteStoreIsInitedPrev} = this.props;
+        const isAuthAndItChanged = remoteStoreIsAuthPrev !== remoteStoreIsAuth && remoteStoreIsAuth;
+        if (remoteStoreIsInited
+            && (
+                !remoteStoreIsInitedPrev || isAuthAndItChanged
+            )) {
+            syncCategories();
+            syncNotes();
+        }
+        /* const wbIsAuth = RemoteStoreService.isAuth();
         if (wbIsAuth) syncCategories();
-        else loadLocalData();
+        else loadLocalData();*/
         /* setIntl(nextProps.intl);
         const {
             profileStore: {error},

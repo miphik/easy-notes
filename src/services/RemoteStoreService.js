@@ -3,6 +3,7 @@ import LocalStorageService from 'services/LocalStorageService';
 import type {SerializationServiceType} from 'services/SerializationService';
 import SerializationService from 'services/SerializationService';
 import type {CategoryType, NoteType} from 'src/types/NoteType';
+import type {CategoriesType, NotesType} from 'types/NoteType';
 import {createClient} from 'webdav';
 
 const WEBDAV_CREDENTIALS = 'WEBDAV_CREDENTIALS';
@@ -18,10 +19,10 @@ export const setSerializationService = (serializeService: SerializationServiceTy
 };
 
 export type RemoteStoreType = {
-    saveNotesList: (data: Array<NoteType>, error: (err: Error) => void, success: () => void) => void,
+    saveNotesList: (data: Array<NoteType>, error: (err: Error) => void, success: (notes: NotesType) => void) => void,
     saveCategoriesList: (data: Array<CategoryType>, error: (err: Error) => void, success: () => void) => void,
     getNotesList: (error: (err: Error) => void, success: (notes: Array<NoteType>) => void) => void,
-    getCategoriesList: (error: (err: Error) => void, success: (notes: Array<CategoryType>) => void) => void,
+    getCategoriesList: (error: (err: Error) => void, success: (categories: CategoriesType) => void) => void,
 };
 
 export default class RemoteStoreService {
@@ -101,19 +102,25 @@ export default class RemoteStoreService {
         }, success);
     };
 
-    static getNotesList = (error: () => {} = () => {}, success: () => {} = () => {}): Array<NoteType> => {
+    static getNotesList = (
+        error: () => {} = () => {},
+        success: (notes: NotesType) => {} = () => {},
+    ): Array<NoteType> => {
         if (!RemoteStoreService.isClientInitialized(error)) return;
         webdavClient.getFileContents(WEBDAV_PROJECT_MAIN_FILE)
-            .then((data: string) => {
-                // @TODO Is it possible to have an error here?
+            .then((data: ArrayBuffer) => {
+                if (data.byteLength < 5) {
+                    return success([]);
+                }
                 let notesList = [];
                 try {
-                    notesList = serializationService.convertStringToNotesList(data);
-                } catch (e) {
+                    notesList = serializationService.convertStringToNotesList(Buffer.from(data).toString());
+                } catch (ignore) {
+                    console.log('ERROR READ FROM REMOTE NOTES', ignore);
                     // @TODO Usually it means that we have different formats saved into a cloud and in the code
                     // better to give choice either override or give a user the chance to handle that situation
                     RemoteStoreService.saveNotesList([]);
-                    return null;
+                    return success([]);
                 }
                 console.info('READ NOTES FROM REMOTE STORAGE', data, notesList);
                 return success(notesList);
@@ -127,19 +134,23 @@ export default class RemoteStoreService {
 
     static getCategoriesList = (
         error: () => {} = () => {},
-        success: (categories: Array<CategoryType>) => {} = () => {},
+        success: (categories: CategoriesType) => {} = () => {},
     ): Array<CategoryType> => {
         if (!RemoteStoreService.isClientInitialized(error)) return;
         webdavClient.getFileContents(WEBDAV_PROJECT_CATEGORIES_MAIN_FILE)
-            .then((data: string) => {
+            .then((data: ArrayBuffer) => {
+                if (data.byteLength < 5) {
+                    return success([]);
+                }
                 let categoriesList = [];
                 try {
-                    categoriesList = serializationService.convertStringToCategoriesList(data);
+                    categoriesList = serializationService.convertStringToCategoriesList(Buffer.from(data).toString());
                 } catch (ignore) {
+                    console.log('ERROR READ FROM REMOTE CATEGORY', ignore);
                     // @TODO Usually it means that we have different formats saved into a cloud and in the code
                     // better to give choice either override or give a user the chance to handle that situation
                     RemoteStoreService.saveCategoriesList([]);
-                    return null;
+                    return success([]);
                 }
                 console.info('READ CATEGORIES FROM REMOTE STORAGE', data, categoriesList);
                 return success(categoriesList);

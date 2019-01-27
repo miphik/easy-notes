@@ -1,13 +1,14 @@
+// @flow
+import Layout from 'components/Layout';
 import Spinner from 'components/Spinner';
+import {inject} from 'mobx-react';
+import PropTypes from 'prop-types';
 import React, {PureComponent} from 'react';
-import {Provider} from 'mobx-react';
 import {hot} from 'react-hot-loader/root';
 import {IntlProvider} from 'react-intl';
 import {BrowserRouter as Router, Route} from 'react-router-dom';
-import Layout from 'components/Layout';
-import RemoteStoreService from 'services/RemoteStoreService';
 import SerializationService from 'services/SerializationService';
-import stores from 'stores';
+import type {StoresType} from 'stores';
 // import {LocaleProvider} from 'antd';
 
 // import enUS from 'antd/lib/locale-provider/en_US';
@@ -15,34 +16,45 @@ import stores from 'stores';
 // import 'app/styles/base.styl';
 
 @hot
+@inject(mobxStores => (
+    {
+        remoteStoreAuth:     mobxStores.remoteAuthStore.remoteStoreAuth,
+        remoteStoreIsAuth:   mobxStores.remoteAuthStore.isAuth,
+        remoteStoreIsInited: mobxStores.remoteAuthStore.isInited,
+    }
+))
 class App extends PureComponent {
     state = {
-        remoteStorageInited: false,
         serializationInited: false,
     };
 
     componentDidMount() {
-        const setStateRemoteStorage = () => this.setState({remoteStorageInited: true});
+        const {remoteStoreAuth} = this.props;
         const setStateSerialization = () => this.setState({serializationInited: true});
-        RemoteStoreService.auth(setStateRemoteStorage, setStateRemoteStorage);
+        remoteStoreAuth();
         SerializationService.init(setStateSerialization);
     }
 
     render() {
-        const {remoteStorageInited, serializationInited} = this.state;
+        const {remoteStoreIsInited, serializationInited} = this.state;
         return (
-            <Provider {...stores}>
-                <React.Fragment>
-                    <IntlProvider key="en" locale="en">
-                        <Router>
-                            {serializationInited ? <Route exact path="*" component={Layout}/> : null}
-                        </Router>
-                    </IntlProvider>
-                    <Spinner size="big" show={!serializationInited && !remoteStorageInited} fullSize/>
-                </React.Fragment>
-            </Provider>
+            <React.Fragment>
+                <IntlProvider key="en" locale="en">
+                    <Router>
+                        {serializationInited ? <Route exact path="*" component={Layout}/> : null}
+                    </Router>
+                </IntlProvider>
+                <Spinner size="big" show={!serializationInited && !remoteStoreIsInited} fullSize/>
+            </React.Fragment>
         );
     }
 }
+
+App.propTypes = {
+    remoteStoreAuth: PropTypes.func,
+};
+App.defaultProps = {
+    remoteStoreAuth: () => {},
+};
 
 export default App;

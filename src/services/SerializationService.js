@@ -43,12 +43,12 @@ class SerializationService {
     static convertNotesListToString = (notes: Array<NoteType>): string => {
         const notesList = NotesListMessage.create({notes: notes.map((note: NoteType) => NoteMessage.create(note))});
         const buffer = NotesListMessage.encode(notesList).finish();
-        return LZString.compress(buffer.toString());
+        return LZString.compressToUTF16(buffer.toString());
     };
 
     static convertStringToNotesList = (data: string): Array<NoteType> => {
-        if (data === '') return [];
-        return NotesListMessage.decode(Buffer.from(LZString.decompress(data)));
+        if (data === '' || data.length < 5) return [];
+        return NotesListMessage.decode(Buffer.from(LZString.decompressFromUTF16(data)));
     };
 
     static convertCategoriesListToString = (categories: Array<CategoryType>) => {
@@ -56,12 +56,12 @@ class SerializationService {
             categories: categories.map((category: CategoryType) => CategoryMessage.create(category)),
         });
         const buffer = CategoriesListMessage.encode(categoriesList).finish();
-        return LZString.compress(buffer.toString());
+        return LZString.compressToUTF16(buffer.toString());
     };
 
     static convertStringToCategoriesList = (data: string): Array<CategoryType> => {
-        if (data === '') return [];
-        return CategoriesListMessage.decode(Buffer.from(LZString.decompress(data)));
+        if (data === '' || data.length < 5) return [];
+        return CategoriesListMessage.decode(Buffer.from(LZString.decompressFromUTF16(data)));
     };
 }
 

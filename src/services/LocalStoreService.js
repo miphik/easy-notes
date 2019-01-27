@@ -4,7 +4,9 @@ import * as fs from 'fs';
 import * as path from 'path';
 import type {SerializationServiceType} from 'services/SerializationService';
 import SerializationService from 'services/SerializationService';
-import type {CategoryType, NoteType} from 'types/NoteType';
+import type {
+    CategoriesType, CategoryType, NotesType, NoteType,
+} from 'types/NoteType';
 
 const LOCAL_PROJECT_PATH = 'easy-notes';
 const INDEX_FILE_NAME = 'notes.index';
@@ -24,6 +26,8 @@ if (!fs.existsSync(LOCAL_PROJECT_FULL_PATH)) {
 const LOCAL_PROJECT_MAIN_FILE = `${LOCAL_PROJECT_FULL_PATH}/${INDEX_FILE_NAME}`;
 const LOCAL_PROJECT_CATEGORIES_MAIN_FILE = `${LOCAL_PROJECT_FULL_PATH}/${INDEX_CATEGORIES_FILE_NAME}`;
 
+console.info('LOCAL_PROJECT_FULL_PATH', LOCAL_PROJECT_FULL_PATH);
+
 let serializationService = SerializationService;
 
 export const setSerializationService = (serializeService: SerializationServiceType) => {
@@ -33,10 +37,10 @@ export const setSerializationService = (serializeService: SerializationServiceTy
 export type LocalStoreType = {
     saveNotesList: (data: Array<NoteType>, error: (err: Error) => void, success: () => void) => void,
     saveCategoriesList: (data: Array<CategoryType>, error: (err: Error) => void, success: () => void) => void,
-    getNotesList: (error: (err: Error) => void, success: (notes: Array<NoteType>) => void) => Array<NoteType>,
+    getNotesList: (error: (err: Error) => void, success: (notes: NotesType) => void) => Array<NoteType>,
     getCategoriesList: (
         error: (err: Error) => void,
-        success: (categories: Array<CategoryType>) => void
+        success: (categories: CategoriesType) => void
     ) => Array<CategoryType>,
 };
 
@@ -47,7 +51,7 @@ export default class LocalStoreService {
     static createMainDirectory = (error: () => {} = () => {}, success: () => {} = () => {}) => {
     };
 
-    static getNotesList = (error: () => {} = () => {}, success: () => {} = () => {}) => {
+    static getNotesList = (error: () => {} = () => {}, success: (notes: NotesType) => {} = () => {}) => {
         fs.readFile(LOCAL_PROJECT_MAIN_FILE, 'utf8', (err: Error, contents: string) => {
             if (err) {
                 fs.writeFile(LOCAL_PROJECT_MAIN_FILE, '', (errW: Error) => {
@@ -56,7 +60,7 @@ export default class LocalStoreService {
                 });
             } else {
                 const notesList = serializationService.convertStringToNotesList(contents);
-                console.info('READ NOTES LIST FROM LOCAL STORAGE', contents, notesList);
+                console.info('READ NOTES LIST FROM LOCAL STORAGE', notesList);
                 success(notesList);
             }
         });
@@ -70,7 +74,10 @@ export default class LocalStoreService {
         });
     };
 
-    static getCategoriesList = (error: () => {} = () => {}, success: () => {} = () => {}): Array<CategoryType> => {
+    static getCategoriesList = (
+        error: () => {} = () => {},
+        success: (categories: CategoriesType) => {} = () => {},
+    ): Array<CategoryType> => {
         fs.readFile(LOCAL_PROJECT_CATEGORIES_MAIN_FILE, 'utf8', (err: Error, contents: string) => {
             if (err) {
                 fs.writeFile(LOCAL_PROJECT_CATEGORIES_MAIN_FILE, '', (errW: Error) => {
@@ -79,7 +86,7 @@ export default class LocalStoreService {
                 });
             } else {
                 const categoriesList = serializationService.convertStringToCategoriesList(contents);
-                console.info('READ CATEGORIES LIST FROM LOCAL STORAGE', contents, categoriesList);
+                console.info('READ CATEGORIES LIST FROM LOCAL STORAGE', categoriesList);
                 success(categoriesList);
             }
         });

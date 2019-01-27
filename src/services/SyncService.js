@@ -10,6 +10,7 @@ import {showNotification} from 'services/NotificationService';
 import type {RemoteStoreType} from 'services/RemoteStoreService';
 import RemoteStoreService from 'services/RemoteStoreService';
 import type {CategoryType, NoteType} from 'src/types/NoteType';
+import type {CategoriesType, NotesType} from 'types/NoteType';
 
 export const ADD_NEW_NOTE_OPERATION = 'ADD';
 export const UPDATE_NEW_NOTE_OPERATION = 'UPDATE';
@@ -70,16 +71,6 @@ const MESSAGES = {
 };
 const {info} = Modal;
 
-type NotesType = {
-    notes: Array<NoteType>,
-};
-type NotificationServiceType = {
-    showNotification: (title: string, text: string, ff: boolean) => void
-};
-type CategoriesType = {
-    categories: Array<CategoryType>,
-};
-
 let remoteStorageService: RemoteStoreType = RemoteStoreService;
 let localStorageService: LocalStoreType = LocalStoreService;
 let notificationService: NotificationServiceType = {showNotification};
@@ -112,14 +103,20 @@ const showMergeConflictDialog = () => {
     });
 };
 
-const syncData = (remoteNotes: Array<NoteType> = [], localNotes: Array<NoteType> = []) => {
+const syncData = (
+    remoteNotes: Array<NoteType> = [],
+    localNotes: Array<NoteType> = [],
+    successCallback: () => {} = () => {},
+) => {
     if (!remoteNotes.length && !localNotes.length) {
         remoteStorageService.saveNotesList([]);
         localStorageService.saveNotesList([]);
     } else if (!remoteNotes.length && localNotes.length) {
         remoteStorageService.saveNotesList(localNotes);
+        successCallback(localNotes);
     } else if (remoteNotes.length && !localNotes.length) {
         localStorageService.saveNotesList(remoteNotes);
+        successCallback(remoteNotes);
     } else {
         const {mergedIndex, updateOperations} = mergeIndex(remoteNotes, localNotes);
         updateOperations.forEach((operation: UpdateOperationType) => {
@@ -180,6 +177,7 @@ const syncData = (remoteNotes: Array<NoteType> = [], localNotes: Array<NoteType>
         });
         remoteStorageService.saveNotesList(mergedIndex);
         localStorageService.saveNotesList(mergedIndex);
+        successCallback(mergedIndex);
     }
 };
 
@@ -205,7 +203,7 @@ const syncCategoriesData = (
     }
 };
 
-export const loadLocalData = () => {
+export const loadLocalCategories = (successCallback: () => {} = () => {}) => {
     localStorageService.getCategoriesList(
         (err: Error) => {
             notificationService.showNotification(
@@ -219,8 +217,11 @@ export const loadLocalData = () => {
                 ),
             );
         },
-        (localCategories: CategoriesType) => {},
+        (localCategories: CategoriesType) => successCallback(localCategories.categories),
     );
+};
+
+export const loadLocalNotes = (successCallback: () => {} = () => {}) => {
     localStorageService.getNotesList(
         (err: Error) => {
             notificationService.showNotification(
@@ -234,13 +235,12 @@ export const loadLocalData = () => {
                 ),
             );
         },
-        (localNotes: NotesType) => {},
+        (localNotes: NotesType) => successCallback(localNotes.notes),
     );
 };
 
 export const syncRemoteAndLocalCategories = (successCallback: () => {} = () => {}) => {
     remoteStorageService.getCategoriesList((err: Error) => {
-        console.log(1111, err);
         notificationService.showNotification(
             formatMessageIntl(
                 MESSAGES.remoteReadCategoriesError,
@@ -274,8 +274,7 @@ export const syncRemoteAndLocalCategories = (successCallback: () => {} = () => {
     });
 };
 
-export const syncRemoteAndLocalData = () => {
-    // Sync notes
+export const syncRemoteAndLocalNotes = (successCallback: () => {} = () => {}) => {
     remoteStorageService.getNotesList((err: Error) => {
         notificationService.showNotification(
             formatMessageIntl(
@@ -299,6 +298,6 @@ export const syncRemoteAndLocalData = () => {
                     },
                 ),
             );
-        }, (localNotes: NotesType) => syncData(remoteNotes.notes, localNotes.notes));
+        }, (localNotes: NotesType) => syncData(remoteNotes.notes, localNotes.notes, successCallback));
     });
 };

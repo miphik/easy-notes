@@ -97,7 +97,7 @@ module.exports = function (env, argv) {
     }
     if (argv.mode === 'development') {
         common.devtool = 'cheap-module-source-map';
-        // common.plugins.push(new BundleAnalyzerPlugin());
+        common.plugins.push(new BundleAnalyzerPlugin());
         return merge([
             common,
             devserver(),

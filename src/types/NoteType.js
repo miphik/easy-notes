@@ -20,3 +20,13 @@ export type CategoryType = {
     createdAt: string,
     isDeleted: boolean,
 };
+
+export type NotesType = {
+    notes: Array<NoteType>,
+};
+export type NotificationServiceType = {
+    showNotification: (title: string, text: string, ff: boolean) => void
+};
+export type CategoriesType = {
+    categories: Array<CategoryType>,
+};
