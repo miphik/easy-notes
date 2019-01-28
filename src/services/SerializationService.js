@@ -1,7 +1,7 @@
 // @flow
+import LZString from 'lz-string';
 import {load, Root} from 'protobufjs';
 import type {CategoryType, NoteType} from 'types/NoteType';
-import LZString from 'lz-string';
 
 let NoteMessage = null;
 let NoteFullMessage = null;
@@ -43,12 +43,12 @@ class SerializationService {
     static convertNotesListToString = (notes: Array<NoteType>): string => {
         const notesList = NotesListMessage.create({notes: notes.map((note: NoteType) => NoteMessage.create(note))});
         const buffer = NotesListMessage.encode(notesList).finish();
-        return LZString.compressToUTF16(buffer.toString());
+        return buffer.toString('latin1');
     };
 
     static convertStringToNotesList = (data: string): Array<NoteType> => {
         if (data === '' || data.length < 5) return [];
-        return NotesListMessage.decode(Buffer.from(LZString.decompressFromUTF16(data)));
+        return NotesListMessage.decode(Buffer.from(data, 'latin1'));
     };
 
     static convertCategoriesListToString = (categories: Array<CategoryType>) => {
@@ -56,12 +56,12 @@ class SerializationService {
             categories: categories.map((category: CategoryType) => CategoryMessage.create(category)),
         });
         const buffer = CategoriesListMessage.encode(categoriesList).finish();
-        return LZString.compressToUTF16(buffer.toString());
+        return buffer.toString('latin1');
     };
 
     static convertStringToCategoriesList = (data: string): Array<CategoryType> => {
         if (data === '' || data.length < 5) return [];
-        return CategoriesListMessage.decode(Buffer.from(LZString.decompressFromUTF16(data)));
+        return CategoriesListMessage.decode(Buffer.from(data, 'latin1'));
     };
 }
 

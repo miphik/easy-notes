@@ -1,5 +1,6 @@
 // @flow
 import {Button, Modal} from 'antd';
+import isEqual from 'lodash/isEqual';
 import React from 'react';
 import {FormattedMessage as Fm} from 'react-intl';
 import {formatMessageIntl} from 'services/LocaleService';
@@ -108,16 +109,13 @@ const syncData = (
     localNotes: Array<NoteType> = [],
     successCallback: () => {} = () => {},
 ) => {
-    if (!remoteNotes.length && !localNotes.length) {
-        remoteStorageService.saveNotesList([]);
-        localStorageService.saveNotesList([]);
-    } else if (!remoteNotes.length && localNotes.length) {
+    if (!remoteNotes.length && localNotes.length) {
         remoteStorageService.saveNotesList(localNotes);
         successCallback(localNotes);
     } else if (remoteNotes.length && !localNotes.length) {
         localStorageService.saveNotesList(remoteNotes);
         successCallback(remoteNotes);
-    } else {
+    } else if (remoteNotes.length && localNotes.length) {
         const {mergedIndex, updateOperations} = mergeIndex(remoteNotes, localNotes);
         updateOperations.forEach((operation: UpdateOperationType) => {
             const fromStore = operation.isFromLocalStore ? localStorageService : remoteStorageService;
@@ -186,19 +184,20 @@ const syncCategoriesData = (
     localCategories: Array<CategoryType> = [],
     successCallback: () => {} = () => {},
 ) => {
-    if (!remoteCategories.length && !localCategories.length) {
-        remoteStorageService.saveCategoriesList([]);
-        localStorageService.saveCategoriesList([]);
-    } else if (!remoteCategories.length && localCategories.length) {
+    if (!remoteCategories.length && localCategories.length) {
         remoteStorageService.saveCategoriesList(localCategories);
         successCallback(localCategories);
     } else if (remoteCategories.length && !localCategories.length) {
         localStorageService.saveCategoriesList(remoteCategories);
         successCallback(remoteCategories);
-    } else {
+    } else if (remoteCategories.length && localCategories.length) {
         const {mergedIndex} = mergeIndex(remoteCategories, localCategories);
-        remoteStorageService.saveCategoriesList(mergedIndex);
-        localStorageService.saveCategoriesList(mergedIndex);
+        if (!isEqual(mergedIndex, remoteCategories)) {
+            remoteStorageService.saveCategoriesList(mergedIndex);
+        }
+        if (!isEqual(mergedIndex, localCategories)) {
+            localStorageService.saveCategoriesList(mergedIndex);
+        }
         successCallback(mergedIndex);
     }
 };
