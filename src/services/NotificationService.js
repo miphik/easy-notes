@@ -1,5 +1,6 @@
 import {Button, message, notification} from 'antd';
 import React from 'react';
+import {toast} from 'react-toastify';
 import DesktopNotificationService from 'services/DesktopNotificationService';
 import {formatMessageIntl} from 'services/LocaleService';
 
@@ -9,7 +10,7 @@ export const showLittleNotification = (text, type = 'success') => {
 
 export const showNotification = (title, text, additionalParams = {}) => {
     const {
-        onClickButton, renderButton, type = 'info', duration = 7, placement = 'bottomRight',
+        onClickButton, renderButton, type = 'default', duration = 7, placement = 'bottom-right',
     } = additionalParams;
     const key = `open${Date.now()}`;
     const onClick = () => {
@@ -48,7 +49,14 @@ export const showNotification = (title, text, additionalParams = {}) => {
             </Button>
         );
     }
-    notification[type](config);
+    toast(title, {
+        position: placement,
+        type,
+        text,
+        duration,
+
+    });
+    // notification[type](config);
 };
 
 export const openNotificationWithIcon = (type, data, duration = 3) => {

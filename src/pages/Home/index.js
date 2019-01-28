@@ -7,6 +7,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import {FormattedMessage as Fm} from 'react-intl';
 import {NavLink} from 'react-router-dom';
+import SplitPane from 'react-split-pane';
 import {formatMessageIntl} from 'services/LocaleService';
 import {showNotification} from 'services/NotificationService';
 import {WEBDAV_AUTH_PATH} from 'src/constants/routes';
@@ -115,40 +116,63 @@ export default class Home extends React.Component {
         RemoteStorageService.saveNotesList(text, data => console.log(222, data), data => console.log(333, data));*/
         return (
             <div>
-                <div>HOME</div>
-                <Button>
-                    <NavLink to={WEBDAV_AUTH_PATH}>WEBDAV</NavLink>
-                </Button>
-                <div>
-                    AUTH: {remoteStoreIsAuth ? <Icon type="check"/> : <Icon type="cross"/>}
-                </div>
-                <br/>
-                <br/>
-                <Button onClick={this.openCategoryModalForNew}>
-                    {MESSAGES.addNewCategory}
-                </Button>
+                <SplitPane
+                    split="vertical"
+                    minSize={150}
+                    maxSize={500}
+                    step={50}
+                    defaultSize={180}
+                >
+                    <div>
+                        <div>HOME</div>
+                        <Button onClick={this.openCategoryModalForNew}>
+                            {MESSAGES.addNewCategory}
+                        </Button>
+                        pane 1 size: 33%
+                        {categories.map((category: CategoryType) => {
+                            return (
+                                <div key={category.uuid}>
+                                    {category.title}&nbsp;
+                                    <Popconfirm
+                                        title={MESSAGES.deleteCategoryConfirm}
+                                        onConfirm={this.onRemoveCategory(category.uuid)}
+                                    >
+                                        <Icon
+                                            className="ant-btn-danger"
+                                            type="delete"
+                                        />
+                                    </Popconfirm>
+                                </div>
+                            );
+                        })}
+                    </div>
+                    <SplitPane
+                        split="vertical"
+                        minSize={150}
+                        maxSize={500}
+                        step={50}
+                        defaultSize={250}
+                    >
+                        <div>
+                            <Button>
+                                <NavLink to={WEBDAV_AUTH_PATH}>WEBDAV</NavLink>
+                            </Button>
+                            pane 2 size: 50% (of remaining space)
+                        </div>
+                        <div>
+                            <div>
+                                AUTH: {remoteStoreIsAuth ? <Icon type="check"/> : <Icon type="cross"/>}
+                            </div>
+                            pane 3
+                        </div>
+                    </SplitPane>
+                </SplitPane>
                 <CategoryForm
                     isNew={categoryModalIsForNew}
                     onSubmit={this.onSubmitCategoryForm}
                     isVisible={categoryModalIsOpen}
                     onClose={this.closeCategoryModal}
                 />
-                {categories.map((category: CategoryType) => {
-                    return (
-                        <div key={category.uuid}>
-                            {category.title}&nbsp;
-                            <Popconfirm
-                                title={MESSAGES.deleteCategoryConfirm}
-                                onConfirm={this.onRemoveCategory(category.uuid)}
-                            >
-                                <Icon
-                                    className="ant-btn-danger"
-                                    type="delete"
-                                />
-                            </Popconfirm>
-                        </div>
-                    );
-                })}
             </div>
         );
     }

@@ -13,7 +13,7 @@ export type NoteType = {
 
 export type CategoryType = {
     uuid: string,
-    parentUuid: string,
+    parents: Array<CategoryType>,
     title: string,
     description: string,
     updatedAt: string,

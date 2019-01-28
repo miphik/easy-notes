@@ -7,6 +7,8 @@ import React, {PureComponent} from 'react';
 import {hot} from 'react-hot-loader/root';
 import {IntlProvider} from 'react-intl';
 import {BrowserRouter as Router, Route} from 'react-router-dom';
+import {Slide, ToastContainer} from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import SerializationService from 'services/SerializationService';
 import type {StoresType} from 'stores';
 // import {LocaleProvider} from 'antd';
@@ -45,6 +47,14 @@ class App extends PureComponent {
                     </Router>
                 </IntlProvider>
                 <Spinner size="big" show={!serializationInited && !remoteStoreIsInited} fullSize/>
+                <ToastContainer
+                    transition={Slide}
+                    newestOnTop
+                    toastClassName="dark-toast"
+                    progressClassName={{
+                        height: '2px',
+                    }}
+                />
             </React.Fragment>
         );
     }
