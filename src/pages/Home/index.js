@@ -12,6 +12,8 @@ import {formatMessageIntl} from 'services/LocaleService';
 import {showNotification} from 'services/NotificationService';
 import {WEBDAV_AUTH_PATH} from 'src/constants/routes';
 import type {CategoryType} from 'types/NoteType';
+import SortableTree from 'react-sortable-tree';
+import FileExplorerTheme from 'components/SortebleTree';
 import './styles.styl';
 
 const MESSAGES = {
@@ -44,6 +46,8 @@ export default class Home extends React.Component {
     state = {
         categoryModalIsOpen:   false,
         categoryModalIsForNew: false,
+        treeData:              [{title: 'Chicken', children: [{title: 'Egg'}]}],
+        selectedNode:          null,
     };
 
     static propTypes = {
@@ -103,6 +107,8 @@ export default class Home extends React.Component {
         );
     };
 
+    onSelectNode = (node, path) => console.log(1111, node, path);
+
     render() {
         const {remoteStoreIsAuth, categories} = this.props;
         const {categoryModalIsForNew, categoryModalIsOpen} = this.state;
@@ -129,6 +135,22 @@ export default class Home extends React.Component {
                             {MESSAGES.addNewCategory}
                         </Button>
                         pane 1 size: 33%
+                        <div style={{height: 400}}>
+                            <SortableTree
+                                treeData={categories}
+                                onChange={treeData => this.setState({treeData})}
+                                theme={FileExplorerTheme}
+                                getNodeKey={({node}) => node.uuid}
+                                generateNodeProps={({node, path}) => {
+                                    return (
+                                        {
+                                            onSelectNode: this.onSelectNode,
+                                        }
+                                    )
+                                }}
+                            />
+                        </div>
+                        <br/>
                         {categories.map((category: CategoryType) => {
                             return (
                                 <div key={category.uuid}>

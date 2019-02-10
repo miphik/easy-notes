@@ -4,7 +4,7 @@ syntax = "proto3";
 
 message Category {
     required string uuid = 1;
-    repeated Category parents = 2;
+    repeated Category children = 2;
     required string title = 3;
     optional string description = 4;
     required string updated_at = 5;
