@@ -4,6 +4,7 @@ const webpack = require('webpack');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+const LodashModuleReplacementPlugin = require('lodash-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
 
 const base = require('./webpack/webpack.config.base');
@@ -38,6 +39,13 @@ module.exports = function (env, argv) {
             filename:      '[name].[hash].css',
             chunkFilename: '[id].[hash].css',
         }));
+        common.plugins.push(new LodashModuleReplacementPlugin());
+        common.plugins.push(new webpack.ContextReplacementPlugin(
+            // The path to directory which should be handled by this plugin
+            /moment[\/\\]locale$/,
+            // A regular expression matching files that should be included
+            /en|ru/,
+        ));
         common.plugins.push(new webpack.optimize.ModuleConcatenationPlugin());
         common.plugins.push(new webpack.optimize.OccurrenceOrderPlugin());
         common.plugins.push(new OptimizeCssAssetsPlugin());

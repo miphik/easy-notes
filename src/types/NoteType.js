@@ -2,7 +2,7 @@
 
 export type NoteType = {
     uuid: string,
-    categoryUuid: string,
+    categoryUUID: string,
     title: string,
     tags: Array<string>,
     noteType: 'TEXT' | 'HTML' | 'MARKDOWN' | 'CODE',
@@ -13,7 +13,7 @@ export type NoteType = {
 
 export type CategoryType = {
     uuid: string,
-    children: Array<CategoryType>,
+    parentUUID: Array<CategoryType>,
     title: string,
     description: string,
     updatedAt: string,

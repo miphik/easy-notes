@@ -16,6 +16,10 @@
   cursor: default;
 }
 
+.rowItemIsSelected {
+  color: red;
+}
+
 .row {
   height: 100%;
   white-space: nowrap;

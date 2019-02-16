@@ -41,6 +41,7 @@ class FileThemeNodeContentRenderer extends Component {
             swapLength,
             swapDepth,
             onSelectNode,
+            selectedNode,
             treeId, // Not needed, but preserved for other renderers
             isOver, // Not needed, but preserved for other renderers
             parentNode, // Needed for dndManager
@@ -48,6 +49,7 @@ class FileThemeNodeContentRenderer extends Component {
             ...otherProps
         } = this.props;
         const nodeTitle = title || node.title;
+        const isNodeSelected = selectedNode && node.uuid === selectedNode.uuid;
 
         const isDraggedDescendant = draggedNode && isDescendant(draggedNode, node);
         const isLandingPadActive = !didDrop && isDragging;
@@ -119,11 +121,17 @@ class FileThemeNodeContentRenderer extends Component {
                 )}
 
                 <div
-                    onClick={() => onSelectNode(node)}
+                    onClick={(event) => {
+                        event.stopPropagation();
+                        onSelectNode(node);
+                    }}
                     className={
                         styles.rowWrapper
                         + (
                             !canDrag ? ` ${styles.rowWrapperDragDisabled}` : ''
+                        )
+                        + (
+                            isNodeSelected ? ` ${styles.rowItemIsSelected}` : ''
                         )
                     }
                 >

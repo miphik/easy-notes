@@ -21,7 +21,7 @@ module.exports = function (paths) {
                     use:     ExtractTextPlugin.extract({
                         publicPath: '../',
                         fallback:   'style-loader',
-                        use:        ['css-loader', 'stylus-loader', postcss],
+                        use:        ['css-loader', postcss, 'stylus-loader'],
                     }),
                 },
                 {

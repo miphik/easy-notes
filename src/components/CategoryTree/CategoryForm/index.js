@@ -1,13 +1,17 @@
 // @flow
-import {Button, Modal} from 'antd';
+import {Button, Modal, TreeSelect} from 'antd';
 import CustomForm from 'components/Form/CustomForm';
 import FormField from 'components/Form/FormField';
 import simpleForm from 'components/Form/simpleForm';
 import PropTypes from 'prop-types';
 import React from 'react';
 import {FormattedMessage as Fm} from 'react-intl';
+import type {CategoryType} from 'types/NoteType';
 import {emptyFunc} from 'utils/General';
 import InputField from 'utils/simpleForm/InputField';
+import SelectField from 'utils/simpleForm/SelectField';
+import TransferField from 'utils/simpleForm/TransferField';
+import TreeSelectField from 'utils/simpleForm/TreeSelectField';
 import {required} from 'utils/simpleForm/validators';
 import './styles.styl';
 
@@ -18,6 +22,12 @@ const MESSAGES = {
     createCategoryTitle: <Fm id="CategoryForm.render.create_category_title" defaultMessage="Create new category"/>,
     updateCategoryTitle: <Fm id="CategoryForm.render.update_category_title" defaultMessage="Update category"/>,
 };
+
+const FILTER_CATEGORY = (inputValue, treeNode) => {
+    return treeNode.props.title.toLowerCase().indexOf(inputValue.toLowerCase()) >= 0;
+};
+const getCategoryKey = (category: CategoryType) => category.uuid;
+const getCategoryTitle = (category: CategoryType) => category.title;
 
 @simpleForm('CategoryForm')
 class CategoryForm extends React.PureComponent {
@@ -56,15 +66,8 @@ class CategoryForm extends React.PureComponent {
     };
 
     render() {
-        /*
-            required string uuid = 1;
-    required string parent_uuid = 2;
-    required string updated_at = 6;
-    required string created_at = 7;
-    required bool is_deleted = 8;
-        * */
         const {
-            formValues, isVisible, isUpdating, isNew,
+            initialValues, isVisible, isUpdating, isNew, categories,
         } = this.props;
         return (
             <Modal
@@ -88,6 +91,21 @@ class CategoryForm extends React.PureComponent {
                 onCancel={this.onClose}
             >
                 <CustomForm layout="vertical" onSubmit={this.onFormSubmit} className="CategoryForm">
+                    <FormField
+                        name="parent"
+                        label="Parent"
+                        treeData={categories}
+                        disabled={!isNew}
+                        placeholder="Parent"
+                        showCheckedStrategy={TreeSelect.SHOW_ALL}
+                        // extractValue={getCategoryKey}
+                        // extractTitle={getCategoryTitle}
+                        filterTreeNode={FILTER_CATEGORY}
+                        treeDefaultExpandedKeys={initialValues.parent ? [initialValues.parent] : []}
+                        allowClear
+                        showSearch
+                        Component={TreeSelectField}
+                    />
                     <FormField
                         name="title"
                         label="Title"

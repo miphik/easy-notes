@@ -51,7 +51,7 @@ export const mergeIndex = (
         }
     });
 
-    const mergedIndex = Object.values(entities).sort(sortEntities);
+    const mergedIndex = Object.values(entities);//.sort(sortEntities);
     console.info('MERGED STATUS', mergedIndex, updateOperations);
     return {mergedIndex, updateOperations};
 };
