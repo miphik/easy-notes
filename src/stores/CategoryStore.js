@@ -25,6 +25,8 @@ class CategoryStore {
 
     @observable expandedNodes = observable.map();
 
+    @observable selectedCategory = null;
+
     @action
     setCategories = (categories: Array<CategoryType>) => {
         const cats = categories
@@ -41,6 +43,9 @@ class CategoryStore {
 
     @action
     syncCategories = () => syncRemoteAndLocalCategories(this.setCategories);
+
+    @action
+    setSelectedCategory = (category: CategoryType) => this.selectedCategory = category;
 
     @action
     changeExpandedNodes = (extended: boolean, nodeUUID: string) => this.expandedNodes.set(nodeUUID, extended);
@@ -127,6 +132,10 @@ class CategoryStore {
 
     get categoryItems() {
         return this.categories.toJS().filter((category: CategoryType) => !category.isDeleted);
+    }
+
+    get getSelectedCategory() {
+        return this.selectedCategory;
     }
 
     get categoryItemsAsTree() {

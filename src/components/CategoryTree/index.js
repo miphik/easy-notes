@@ -50,6 +50,8 @@ type Props = {
         changeExpandedNodes:  stores.categoryStore.changeExpandedNodes,
         changeCategoryTree:   stores.categoryStore.changeCategoryTree,
         removeCategory:       stores.categoryStore.removeCategory,
+        setSelectedCategory:  stores.categoryStore.setSelectedCategory,
+        selectedCategory:     stores.categoryStore.getSelectedCategory,
     }
 ))
 @observer
@@ -57,7 +59,6 @@ export default class CategoryTree extends React.Component<Props> {
     state = {
         categoryModalIsOpen:   false,
         categoryModalIsForNew: false,
-        selectedNode:          null,
     };
 
     openCategoryModalForNew = () => this.setState({
@@ -91,9 +92,8 @@ export default class CategoryTree extends React.Component<Props> {
     };
 
     onRemoveCategory = () => {
-        const {removeCategory, syncCategories} = this.props;
-        const {selectedNode} = this.state;
-        removeCategory(selectedNode.uuid, emptyFunc, () => {
+        const {removeCategory, syncCategories, selectedCategory} = this.props;
+        removeCategory(selectedCategory.uuid, emptyFunc, () => {
             this.onClearSelectNode();
             syncCategories();
             showNotification(
@@ -107,8 +107,8 @@ export default class CategoryTree extends React.Component<Props> {
         });
     };
 
-    onClearSelectNode = () => this.setState({selectedNode: null});
-    onSelectNode = (node, path) => this.setState({selectedNode: node});
+    onClearSelectNode = () => this.props.setSelectedCategory(null);
+    onSelectNode = (node, path) => this.props.setSelectedCategory(node);
     onVisibilityToggle = ({expanded, node}) => this.props.changeExpandedNodes(expanded, node.uuid);
     onMoveNode = ({treeData, nextParentNode, node}) => {
         const {changeCategoryTree, changeExpandedNodes, syncCategories} = this.props;
@@ -121,15 +121,15 @@ export default class CategoryTree extends React.Component<Props> {
     };
 
     render() {
-        const {categoriesAsTree} = this.props;
-        const {categoryModalIsForNew, categoryModalIsOpen, selectedNode} = this.state;
+        const {categoriesAsTree, selectedCategory} = this.props;
+        const {categoryModalIsForNew, categoryModalIsOpen} = this.state;
         let formInitialValues = {};
-        if (categoryModalIsForNew && selectedNode) {
-            formInitialValues.parent = selectedNode.uuid;
-        } else if (selectedNode) {
-            formInitialValues = {...selectedNode};
-            formInitialValues.parent = selectedNode.parentUUID[0] === ROOT_CATEGORY_NAME
-                ? formatMessageIntl(MESSAGES.rootCategoryWhenEdit) : selectedNode.parentUUID[0];
+        if (categoryModalIsForNew && selectedCategory) {
+            formInitialValues.parent = selectedCategory.uuid;
+        } else if (selectedCategory) {
+            formInitialValues = {...selectedCategory};
+            formInitialValues.parent = selectedCategory.parentUUID[0] === ROOT_CATEGORY_NAME
+                ? formatMessageIntl(MESSAGES.rootCategoryWhenEdit) : selectedCategory.parentUUID[0];
         }
         return (
             <div>
@@ -137,7 +137,7 @@ export default class CategoryTree extends React.Component<Props> {
                 <Button onClick={this.openCategoryModalForNew}>
                     {MESSAGES.addNewCategory}
                 </Button>
-                {selectedNode ? <div>
+                {selectedCategory ? <div>
                     <Button onClick={this.openCategoryModal}>
                         {MESSAGES.updateCategory}
                     </Button>
@@ -170,7 +170,7 @@ export default class CategoryTree extends React.Component<Props> {
                         generateNodeProps={({node, path}) => (
                             {
                                 onSelectNode: this.onSelectNode,
-                                selectedNode,
+                                selectedNode: selectedCategory,
                             }
                         )}
                     />

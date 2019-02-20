@@ -1,6 +1,7 @@
 // @flow
 import {Button, Icon} from 'antd';
 import CategoryTree from 'components/CategoryTree';
+import NoteList from 'components/NoteList';
 import {inject} from 'mobx-react';
 /* eslint-disable import/no-extraneous-dependencies */
 import PropTypes from 'prop-types';
@@ -72,6 +73,7 @@ export default class Home extends React.PureComponent {
                                 <NavLink to={WEBDAV_AUTH_PATH}>WEBDAV</NavLink>
                             </Button>
                             pane 2 size: 50% (of remaining space)
+                            <NoteList/>
                         </div>
                         <div>
                             <div>

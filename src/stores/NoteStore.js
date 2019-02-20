@@ -1,6 +1,7 @@
 // @flow
 import {action, observable} from 'mobx';
 import {loadLocalCategories, loadLocalNotes, syncRemoteAndLocalNotes} from 'services/SyncService';
+import categoryStore from 'stores/CategoryStore';
 
 class NoteStore {
     @observable notes = observable.array();
@@ -18,6 +19,11 @@ class NoteStore {
     loadLocalNotes = () => loadLocalNotes(this.setNotes);
 
     get noteItems() {
+        return this.notes.toJS();
+    }
+
+    get getNoteItemsByCategory() {
+        console.log(11111, categoryStore.getSelectedCategory);
         return this.notes.toJS();
     }
 }
