@@ -138,6 +138,10 @@ class CategoryStore {
         return this.selectedCategory;
     }
 
+    get getSelectedCategoryUUID() {
+        return this.selectedCategory ? this.selectedCategory.uuid : null;
+    }
+
     get categoryItemsAsTree() {
         const categories = this.categories.toJS()
             .filter((category: CategoryType) => !category.isDeleted)

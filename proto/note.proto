@@ -12,9 +12,14 @@ message Category {
     required bool is_deleted = 7;
 }
 
+message NoteHistory {
+    required string created_at = 1;
+    required string device = 2;
+}
+
 message Note {
      required string uuid = 1;
-     required string category_uuid = 2;
+     required string categoryUUID = 2;
      required string title = 3;
      repeated string tags = 4;
      enum NoteType {
@@ -27,6 +32,11 @@ message Note {
      required string updated_at = 6;
      required string created_at = 7;
      required bool is_deleted = 8;
+
+     optional bool is_favorite = 10;
+     optional string link = 11;
+     optional string icon = 12;
+     optional NoteHistory history = 13;
 }
 
 message NoteFull {
