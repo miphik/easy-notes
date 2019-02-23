@@ -126,7 +126,7 @@ export default class RemoteStoreService {
                 return success(notesList);
             })
             .catch((err: Error) => {
-                // Just if file hasn't found
+                 // Just if file hasn't found
                 if (err.response && err.response.status && err.response.status === 404) success([]);
                 else error(err);
             });
@@ -139,6 +139,7 @@ export default class RemoteStoreService {
         if (!RemoteStoreService.isClientInitialized(error)) return;
         webdavClient.getFileContents(WEBDAV_PROJECT_CATEGORIES_MAIN_FILE)
             .then((data: ArrayBuffer) => {
+                console.log(21222121, WEBDAV_PROJECT_CATEGORIES_MAIN_FILE, data);
                 if (data.byteLength < 5) {
                     return success([]);
                 }

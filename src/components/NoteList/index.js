@@ -1,12 +1,12 @@
 // @flow
-import {Button} from 'antd';
+import {Button, Popconfirm} from 'antd';
 import NoteForm from 'components/NoteList/NoteForm';
 import {inject, observer} from 'mobx-react';
 import * as React from 'react';
+import {FormattedMessage as Fm} from 'react-intl';
 import {formatMessageIntl} from 'services/LocaleService';
 import {showNotification} from 'services/NotificationService';
 import type {CategoryType, NoteType} from 'types/NoteType';
-import {FormattedMessage as Fm} from 'react-intl';
 import {emptyFunc} from 'utils/General';
 
 type PropsType = {
@@ -19,12 +19,18 @@ type PropsType = {
 
 const MESSAGES = {
     addNewNote:              <Fm id="NoteList.render.add_new_note" defaultMessage="Add new note"/>,
+    updateNote:              <Fm id="NoteList.render.button_update_note" defaultMessage="Update note"/>,
+    removeNote:              <Fm id="NoteList.render.button_remove_note" defaultMessage="Remove note"/>,
     deleteNoteSuccess:       <Fm id="NoteList.onRemoveNote.delete_note_success"
                                  defaultMessage="Note was successfully removed"/>,
     noteUpdatedSuccessfully: <Fm id="NoteList.onSubmitNoteForm.note_updated_successfully"
                                  defaultMessage="Note successfully updated"/>,
     noteCreatedSuccessfully: <Fm id="NoteList.onSubmitNoteForm.note_created_successfully"
                                  defaultMessage="New note successfully created"/>,
+    deleteNoteConfirm:       <Fm
+                                 id="NoteList.render.delete_note_confirm"
+                                 defaultMessage="Are you sure about deleting this note?"
+                             />,
 };
 
 @inject(stores => (
@@ -80,7 +86,10 @@ export default class NoteList extends React.Component<PropsType> {
 
     onClearSelectNode = () => this.props.setSelectedNote(null);
 
-    onSelectNode = (node: NoteType) => this.props.setSelectedNote(node);
+    onSelectNode = (node: NoteType) => event => {
+        event.stopPropagation();
+        this.props.setSelectedNote(node);
+    };
 
     onRemoveNote = () => {
         const {removeNote, syncNotes, selectedNote} = this.props;
@@ -100,7 +109,7 @@ export default class NoteList extends React.Component<PropsType> {
 
     render() {
         const {noteModalIsForNew, noteModalIsOpen,} = this.state;
-        const {notes, selectedCategory} = this.props;
+        const {notes, selectedCategory, selectedNote} = this.props;
         return (
             <div>
                 {selectedCategory ? (
@@ -108,12 +117,34 @@ export default class NoteList extends React.Component<PropsType> {
                         {MESSAGES.addNewNote}
                     </Button>
                 ) : null}
+                {selectedCategory && selectedNote ? <div>
+                    <Button onClick={this.openNoteModal}>
+                        {MESSAGES.updateNote}
+                    </Button>
+                    <Popconfirm
+                        // placement="rightTop"
+                        title={MESSAGES.deleteNoteConfirm}
+                        onConfirm={this.onRemoveNote}
+                    >
+                        <Button
+                            type="danger"
+                            ghost
+                        >
+                            {MESSAGES.removeNote}
+                        </Button>
+                    </Popconfirm>
+                </div> : null}
                 <div>NoteList {selectedCategory ? notes.length : 'Select any category'}</div>
-                {notes.map((note: NoteType) => (
-                    <div key={note.uuid}>
-                        {note.title}
-                    </div>
-                ))}
+                <div onClick={this.onClearSelectNode}>
+                    <br/>
+                    {notes.map((note: NoteType) => (
+                        <div key={note.uuid} onClick={this.onSelectNode(note)}
+                             style={selectedNote && note.uuid === selectedNote.uuid ? {color: 'red'} : {}}>
+                            {note.title}
+                        </div>
+                    ))}
+                    <br/>
+                </div>
                 <NoteForm
                     isNew={noteModalIsForNew}
                     onSubmit={this.onSubmitNoteForm}

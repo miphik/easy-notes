@@ -7,6 +7,7 @@ import LocalStoreService from 'services/LocalStoreService';
 import type {RemoteStoreType} from 'services/RemoteStoreService';
 import RemoteStoreService from 'services/RemoteStoreService';
 import {loadLocalCategories, syncRemoteAndLocalCategories} from 'services/SyncService';
+import noteStore from 'stores/NoteStore';
 import {ROOT_CATEGORY_NAME} from 'src/constants/general';
 import type {CategoryType} from 'types/NoteType';
 import uuidv4 from 'uuid/v4';
@@ -27,6 +28,8 @@ class CategoryStore {
 
     @observable selectedCategory = null;
 
+    @observable categoriesIsLoading = true;
+
     @action
     setCategories = (categories: Array<CategoryType>) => {
         const cats = categories
@@ -39,13 +42,17 @@ class CategoryStore {
             });
         console.info('LOAD CATEGORIES', cats);
         this.categories = observable.array(cats);
+        this.categoriesIsLoading = false;
     };
 
     @action
     syncCategories = () => syncRemoteAndLocalCategories(this.setCategories);
 
     @action
-    setSelectedCategory = (category: CategoryType) => this.selectedCategory = category;
+    setSelectedCategory = (category: CategoryType) => {
+        if (!this.selectedCategory || this.selectedCategory.uuid !== category.uuid) noteStore.setSelectedNote(null);
+        this.selectedCategory = category;
+    };
 
     @action
     changeExpandedNodes = (extended: boolean, nodeUUID: string) => this.expandedNodes.set(nodeUUID, extended);
@@ -140,6 +147,10 @@ class CategoryStore {
 
     get getSelectedCategoryUUID() {
         return this.selectedCategory ? this.selectedCategory.uuid : null;
+    }
+
+    get getCategoriesIsLoading() {
+        return this.categoriesIsLoading;
     }
 
     get categoryItemsAsTree() {

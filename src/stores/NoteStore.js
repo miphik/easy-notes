@@ -1,10 +1,10 @@
 // @flow
 import {action, observable} from 'mobx';
 import moment from 'moment';
-import LocalStoreService from 'services/LocalStoreService';
 import type {LocalStoreType} from 'services/LocalStoreService';
-import RemoteStoreService from 'services/RemoteStoreService';
+import LocalStoreService from 'services/LocalStoreService';
 import type {RemoteStoreType} from 'services/RemoteStoreService';
+import RemoteStoreService from 'services/RemoteStoreService';
 import {loadLocalNotes, syncRemoteAndLocalNotes} from 'services/SyncService';
 import categoryStore from 'stores/CategoryStore';
 import type {NoteType} from 'types/NoteType';
@@ -17,14 +17,25 @@ export const setRemoteStorageService = (remoteService: RemoteStoreType) => remot
 export const setLocalStorageService = (localService: LocalStoreType) => localStorageService = localService;
 
 class NoteStore {
-    @observable notes = observable.array();
+    @observable notes = observable.map();
 
     @observable selectedNote = null;
+
+    @observable tags = observable.map();
 
     @action
     setNotes = (notes: Array<NoteStore>) => {
         console.info('LOAD NOTES', notes);
-        this.notes = observable.array(notes);
+        const newNotes = {};
+        notes.forEach((note: NoteType) => {
+            if (!newNotes[note.categoryUUID]) newNotes[note.categoryUUID] = [];
+            newNotes[note.categoryUUID].push(note);
+            note.tags.forEach((tag: string) => {
+                if (!this.tags[tag]) this.tags[tag] = [];
+                this.tags[tag].push(note.uuid);
+            });
+        });
+        this.notes = observable.map(newNotes);
     };
 
     @action
@@ -50,24 +61,35 @@ class NoteStore {
         if (isNew) {
             note.createdAt = note.updatedAt;
             note.uuid = uuidv4();
-            this.notes.unshift(note);
+            const notes = this.noteItems;
+            if (!notes[note.categoryUUID]) notes[note.categoryUUID] = [];
+            console.log(11111, notes[note.categoryUUID]);
+            notes[note.categoryUUID].unshift(note);
+            this.setNotes(notes);
+            console.log(2222222, notes[note.categoryUUID]);
         } else {
             this.setNotes(this.noteItems
                 .map((item: NoteType) => (
                     item.uuid === note.uuid ? note : item
                 )));
         }
-
         localStorageService.saveNotesList(this.noteItems, errorCallback, successCallback);
     };
 
     get noteItems() {
-        return this.notes.toJS();
+        const notes = [];
+        this.notes.toJS().forEach(categoryNotes => notes.push(categoryNotes));
+        debugger;
+        return this.notes.toJS().values();
+    }
+
+    get getTags() {
+        return this.tags.toJS();
     }
 
     get getNoteItemsByCategory() {
         const categoryUUID = categoryStore.getSelectedCategoryUUID;
-        return this.notes.toJS().filter((item: NoteType) => item.categoryUUID === categoryUUID);
+        return this.notes.get(categoryUUID) || [];
     }
 
     get getSelectedNote() {

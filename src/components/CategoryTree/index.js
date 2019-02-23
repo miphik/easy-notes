@@ -2,6 +2,7 @@
 import {Button, Popconfirm} from 'antd';
 import CategoryForm from 'components/CategoryTree/CategoryForm';
 import FileExplorerTheme from 'components/CategoryTree/CategorySortebleTreeTheme';
+import Spinner from 'components/Spinner';
 import {inject, observer} from 'mobx-react';
 import moment from 'moment';
 import * as React from 'react';
@@ -36,8 +37,9 @@ const MESSAGES = {
                                  />,
 };
 
-type Props = {
+type PropsType = {
     categories: Array<CategoryType>,
+    categoriesIsLoading: boolean,
     bar?: string,
 };
 
@@ -52,10 +54,11 @@ type Props = {
         removeCategory:       stores.categoryStore.removeCategory,
         setSelectedCategory:  stores.categoryStore.setSelectedCategory,
         selectedCategory:     stores.categoryStore.getSelectedCategory,
+        categoriesIsLoading:  stores.categoryStore.getCategoriesIsLoading,
     }
 ))
 @observer
-export default class CategoryTree extends React.Component<Props> {
+export default class CategoryTree extends React.Component<PropsType> {
     state = {
         categoryModalIsOpen:   false,
         categoryModalIsForNew: false,
@@ -121,7 +124,7 @@ export default class CategoryTree extends React.Component<Props> {
     };
 
     render() {
-        const {categoriesAsTree, selectedCategory} = this.props;
+        const {categoriesAsTree, selectedCategory, categoriesIsLoading} = this.props;
         const {categoryModalIsForNew, categoryModalIsOpen} = this.state;
         let formInitialValues = {};
         if (categoryModalIsForNew && selectedCategory) {
@@ -156,24 +159,27 @@ export default class CategoryTree extends React.Component<Props> {
                 </div> : null}
                 pane 1 size: 33%
                 <div style={{height: 400}} onClick={this.onClearSelectNode}>
-                    <SortableTree
-                        treeData={categoriesAsTree}
-                        onVisibilityToggle={this.onVisibilityToggle}
-                        onMoveNode={this.onMoveNode}
-                        onChange={emptyFunc}
-                        /* onChange={treeData => {
-                            console.log(2112213, treeData);
-                            this.setState({treeData});
-                        }} */
-                        theme={FileExplorerTheme}
-                        getNodeKey={({node}) => node.uuid}
-                        generateNodeProps={({node, path}) => (
-                            {
-                                onSelectNode: this.onSelectNode,
-                                selectedNode: selectedCategory,
-                            }
-                        )}
-                    />
+                    <Spinner show={categoriesIsLoading} size="small"/>
+                    {!categoriesIsLoading ? (
+                        <SortableTree
+                            treeData={categoriesAsTree}
+                            onVisibilityToggle={this.onVisibilityToggle}
+                            onMoveNode={this.onMoveNode}
+                            onChange={emptyFunc}
+                            /* onChange={treeData => {
+                                console.log(2112213, treeData);
+                                this.setState({treeData});
+                            }} */
+                            theme={FileExplorerTheme}
+                            getNodeKey={({node}) => node.uuid}
+                            generateNodeProps={({node, path}) => (
+                                {
+                                    onSelectNode: this.onSelectNode,
+                                    selectedNode: selectedCategory,
+                                }
+                            )}
+                        />
+                    ) : null}
                 </div>
                 <br/>
                 {/*{categories.map((category: CategoryType) => (
