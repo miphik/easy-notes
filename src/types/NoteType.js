@@ -19,6 +19,7 @@ export type CategoryType = {
     updatedAt: string,
     createdAt: string,
     isDeleted: boolean,
+    orderNumber: number,
 };
 
 export type NotesType = {

@@ -113,7 +113,7 @@ export default class CategoryTree extends React.Component<PropsType> {
     onClearSelectNode = () => this.props.setSelectedCategory(null);
     onSelectNode = (node, path) => this.props.setSelectedCategory(node);
     onVisibilityToggle = ({expanded, node}) => this.props.changeExpandedNodes(expanded, node.uuid);
-    onMoveNode = ({treeData, nextParentNode, node}) => {
+    onMoveNode = ({treeData, nextParentNode, node, treeIndex, prevTreeIndex, ...rest}) => {
         const {changeCategoryTree, changeExpandedNodes, syncCategories} = this.props;
         node.updatedAt = moment().format();
         if (nextParentNode) {

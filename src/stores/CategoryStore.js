@@ -7,6 +7,7 @@ import LocalStoreService from 'services/LocalStoreService';
 import type {RemoteStoreType} from 'services/RemoteStoreService';
 import RemoteStoreService from 'services/RemoteStoreService';
 import {loadLocalCategories, syncRemoteAndLocalCategories} from 'services/SyncService';
+import index from 'stores/index';
 import noteStore from 'stores/NoteStore';
 import {ROOT_CATEGORY_NAME} from 'src/constants/general';
 import type {CategoryType} from 'types/NoteType';
@@ -20,6 +21,7 @@ export const setLocalStorageService = (localService: LocalStoreType) => localSto
 
 const getKey = (node: CategoryType) => node.uuid;
 const getParentKey = (node: CategoryType) => node.parentUUID[0];
+const categoryComparator = (a: CategoryType, b: CategoryType) => a.orderNumber - b.orderNumber;
 
 class CategoryStore {
     @observable categories = observable.array();
@@ -40,6 +42,7 @@ class CategoryStore {
                 }
                 return category;
             });
+        cats.sort(categoryComparator);
         console.info('LOAD CATEGORIES', cats);
         this.categories = observable.array(cats);
         this.categoriesIsLoading = false;
@@ -50,7 +53,9 @@ class CategoryStore {
 
     @action
     setSelectedCategory = (category: CategoryType) => {
-        if (!this.selectedCategory || this.selectedCategory.uuid !== category.uuid) noteStore.setSelectedNote(null);
+        if (!this.selectedCategory || !category || this.selectedCategory.uuid !== category.uuid) {
+            noteStore.setSelectedNote(null);
+        }
         this.selectedCategory = category;
     };
 
@@ -67,9 +72,9 @@ class CategoryStore {
             treeData:        treeNodes,
             getNodeKey:      getKey,
             ignoreCollapsed: false,
-        }).map(item => {
+        }).map((item, index) => {
             item.node.parentUUID = item.parentNode ? [item.parentNode.uuid] : [ROOT_CATEGORY_NAME];
-            // debugger;
+            item.node.orderNumber = index;
             return item.node;
         });
 

@@ -10,6 +10,7 @@ message Category {
     required string updated_at = 5;
     required string created_at = 6;
     required bool is_deleted = 7;
+    optional int32 order_number = 8;
 }
 
 message NoteHistory {
