@@ -39,7 +39,14 @@ class NoteStore {
     };
 
     @action
-    setSelectedNote = (note: NoteType) => this.selectedNote = note;
+    setSelectedNoteInner = (note: NoteType) => this.selectedNote = note;
+
+    @action
+    setSelectedNote = (note: NoteType) => {
+        if (note !== null) {
+            localStorageService.getNote(note, this.setSelectedNoteInner, this.setSelectedNoteInner);
+        } else this.setSelectedNoteInner(note);
+    };
 
     @action
     syncNotes = () => syncRemoteAndLocalNotes(this.setNotes);
@@ -63,10 +70,8 @@ class NoteStore {
             note.uuid = uuidv4();
             const notes = this.noteItems;
             if (!notes[note.categoryUUID]) notes[note.categoryUUID] = [];
-            console.log(11111, notes[note.categoryUUID]);
             notes[note.categoryUUID].unshift(note);
             this.setNotes(notes);
-            console.log(2222222, notes[note.categoryUUID]);
         } else {
             this.setNotes(this.noteItems
                 .map((item: NoteType) => (
@@ -79,7 +84,6 @@ class NoteStore {
     get noteItems() {
         const notes = [];
         this.notes.toJS().forEach(categoryNotes => notes.push(categoryNotes));
-        debugger;
         return this.notes.toJS().values();
     }
 

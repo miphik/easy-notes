@@ -15,6 +15,8 @@ export type SerializationServiceType = {
     convertStringToNotesList: (data: string) => Array<NoteType>,
     convertCategoriesListToString: (categories: Array<CategoryType>) => string,
     convertStringToCategoriesList: (data: string) => Array<CategoryType>,
+    convertNoteToString: (note: NoteType) => string,
+    convertStringToNote: (data: string) => NoteType,
 };
 
 class SerializationService {
@@ -38,6 +40,16 @@ class SerializationService {
             console.log(`decoded = ${JSON.stringify(decoded)}`);*/
             accomplish();
         });
+    };
+
+    static convertNoteToString = (note: NoteType): string => {
+        const buffer = NoteMessage.encode(NoteMessage.create(note)).finish();
+        return buffer.toString('latin1');
+    };
+
+    static convertStringToNote = (data: string): NoteType => {
+        if (data === '' || data.length < 5) return {};
+        return NoteMessage.decode(Buffer.from(data, 'latin1'));
     };
 
     static convertNotesListToString = (notes: Array<NoteType>): string => {

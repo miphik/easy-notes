@@ -23,6 +23,8 @@ export type RemoteStoreType = {
     saveCategoriesList: (data: Array<CategoryType>, error: (err: Error) => void, success: () => void) => void,
     getNotesList: (error: (err: Error) => void, success: (notes: Array<NoteType>) => void) => void,
     getCategoriesList: (error: (err: Error) => void, success: (categories: CategoriesType) => void) => void,
+    getNote: (note: NoteType, error: (err: Error) => void, success: (note: NoteType) => void) => NoteType,
+    saveNote: (note: NoteType, error: (err: Error) => void, success: () => void) => void,
 };
 
 export default class RemoteStoreService {

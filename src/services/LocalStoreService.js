@@ -1,9 +1,11 @@
 // @flow
 import * as electron from 'electron';
 import * as fs from 'fs';
+import moment from 'moment';
 import * as path from 'path';
 import type {SerializationServiceType} from 'services/SerializationService';
 import SerializationService from 'services/SerializationService';
+import {NOTE_DATE_FORMAT} from 'src/constants/general';
 import type {
     CategoriesType, CategoryType, NotesType, NoteType,
 } from 'types/NoteType';
@@ -24,6 +26,10 @@ if (!fs.existsSync(LOCAL_PROJECT_FULL_PATH)) {
     fs.mkdirSync(LOCAL_PROJECT_FULL_PATH);
 }
 const LOCAL_PROJECT_MAIN_FILE = `${LOCAL_PROJECT_FULL_PATH}/${INDEX_FILE_NAME}`;
+const LOCAL_PROJECT_NOTE_DIR = (note: NoteType) => `${LOCAL_PROJECT_FULL_PATH}/${moment(note.createdAt)
+    .format(NOTE_DATE_FORMAT)}`;
+const LOCAL_PROJECT_NOTE_FILE = (note: NoteType) => `${LOCAL_PROJECT_FULL_PATH}/${moment(note.createdAt)
+    .format(NOTE_DATE_FORMAT)}/${note.uuid}`;
 const LOCAL_PROJECT_CATEGORIES_MAIN_FILE = `${LOCAL_PROJECT_FULL_PATH}/${INDEX_CATEGORIES_FILE_NAME}`;
 
 console.info('LOCAL_PROJECT_FULL_PATH', LOCAL_PROJECT_FULL_PATH);
@@ -38,6 +44,8 @@ export type LocalStoreType = {
     saveNotesList: (data: Array<NoteType>, error: (err: Error) => void, success: () => void) => void,
     saveCategoriesList: (data: Array<CategoryType>, error: (err: Error) => void, success: () => void) => void,
     getNotesList: (error: (err: Error) => void, success: (notes: NotesType) => void) => Array<NoteType>,
+    getNote: (note: NoteType, error: (err: Error) => void, success: (note: NoteType) => void) => NoteType,
+    saveNote: (note: NoteType, error: (err: Error) => void, success: () => void) => void,
     getCategoriesList: (
         error: (err: Error) => void,
         success: (categories: CategoriesType) => void
@@ -49,6 +57,35 @@ export default class LocalStoreService {
     };
 
     static createMainDirectory = (error: () => {} = () => {}, success: () => {} = () => {}) => {
+    };
+
+    static getNote = (note: NoteType, error: () => {} = () => {}, success: (note: NotesType) => {} = () => {}) => {
+        const notePath = LOCAL_PROJECT_NOTE_FILE(note);
+        fs.readFile(notePath, 'utf8', (err: Error, contents: string) => {
+            if (err) {
+                const noteAsString = serializationService.convertNoteToString(note);
+                const noteDir = LOCAL_PROJECT_NOTE_DIR(note);
+                if (!fs.existsSync(noteDir)) {
+                    fs.mkdirSync(noteDir);
+                }
+                fs.writeFile(notePath, noteAsString, (errW: Error) => {
+                    if (errW) error(errW);
+                    else success(note);
+                });
+            } else {
+                const noteFull = serializationService.convertStringToNote(contents);
+                console.info('READ NOTE FROM LOCAL STORAGE', noteFull);
+                success(noteFull);
+            }
+        });
+    };
+
+    static saveNote = (note: NoteType, error: () => {} = () => {}, success: () => {} = () => {}) => {
+        const noteAsString = serializationService.convertNoteToString(note);
+        fs.writeFile(LOCAL_PROJECT_NOTE_FILE(note), noteAsString, (errW: Error) => {
+            if (errW) error(errW);
+            else success();
+        });
     };
 
     static getNotesList = (error: () => {} = () => {}, success: (notes: NotesType) => {} = () => {}) => {
