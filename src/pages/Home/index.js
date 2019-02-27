@@ -1,6 +1,7 @@
 // @flow
 import {Button, Icon} from 'antd';
 import CategoryTree from 'components/CategoryTree';
+import NoteEditor from 'components/NoteEditor';
 import NoteList from 'components/NoteList';
 import {inject} from 'mobx-react';
 /* eslint-disable import/no-extraneous-dependencies */
@@ -80,6 +81,7 @@ export default class Home extends React.PureComponent {
                                 AUTH: {remoteStoreIsAuth ? <Icon type="check"/> : <Icon type="cross"/>}
                             </div>
                             pane 3
+                            <NoteEditor />
                         </div>
                     </SplitPane>
                 </SplitPane>

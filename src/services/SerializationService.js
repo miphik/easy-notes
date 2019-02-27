@@ -43,13 +43,16 @@ class SerializationService {
     };
 
     static convertNoteToString = (note: NoteType): string => {
+        note['.easy_note.NoteFull.text'] = note.text;
         const buffer = NoteMessage.encode(NoteMessage.create(note)).finish();
         return buffer.toString('latin1');
     };
 
     static convertStringToNote = (data: string): NoteType => {
         if (data === '' || data.length < 5) return {};
-        return NoteMessage.decode(Buffer.from(data, 'latin1'));
+        const note = NoteMessage.decode(Buffer.from(data, 'latin1'));
+        note.text = note['.easy_note.NoteFull.text'];
+        return note;
     };
 
     static convertNotesListToString = (notes: Array<NoteType>): string => {

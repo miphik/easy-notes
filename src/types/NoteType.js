@@ -6,6 +6,8 @@ export type NoteType = {
     title: string,
     tags: Array<string>,
     noteType: 'TEXT' | 'HTML' | 'MARKDOWN' | 'CODE',
+    text: string,
+    textIsLoaded: boolean,
     updatedAt: string,
     createdAt: string,
     isDeleted: boolean,

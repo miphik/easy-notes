@@ -44,8 +44,17 @@ class NoteStore {
     @action
     setSelectedNote = (note: NoteType) => {
         if (note !== null) {
+            note.textIsLoaded = true;
             localStorageService.getNote(note, this.setSelectedNoteInner, this.setSelectedNoteInner);
         } else this.setSelectedNoteInner(note);
+    };
+
+    @action
+    setSelectedNoteText = (text: string) => {
+        const note = {...this.selectedNote};
+        note.text = text;
+        this.setSelectedNoteInner(note);
+        localStorageService.saveNote(note);
     };
 
     @action
@@ -89,6 +98,10 @@ class NoteStore {
 
     get getTags() {
         return this.tags.toJS();
+    }
+
+    get getNoteText() {
+        return this.selectedNote ? this.selectedNote.text : null;
     }
 
     get getNoteItemsByCategory() {
