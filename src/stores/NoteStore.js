@@ -59,6 +59,38 @@ class NoteStore {
     };
 
     @action
+    setNoteCategory = (noteUUID: string, categoryUUID: string) => {
+        let note = null;
+        let changedNoteExists = false;
+        if (this.selectedNote && this.selectedNote.uuid === noteUUID) {
+            note = {...this.selectedNote};
+        }
+        const notes = this.noteItems.map((noteItem: NoteType) => {
+            if (noteUUID === noteItem.uuid) {
+                changedNoteExists = true;
+                noteItem.categoryUUID = categoryUUID;
+                noteItem.updatedAt = moment().format();
+                if (note) note = {...noteItem};
+                this.setSelectedNoteInner(note);
+            }
+            return noteItem;
+        });
+        if (changedNoteExists) {
+            this.setNotes(notes);
+            if (note) {
+                localStorageService.saveNote(note, (err: Error) => console.error('localStorageService.saveNote', err));
+                remoteStorageService.saveNote(
+                    note,
+                    (err: Error) => console.error('remoteStorageService.saveNote', err));
+            }
+            localStorageService.saveNotesList(notes, (err: Error) => console
+                .error('localStorageService.saveNotesList', err));
+            remoteStorageService.saveNotesList(notes, (err: Error) => console
+                .error('remoteStorageService.saveNotesList', err));
+        }
+    };
+
+    @action
     setSelectedNoteText = (text: string) => {
         const note = {...this.selectedNote};
         note.text = text;

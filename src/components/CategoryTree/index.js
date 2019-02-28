@@ -58,6 +58,7 @@ type PropsType = {
         setSelectedCategory:  stores.categoryStore.setSelectedCategory,
         selectedCategory:     stores.categoryStore.getSelectedCategory,
         categoriesIsLoading:  stores.categoryStore.getCategoriesIsLoading,
+        setNoteCategory:      stores.noteStore.setNoteCategory,
     }
 ))
 @observer
@@ -192,6 +193,7 @@ export default class CategoryTree extends React.Component<PropsType> {
                                 {
                                     onSelectNode: this.onSelectNode,
                                     selectedNode: selectedCategory,
+                                    changeNoteCategory: this.props.setNoteCategory,
                                 }
                             )}
                         />

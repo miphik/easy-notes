@@ -43,6 +43,7 @@ class FileThemeNodeContentRenderer extends Component {
             swapDepth,
             onSelectNode,
             selectedNode,
+            changeNoteCategory,
             treeId, // Not needed, but preserved for other renderers
             isOver, // Not needed, but preserved for other renderers
             parentNode, // Needed for dndManager
@@ -185,6 +186,8 @@ class FileThemeNodeContentRenderer extends Component {
                                         ))}
                                     </div>
                                     <CategoryItem
+                                        category={node}
+                                        changeNoteCategory={changeNoteCategory}
                                         title={typeof nodeTitle === 'function'
                                             ? nodeTitle({
                                                 node,
