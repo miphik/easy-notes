@@ -1,5 +1,4 @@
 // @flow
-import LZString from 'lz-string';
 import {load, Root} from 'protobufjs';
 import type {CategoryType, NoteType} from 'types/NoteType';
 
@@ -56,7 +55,14 @@ class SerializationService {
     };
 
     static convertNotesListToString = (notes: Array<NoteType>): string => {
-        const notesList = NotesListMessage.create({notes: notes.map((note: NoteType) => NoteMessage.create(note))});
+        const notesList = NotesListMessage.create({
+            notes: notes.map((note: NoteType) => {
+                const newNote = {...note};
+                newNote.text = '';
+                newNote['.easy_note.NoteFull.text'] = '';
+                return NoteMessage.create(newNote);
+            }),
+        });
         const buffer = NotesListMessage.encode(notesList).finish();
         return buffer.toString('latin1');
     };

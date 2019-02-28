@@ -1,7 +1,9 @@
 // @flow
+import moment from 'moment';
 import LocalStorageService from 'services/LocalStorageService';
 import type {SerializationServiceType} from 'services/SerializationService';
 import SerializationService from 'services/SerializationService';
+import {NOTE_DATE_FORMAT} from 'src/constants/general';
 import type {CategoryType, NoteType} from 'src/types/NoteType';
 import type {CategoriesType, NotesType} from 'types/NoteType';
 import {createClient} from 'webdav';
@@ -10,21 +12,15 @@ const WEBDAV_CREDENTIALS = 'WEBDAV_CREDENTIALS';
 const WEBDAV_PROJECT_PATH = '/easy-notes';
 const WEBDAV_PROJECT_MAIN_FILE = `${WEBDAV_PROJECT_PATH}/notes.index`;
 const WEBDAV_PROJECT_CATEGORIES_MAIN_FILE = `${WEBDAV_PROJECT_PATH}/categories.index`;
+const NOTE_DATE_PATH_PART = (note: NoteType) => moment(note.createdAt).format(NOTE_DATE_FORMAT);
+const WEBDAV_PROJECT_NOTE_DIR = (note: NoteType) => `${WEBDAV_PROJECT_PATH}/${NOTE_DATE_PATH_PART(note)}`;
+const WEBDAV_PROJECT_NOTE_FILE = (note: NoteType) => `${WEBDAV_PROJECT_PATH}/${NOTE_DATE_PATH_PART(note)}/${note.uuid}`;
 
 let webdavClient;
 let serializationService = SerializationService;
 
 export const setSerializationService = (serializeService: SerializationServiceType) => {
     serializationService = serializeService;
-};
-
-export type RemoteStoreType = {
-    saveNotesList: (data: Array<NoteType>, error: (err: Error) => void, success: (notes: NotesType) => void) => void,
-    saveCategoriesList: (data: Array<CategoryType>, error: (err: Error) => void, success: () => void) => void,
-    getNotesList: (error: (err: Error) => void, success: (notes: Array<NoteType>) => void) => void,
-    getCategoriesList: (error: (err: Error) => void, success: (categories: CategoriesType) => void) => void,
-    getNote: (note: NoteType, error: (err: Error) => void, success: (note: NoteType) => void) => NoteType,
-    saveNote: (note: NoteType, error: (err: Error) => void, success: () => void) => void,
 };
 
 export default class RemoteStoreService {
@@ -104,6 +100,81 @@ export default class RemoteStoreService {
         }, success);
     };
 
+    static getNote = (note: NoteType, error: () => {} = () => {}, success: (note: NotesType) => {} = () => {}) => {
+        if (!RemoteStoreService.isClientInitialized(error)) return;
+
+        const notePath = WEBDAV_PROJECT_NOTE_FILE(note);
+        webdavClient.getFileContents(notePath)
+            .then((data: ArrayBuffer) => {
+                if (data.byteLength < 5) {
+                    return success([]);
+                }
+                let fullNote = note;
+                try {
+                    fullNote = serializationService.convertStringToNote(Buffer.from(data).toString());
+                } catch (ignore) {
+                    console.log('ERROR READ FROM REMOTE NOTE', ignore);
+                    // @TODO Usually it means that we have different formats saved into a cloud and in the code
+                    return success(note);
+                }
+                console.info('READ NOTE FROM REMOTE STORAGE', data, fullNote);
+                return success(fullNote);
+            })
+            .catch((err: Error) => {
+                // Just if file hasn't found
+                if (err.response && err.response.status && err.response.status === 404) success(note);
+                else error(err);
+            });
+    };
+
+    static saveNoteContent = (note: NoteType, error: () => {} = () => {}, success: () => {} = () => {}) => {
+        const noteAsString = serializationService.convertNoteToString(note);
+        webdavClient.putFileContents(WEBDAV_PROJECT_NOTE_FILE(note), noteAsString, {overwrite: true})
+            .then(success)
+            .catch(error);
+    };
+
+    static createNotesDir = (notes: Array<NoteType>, error: () => {} = () => {}, success: () => {} = () => {}) => {
+        const dirsForCreating = {};
+        notes.forEach((note: NoteType) => dirsForCreating[NOTE_DATE_PATH_PART(note)] = note);
+        webdavClient.getDirectoryContents(WEBDAV_PROJECT_PATH)
+            .then(items => {
+                const existingDirs = {};
+                items.forEach(item => {
+                    if (item.type === 'directory') existingDirs[item.basename] = true;
+                });
+                const promises = [];
+                Object.keys(dirsForCreating)
+                    .filter((dirDatePart: string) => !existingDirs[dirDatePart])
+                    .forEach((dirDatePart: string) => promises
+                        .push(webdavClient.createDirectory(WEBDAV_PROJECT_NOTE_DIR(dirsForCreating[dirDatePart]))));
+                Promise.all(promises).then(success);
+            })
+            .catch(error);
+    };
+
+    static createNoteDir = (note: NoteType, error: () => {} = () => {}, success: () => {} = () => {}) => {
+        const noteDir = WEBDAV_PROJECT_NOTE_DIR(note);
+        RemoteStoreService.getDirectoryContent(noteDir, () => webdavClient.createDirectory(noteDir)
+            .then(success)
+            .catch(error), success);
+    };
+
+    static saveNote = (
+        note: NoteType,
+        error: () => {} = () => {},
+        success: () => {} = () => {},
+        createNoteDir: boolean = true,
+    ) => {
+        if (!RemoteStoreService.isClientInitialized(error)) return;
+        if (createNoteDir) {
+            RemoteStoreService.createNoteDir(note, error, () => RemoteStoreService
+                .saveNoteContent(note, error, success));
+        } else {
+            RemoteStoreService.saveNoteContent(note, error, success);
+        }
+    };
+
     static getNotesList = (
         error: () => {} = () => {},
         success: (notes: NotesType) => {} = () => {},
@@ -128,7 +199,7 @@ export default class RemoteStoreService {
                 return success(notesList);
             })
             .catch((err: Error) => {
-                 // Just if file hasn't found
+                // Just if file hasn't found
                 if (err.response && err.response.status && err.response.status === 404) success([]);
                 else error(err);
             });
@@ -182,14 +253,6 @@ export default class RemoteStoreService {
         webdavClient.putFileContents(WEBDAV_PROJECT_CATEGORIES_MAIN_FILE, categoriesAsString, {overwrite: true})
             .then(success)
             .catch(error);
-    };
-
-    static readNote = (noteUUID: string, error = () => {}, success = () => {}) => {
-        if (!RemoteStoreService.isClientInitialized(error)) return;
-    };
-
-    static writeNote = (note: NoteType, error = () => {}, success = () => {}) => {
-        if (!RemoteStoreService.isClientInitialized(error)) return;
     };
 
     static deleteNote = (data, error = () => {}, success = () => {}) => {

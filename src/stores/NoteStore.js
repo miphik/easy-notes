@@ -1,20 +1,21 @@
 // @flow
 import {action, observable} from 'mobx';
 import moment from 'moment';
-import type {LocalStoreType} from 'services/LocalStoreService';
 import LocalStoreService from 'services/LocalStoreService';
-import type {RemoteStoreType} from 'services/RemoteStoreService';
 import RemoteStoreService from 'services/RemoteStoreService';
 import {loadLocalNotes, syncRemoteAndLocalNotes} from 'services/SyncService';
 import categoryStore from 'stores/CategoryStore';
 import type {NoteType} from 'types/NoteType';
+import type {StoreType} from 'types/StoreType';
 import uuidv4 from 'uuid/v4';
 
-let remoteStorageService: RemoteStoreType = RemoteStoreService;
-let localStorageService: LocalStoreType = LocalStoreService;
+let remoteStorageService: StoreType = RemoteStoreService;
+let localStorageService: StoreType = LocalStoreService;
 
-export const setRemoteStorageService = (remoteService: RemoteStoreType) => remoteStorageService = remoteService;
-export const setLocalStorageService = (localService: LocalStoreType) => localStorageService = localService;
+export const WITHOUT_CATEGORY = 'WITHOUT_CATEGORY';
+
+export const setRemoteStorageService = (remoteService: StoreType) => remoteStorageService = remoteService;
+export const setLocalStorageService = (localService: StoreType) => localStorageService = localService;
 
 class NoteStore {
     @observable notes = observable.map();
@@ -26,10 +27,18 @@ class NoteStore {
     @action
     setNotes = (notes: Array<NoteStore>) => {
         console.info('LOAD NOTES', notes);
-        const newNotes = {};
+        const newNotes = {
+            [WITHOUT_CATEGORY]: [],
+        };
+        const catUUIDs = categoryStore.categoryAllItemUUIDS;
         notes.forEach((note: NoteType) => {
-            if (!newNotes[note.categoryUUID]) newNotes[note.categoryUUID] = [];
-            newNotes[note.categoryUUID].push(note);
+            if (!catUUIDs[note.categoryUUID]) {
+                newNotes[WITHOUT_CATEGORY].push(note);
+            } else {
+                if (!newNotes[note.categoryUUID]) newNotes[note.categoryUUID] = [];
+                newNotes[note.categoryUUID].push(note);
+            }
+
             note.tags.forEach((tag: string) => {
                 if (!this.tags[tag]) this.tags[tag] = [];
                 this.tags[tag].push(note.uuid);
@@ -53,8 +62,18 @@ class NoteStore {
     setSelectedNoteText = (text: string) => {
         const note = {...this.selectedNote};
         note.text = text;
+        note.updatedAt = moment().format();
+        const notes = this.noteItems.map((noteItem: NoteType) => (
+            note.uuid === noteItem.uuid ? note : noteItem
+        ));
+        this.setNotes(notes);
         this.setSelectedNoteInner(note);
-        localStorageService.saveNote(note);
+        localStorageService.saveNote(note, (err: Error) => console.error('localStorageService.saveNote', err));
+        remoteStorageService.saveNote(note, (err: Error) => console.error('remoteStorageService.saveNote', err));
+        localStorageService.saveNotesList(notes, (err: Error) => console
+            .error('localStorageService.saveNotesList', err));
+        remoteStorageService.saveNotesList(notes, (err: Error) => console
+            .error('remoteStorageService.saveNotesList', err));
     };
 
     @action
@@ -77,9 +96,9 @@ class NoteStore {
         if (isNew) {
             note.createdAt = note.updatedAt;
             note.uuid = uuidv4();
+            note.tags = [];
             const notes = this.noteItems;
-            if (!notes[note.categoryUUID]) notes[note.categoryUUID] = [];
-            notes[note.categoryUUID].unshift(note);
+            notes.unshift(note);
             this.setNotes(notes);
         } else {
             this.setNotes(this.noteItems
@@ -87,13 +106,14 @@ class NoteStore {
                     item.uuid === note.uuid ? note : item
                 )));
         }
+        localStorageService.saveNote(note);
         localStorageService.saveNotesList(this.noteItems, errorCallback, successCallback);
     };
 
     get noteItems() {
         const notes = [];
-        this.notes.toJS().forEach(categoryNotes => notes.push(categoryNotes));
-        return this.notes.toJS().values();
+        this.notes.toJS().forEach((catNotes: Array<NoteType>) => notes.push(...catNotes));
+        return notes;
     }
 
     get getTags() {

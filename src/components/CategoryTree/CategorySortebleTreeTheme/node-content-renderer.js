@@ -1,3 +1,4 @@
+import CategoryItem from 'components/CategoryTree/CategoryItem';
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import styles from './node-content-renderer.scss';
@@ -183,17 +184,17 @@ class FileThemeNodeContentRenderer extends Component {
                                             </div>
                                         ))}
                                     </div>
-                                    <div className={styles.rowLabel}>
-                                        <span className={styles.rowTitle}>
-                                            {typeof nodeTitle === 'function'
-                          ? nodeTitle({
-                              node,
-                              path,
-                              treeIndex,
-                          })
-                          : nodeTitle}
-                                        </span>
-                                    </div>
+                                    <CategoryItem
+                                        title={typeof nodeTitle === 'function'
+                                            ? nodeTitle({
+                                                node,
+                                                path,
+                                                treeIndex,
+                                            })
+                                            : nodeTitle}
+                                        rowLabelClassName={styles.rowLabel}
+                                        rowTitleClassName={styles.rowTitle}
+                                    />
 
                                     <div className={styles.rowToolbar}>
                                         {buttons.map((btn, index) => (

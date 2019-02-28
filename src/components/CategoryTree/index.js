@@ -11,10 +11,12 @@ import SortableTree from 'react-sortable-tree';
 import {formatMessageIntl} from 'services/LocaleService';
 import {showNotification} from 'services/NotificationService';
 import {ROOT_CATEGORY_NAME} from 'src/constants/general';
+import {WITHOUT_CATEGORY} from 'stores/NoteStore';
 import type {CategoryType} from 'types/NoteType';
 import {emptyFunc} from 'utils/General';
 
 const MESSAGES = {
+    withoutCategory:             <Fm id="CategoryTree.render.without_category" defaultMessage="Uncategorized"/>,
     rootCategoryWhenEdit:        <Fm id="CategoryTree.render.root_category_when_edit" defaultMessage="ROOT"/>,
     addNewCategory:              <Fm id="CategoryTree.render.button_add_new_category" defaultMessage="Add category"/>,
     updateCategory:              <Fm id="CategoryTree.render.button_update_category" defaultMessage="Update category"/>,
@@ -36,6 +38,7 @@ const MESSAGES = {
                                      defaultMessage="Category was successfully removed"
                                  />,
 };
+const EMPTY_CATEGORY = {uuid: WITHOUT_CATEGORY, parentUUID: [ROOT_CATEGORY_NAME]};
 
 type PropsType = {
     categories: Array<CategoryType>,
@@ -111,7 +114,10 @@ export default class CategoryTree extends React.Component<PropsType> {
     };
 
     onClearSelectNode = () => this.props.setSelectedCategory(null);
-    onSelectNode = (node, path) => this.props.setSelectedCategory(node);
+    onSelectNode = (node, path) => {
+        if (!node.parentUUID) this.props.setSelectedCategory(EMPTY_CATEGORY);
+        else this.props.setSelectedCategory(node);
+    };
     onVisibilityToggle = ({expanded, node}) => this.props.changeExpandedNodes(expanded, node.uuid);
     onMoveNode = ({treeData, nextParentNode, node, treeIndex, prevTreeIndex, ...rest}) => {
         const {changeCategoryTree, changeExpandedNodes, syncCategories} = this.props;
@@ -158,10 +164,20 @@ export default class CategoryTree extends React.Component<PropsType> {
                     </Popconfirm>
                 </div> : null}
                 pane 1 size: 33%
+                <div
+                    style={
+                        selectedCategory && selectedCategory.uuid === WITHOUT_CATEGORY
+                            ? {color: 'red'} : {}
+                    }
+                    onClick={this.onSelectNode}
+                >
+                    {MESSAGES.withoutCategory}
+                </div>
                 <div style={{height: 400}} onClick={this.onClearSelectNode}>
                     <Spinner show={categoriesIsLoading} size="small"/>
                     {!categoriesIsLoading ? (
                         <SortableTree
+                            // dndType="category_drop"
                             treeData={categoriesAsTree}
                             onVisibilityToggle={this.onVisibilityToggle}
                             onMoveNode={this.onMoveNode}

@@ -1,6 +1,7 @@
 // @flow
 import {Button, Popconfirm} from 'antd';
 import NoteForm from 'components/NoteList/NoteForm';
+import NoteItem from 'components/NoteList/NoteItem';
 import {inject, observer} from 'mobx-react';
 import * as React from 'react';
 import {FormattedMessage as Fm} from 'react-intl';
@@ -21,12 +22,18 @@ const MESSAGES = {
     addNewNote:              <Fm id="NoteList.render.add_new_note" defaultMessage="Add new note"/>,
     updateNote:              <Fm id="NoteList.render.button_update_note" defaultMessage="Update note"/>,
     removeNote:              <Fm id="NoteList.render.button_remove_note" defaultMessage="Remove note"/>,
-    deleteNoteSuccess:       <Fm id="NoteList.onRemoveNote.delete_note_success"
-                                 defaultMessage="Note was successfully removed"/>,
-    noteUpdatedSuccessfully: <Fm id="NoteList.onSubmitNoteForm.note_updated_successfully"
-                                 defaultMessage="Note successfully updated"/>,
-    noteCreatedSuccessfully: <Fm id="NoteList.onSubmitNoteForm.note_created_successfully"
-                                 defaultMessage="New note successfully created"/>,
+    deleteNoteSuccess:       <Fm
+                                 id="NoteList.onRemoveNote.delete_note_success"
+                                 defaultMessage="Note was successfully removed"
+                             />,
+    noteUpdatedSuccessfully: <Fm
+                                 id="NoteList.onSubmitNoteForm.note_updated_successfully"
+                                 defaultMessage="Note successfully updated"
+                             />,
+    noteCreatedSuccessfully: <Fm
+                                 id="NoteList.onSubmitNoteForm.note_created_successfully"
+                                 defaultMessage="New note successfully created"
+                             />,
     deleteNoteConfirm:       <Fm
                                  id="NoteList.render.delete_note_confirm"
                                  defaultMessage="Are you sure about deleting this note?"
@@ -138,10 +145,12 @@ export default class NoteList extends React.Component<PropsType> {
                 <div onClick={this.onClearSelectNode}>
                     <br/>
                     {notes.map((note: NoteType) => (
-                        <div key={note.uuid} onClick={this.onSelectNode(note)}
-                             style={selectedNote && note.uuid === selectedNote.uuid ? {color: 'red'} : {}}>
-                            {note.title}
-                        </div>
+                        <NoteItem
+                            key={note.uuid}
+                            note={note}
+                            noteIsSelected={selectedNote && note.uuid === selectedNote.uuid}
+                            onSelectNode={this.onSelectNode}
+                        />
                     ))}
                     <br/>
                 </div>

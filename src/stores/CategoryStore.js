@@ -2,22 +2,20 @@
 import {action, observable} from 'mobx';
 import moment from 'moment';
 import {getFlatDataFromTree, getTreeFromFlatData} from 'react-sortable-tree';
-import type {LocalStoreType} from 'services/LocalStoreService';
 import LocalStoreService from 'services/LocalStoreService';
-import type {RemoteStoreType} from 'services/RemoteStoreService';
 import RemoteStoreService from 'services/RemoteStoreService';
 import {loadLocalCategories, syncRemoteAndLocalCategories} from 'services/SyncService';
-import index from 'stores/index';
-import noteStore from 'stores/NoteStore';
 import {ROOT_CATEGORY_NAME} from 'src/constants/general';
+import noteStore from 'stores/NoteStore';
 import type {CategoryType} from 'types/NoteType';
+import type {StoreType} from 'types/StoreType';
 import uuidv4 from 'uuid/v4';
 
-let remoteStorageService: RemoteStoreType = RemoteStoreService;
-let localStorageService: LocalStoreType = LocalStoreService;
+let remoteStorageService: StoreType = RemoteStoreService;
+let localStorageService: StoreType = LocalStoreService;
 
-export const setRemoteStorageService = (remoteService: RemoteStoreType) => remoteStorageService = remoteService;
-export const setLocalStorageService = (localService: LocalStoreType) => localStorageService = localService;
+export const setRemoteStorageService = (remoteService: StoreType) => remoteStorageService = remoteService;
+export const setLocalStorageService = (localService: StoreType) => localStorageService = localService;
 
 const getKey = (node: CategoryType) => node.uuid;
 const getParentKey = (node: CategoryType) => node.parentUUID[0];
@@ -49,7 +47,12 @@ class CategoryStore {
     };
 
     @action
-    syncCategories = () => syncRemoteAndLocalCategories(this.setCategories);
+    syncCategories = (successCallback: () => void = () => {}) => syncRemoteAndLocalCategories(
+        (categories: Array<CategoryType>) => {
+            this.setCategories(categories);
+            successCallback();
+        },
+    );
 
     @action
     setSelectedCategory = (category: CategoryType) => {
@@ -83,7 +86,12 @@ class CategoryStore {
     };
 
     @action
-    loadLocalCategories = () => loadLocalCategories(this.setCategories);
+    loadLocalCategories = (successCallback: () => void = () => {}) => loadLocalCategories(
+        (categories: Array<CategoryType>) => {
+            this.setCategories(categories);
+            successCallback();
+        },
+    );
 
     @action
     removeCategory = (
@@ -140,6 +148,14 @@ class CategoryStore {
 
     get categoryAllItems() {
         return this.categories.toJS();
+    }
+
+    get categoryAllItemUUIDS() {
+        const catUUIDs = {};
+        this.categories.toJS()
+            .filter((cat: CategoryType) => !cat.isDeleted)
+            .forEach((cat: CategoryType) => catUUIDs[cat.uuid] = true);
+        return catUUIDs;
     }
 
     get categoryItems() {

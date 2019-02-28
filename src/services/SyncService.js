@@ -4,14 +4,14 @@ import isEqual from 'lodash/isEqual';
 import React from 'react';
 import {FormattedMessage as Fm} from 'react-intl';
 import {formatMessageIntl} from 'services/LocaleService';
-import type {LocalStoreType} from 'services/LocalStoreService';
 import LocalStoreService from 'services/LocalStoreService';
 import {mergeIndex} from 'services/MergeService';
 import {showNotification} from 'services/NotificationService';
-import type {RemoteStoreType} from 'services/RemoteStoreService';
 import RemoteStoreService from 'services/RemoteStoreService';
 import type {CategoryType, NoteType} from 'src/types/NoteType';
-import type {CategoriesType, NotesType} from 'types/NoteType';
+import type {CategoriesType, NotesType, NotificationServiceType} from 'types/NoteType';
+import type {StoreType} from 'types/StoreType';
+import {emptyFunc} from 'utils/General';
 
 export const ADD_NEW_NOTE_OPERATION = 'ADD';
 export const UPDATE_NEW_NOTE_OPERATION = 'UPDATE';
@@ -72,16 +72,16 @@ const MESSAGES = {
 };
 const {info} = Modal;
 
-let remoteStorageService: RemoteStoreType = RemoteStoreService;
-let localStorageService: LocalStoreType = LocalStoreService;
+let remoteStorageService: StoreType = RemoteStoreService;
+let localStorageService: StoreType = LocalStoreService;
 let notificationService: NotificationServiceType = {showNotification};
 
-export const setRemoteStorageService = (remoteService: RemoteStoreType) => remoteStorageService = remoteService;
-export const setLocalStorageService = (localService: LocalStoreType) => localStorageService = localService;
+export const setRemoteStorageService = (remoteService: StoreType) => remoteStorageService = remoteService;
+export const setLocalStorageService = (localService: StoreType) => localStorageService = localService;
 export const setNotificationService = (notifyService: NotificationServiceType) => notificationService = notifyService;
 
 export type UpdateOperationType = {
-    uuid: string,
+    note: NoteType,
     isFromLocalStore: boolean,
     action: ADD_NEW_NOTE_OPERATION | UPDATE_NEW_NOTE_OPERATION | DELETE_NEW_NOTE_OPERATION
 };
@@ -104,6 +104,36 @@ const showMergeConflictDialog = () => {
     });
 };
 
+const saveNoteToStore = (fromStore: StoreType, toStore: StoreType, note: NoteType, isFromLocalStore: boolean) => {
+    fromStore.getNote(note, (err: Error) => {
+        notificationService.showNotification(
+            formatMessageIntl(isFromLocalStore
+                ? MESSAGES.localNoteNotFound(note.uuid)
+                : MESSAGES.remoteNoteNotFound(note.uuid)),
+            err.toString(),
+            {
+                type:     'error',
+                duration: 10,
+            },
+        );
+    }, (noteFull: NoteType) => {
+        toStore.saveNote(noteFull, (err: Error) => {
+            notificationService.showNotification(
+                formatMessageIntl(
+                    isFromLocalStore
+                        ? MESSAGES.remoteWriteNoteError
+                        : MESSAGES.localWriteNoteError,
+                    err.toString(),
+                    {
+                        type:     'error',
+                        duration: 10,
+                    },
+                ),
+            );
+        }, emptyFunc, false);
+    });
+};
+
 const syncData = (
     remoteNotes: Array<NoteType> = [],
     localNotes: Array<NoteType> = [],
@@ -111,9 +141,18 @@ const syncData = (
 ) => {
     if (!remoteNotes.length && localNotes.length) {
         remoteStorageService.saveNotesList(localNotes);
+        remoteStorageService.createNotesDir(localNotes, emptyFunc, () => {
+            localNotes.forEach((note: NoteType) => saveNoteToStore(
+                localStorageService, remoteStorageService, note, true,
+            ));
+        });
         successCallback(localNotes);
     } else if (remoteNotes.length && !localNotes.length) {
         localStorageService.saveNotesList(remoteNotes);
+        localStorageService.createNotesDir(remoteNotes);
+        remoteNotes.forEach((note: NoteType) => saveNoteToStore(
+            remoteStorageService, localStorageService, note, false,
+        ));
         successCallback(remoteNotes);
     } else if (remoteNotes.length && localNotes.length) {
         const {mergedIndex, updateOperations} = mergeIndex(remoteNotes, localNotes);
@@ -123,11 +162,11 @@ const syncData = (
             switch (operation.action) {
                 case UPDATE_NEW_NOTE_OPERATION:
                 case ADD_NEW_NOTE_OPERATION: {
-                    fromStore.readNote(operation.uuid, (err: Error) => {
+                    fromStore.getNote(operation.note, (err: Error) => {
                         notificationService.showNotification(
                             formatMessageIntl(operation.isFromLocalStore
-                                ? MESSAGES.localNoteNotFound(operation.uuid)
-                                : MESSAGES.remoteNoteNotFound(operation.uuid)),
+                                ? MESSAGES.localNoteNotFound(operation.note.uuid)
+                                : MESSAGES.remoteNoteNotFound(operation.note.uuid)),
                             err.toString(),
                             {
                                 type:     'error',
@@ -135,12 +174,12 @@ const syncData = (
                             },
                         );
                     }, (note: NoteType) => {
-                        toStore.writeNote(note, (err: Error) => {
+                        toStore.saveNote(note, (err: Error) => {
                             notificationService.showNotification(
                                 formatMessageIntl(
                                     operation.isFromLocalStore
-                                        ? MESSAGES.localWriteNoteError
-                                        : MESSAGES.remoteWriteNoteError,
+                                        ? MESSAGES.remoteWriteNoteError
+                                        : MESSAGES.localWriteNoteError,
                                     err.toString(),
                                     {
                                         type:     'error',
@@ -153,12 +192,12 @@ const syncData = (
                     break;
                 }
                 case DELETE_NEW_NOTE_OPERATION: {
-                    toStore.deleteNote(operation.uuid, (err: Error) => {
+                    toStore.deleteNote(operation.note, (err: Error) => {
                         notificationService.showNotification(
                             formatMessageIntl(
                                 operation.isFromLocalStore
-                                    ? MESSAGES.localDeleteNoteError(operation.uuid)
-                                    : MESSAGES.remoteDeleteNoteError(operation.uuid),
+                                    ? MESSAGES.localDeleteNoteError(operation.note.uuid)
+                                    : MESSAGES.remoteDeleteNoteError(operation.note.uuid),
                                 err.toString(),
                                 {
                                     type:     'error',

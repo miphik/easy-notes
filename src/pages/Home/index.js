@@ -7,6 +7,8 @@ import {inject} from 'mobx-react';
 /* eslint-disable import/no-extraneous-dependencies */
 import PropTypes from 'prop-types';
 import React from 'react';
+import {DragDropContext} from 'react-dnd';
+import HTML5Backend from 'react-dnd-html5-backend';
 import {FormattedMessage as Fm} from 'react-intl';
 import {NavLink} from 'react-router-dom';
 import SplitPane from 'react-split-pane';
@@ -19,9 +21,10 @@ const MESSAGES = {
 
 @inject(stores => (
     {
-        remoteStoreIsAuth:    stores.remoteAuthStore.isAuth,
+        remoteStoreIsAuth: stores.remoteAuthStore.isAuth,
     }
 ))
+@DragDropContext(HTML5Backend)
 export default class Home extends React.PureComponent {
 
 
@@ -60,30 +63,30 @@ export default class Home extends React.PureComponent {
                     step={50}
                     defaultSize={180}
                 >
-                    <CategoryTree/>
+                        <CategoryTree/>
 
-                    <SplitPane
-                        split="vertical"
-                        minSize={150}
-                        maxSize={500}
-                        step={50}
-                        defaultSize={250}
-                    >
-                        <div>
-                            <Button>
-                                <NavLink to={WEBDAV_AUTH_PATH}>WEBDAV</NavLink>
-                            </Button>
-                            pane 2 size: 50% (of remaining space)
-                            <NoteList/>
-                        </div>
-                        <div>
+                        <SplitPane
+                            split="vertical"
+                            minSize={150}
+                            maxSize={500}
+                            step={50}
+                            defaultSize={250}
+                        >
                             <div>
-                                AUTH: {remoteStoreIsAuth ? <Icon type="check"/> : <Icon type="cross"/>}
+                                <Button>
+                                    <NavLink to={WEBDAV_AUTH_PATH}>WEBDAV</NavLink>
+                                </Button>
+                                pane 2 size: 50% (of remaining space)
+                                <NoteList/>
                             </div>
-                            pane 3
-                            <NoteEditor />
-                        </div>
-                    </SplitPane>
+                            <div>
+                                <div>
+                                    AUTH: {remoteStoreIsAuth ? <Icon type="check"/> : <Icon type="cross"/>}
+                                </div>
+                                pane 3
+                                <NoteEditor/>
+                            </div>
+                        </SplitPane>
                 </SplitPane>
 
             </div>

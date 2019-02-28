@@ -54,8 +54,7 @@ class AppLayout extends Component {
             remoteStoreIsInited, remoteStoreIsAuth, loadLocalCategories, loadLocalNotes,
         } = this.props;
         if (remoteStoreIsInited && !remoteStoreIsAuth) {
-            loadLocalCategories();
-            loadLocalNotes();
+            loadLocalCategories(loadLocalNotes);
         }
         // const {profileStore} = this.props;
         // profileStore.fetchUserProfile({
@@ -78,8 +77,7 @@ class AppLayout extends Component {
             && (
                 !remoteStoreIsInitedPrev || isAuthAndItChanged
             )) {
-            syncCategories();
-            syncNotes();
+            syncCategories(syncNotes);
         }
         /* const wbIsAuth = RemoteStoreService.isAuth();
         if (wbIsAuth) syncCategories();
