@@ -7,6 +7,7 @@ import * as React from 'react';
 import {FormattedMessage as Fm} from 'react-intl';
 import {formatMessageIntl} from 'services/LocaleService';
 import {showNotification} from 'services/NotificationService';
+import {WITHOUT_CATEGORY} from 'stores/NoteStore';
 import type {CategoryType, NoteType} from 'types/NoteType';
 import {emptyFunc} from 'utils/General';
 
@@ -20,6 +21,10 @@ type PropsType = {
 
 const MESSAGES = {
     addNewNote:              <Fm id="NoteList.render.add_new_note" defaultMessage="Add new note"/>,
+    removeNoteFromCategory:  <Fm
+                                 id="NoteList.render.remove_note_from_category"
+                                 defaultMessage="Remove the note from this category"
+                             />,
     updateNote:              <Fm id="NoteList.render.button_update_note" defaultMessage="Update note"/>,
     removeNote:              <Fm id="NoteList.render.button_remove_note" defaultMessage="Remove note"/>,
     deleteNoteSuccess:       <Fm
@@ -48,6 +53,8 @@ const MESSAGES = {
         setSelectedNote:  stores.noteStore.setSelectedNote,
         createUpdateNote: stores.noteStore.createUpdateNote,
         syncNotes:        stores.noteStore.syncNotes,
+        removeNote:       stores.noteStore.removeNote,
+        setNoteCategory:  stores.noteStore.setNoteCategory,
     }
 ))
 @observer
@@ -58,9 +65,23 @@ export default class NoteList extends React.Component<PropsType> {
     };
 
     state = {
-        noteModalIsOpen:   false,
-        noteModalIsForNew: false,
+        noteModalIsOpen:      false,
+        noteModalIsForNew:    false,
+        removeCategoryIsOver: false,
+        noteIsDragging:       false,
     };
+
+    componentDidUpdate(prevProps, prevState) {
+        if (this.state.noteIsDragging &&
+            (
+                !this.props.selectedCategory || !prevProps.selectedCategory
+                || this.props.selectedCategory.uuid !== prevProps.selectedCategory.uuid
+            )) {
+
+            this.setState({noteIsDragging: false});
+        }
+    }
+
 
     openNoteModalForNew = () => this.setState({
         noteModalIsOpen:   true,
@@ -114,8 +135,45 @@ export default class NoteList extends React.Component<PropsType> {
         });
     };
 
+    onDragLeave = () => this.setState({removeCategoryIsOver: false});
+
+    onDragOver = event => {
+        if (event.dataTransfer.items.length !== 2 || event.dataTransfer.items[1].type !== 'category') return true;
+        event.stopPropagation();
+        event.preventDefault();
+        event.dataTransfer.dropEffect = 'move';
+        this.setState({removeCategoryIsOver: true});
+        return false;
+    };
+
+    onDrop = event => {
+        const {noteUUID} = JSON.parse(event.dataTransfer.getData('Text'));
+        if (!noteUUID) return true;
+        event.stopPropagation();
+        event.preventDefault();
+        const {selectedCategory, setNoteCategory} = this.props;
+        setNoteCategory(noteUUID, selectedCategory.uuid, true);
+        this.setState({removeCategoryIsOver: false, noteIsDragging: false});
+        return false;
+    };
+
+    onNoteDragEnd = () => {
+        this.setState({noteIsDragging: false});
+    };
+
+    onNoteDragStart = (note: NoteType) => event => {
+        event.dataTransfer.effectAllowed = 'move';
+        event.dataTransfer.setData(
+            'Text', JSON.stringify({noteUUID: note.uuid, categoryUUIDs: note.categoryUUIDs}),
+        );
+        event.dataTransfer.items.add('Text', 'category');
+        // event.dataTransfer.setDragImage(event.target, 100, 100);
+        this.setState({noteIsDragging: note.uuid});
+        return true;
+    };
+
     render() {
-        const {noteModalIsForNew, noteModalIsOpen,} = this.state;
+        const {noteModalIsForNew, noteModalIsOpen, removeCategoryIsOver, noteIsDragging} = this.state;
         const {notes, selectedCategory, selectedNote} = this.props;
         return (
             <div>
@@ -124,6 +182,19 @@ export default class NoteList extends React.Component<PropsType> {
                         {MESSAGES.addNewNote}
                     </Button>
                 ) : null}
+                <div
+                    style={{
+                        backgroundColor: removeCategoryIsOver ? 'lightblue' : 'transparent',
+                        height:          50,
+                        position:        'relative',
+                        top:             noteIsDragging && selectedCategory.uuid !== WITHOUT_CATEGORY ? 0 : -11000
+                    }}
+                    onDragLeave={this.onDragLeave}
+                    onDragOver={this.onDragOver}
+                    onDrop={this.onDrop}
+                >
+                    {MESSAGES.removeNoteFromCategory}
+                </div>
                 {selectedCategory && selectedNote ? <div>
                     <Button onClick={this.openNoteModal}>
                         {MESSAGES.updateNote}
@@ -145,12 +216,19 @@ export default class NoteList extends React.Component<PropsType> {
                 <div onClick={this.onClearSelectNode}>
                     <br/>
                     {notes.map((note: NoteType) => (
-                        <NoteItem
+                        <div
                             key={note.uuid}
-                            note={note}
-                            noteIsSelected={selectedNote && note.uuid === selectedNote.uuid}
-                            onSelectNode={this.onSelectNode}
-                        />
+                            onDragStart={this.onNoteDragStart(note)}
+                            onDragEnd={this.onNoteDragEnd}
+                            draggable
+                        >
+                            <NoteItem
+                                note={note}
+                                noteIsDragging={noteIsDragging === note.uuid}
+                                noteIsSelected={selectedNote && note.uuid === selectedNote.uuid}
+                                onSelectNode={this.onSelectNode}
+                            />
+                        </div>
                     ))}
                     <br/>
                 </div>

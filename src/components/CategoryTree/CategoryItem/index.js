@@ -7,7 +7,7 @@ type PropsType = {
     rowTitleClassName: string,
     rowLabelClassName: string,
     category: CategoryType,
-    changeNoteCategory: (noteUUID: string, categoryUUID: string) => void,
+    changeNoteCategory: (noteUUID: string, categoryUUIDs: Array<string>) => void,
 };
 
 // @DropTarget('category_drop', chessSquareTarget, collect)
@@ -28,12 +28,15 @@ export default class CategoryItem extends React.Component<PropsType> {
     };
 
     onDrop = event => {
-        const noteUUID = event.dataTransfer.getData('Text');
+        const text = event.dataTransfer.getData('Text');
+        if (!text) return true;
+        const {noteUUID, categoryUUIDs} = JSON.parse(text);
         if (!noteUUID) return true;
         event.stopPropagation();
         event.preventDefault();
         const {changeNoteCategory, category} = this.props;
         this.onDragLeave();
+        if (categoryUUIDs.indexOf(category.uuid) !== -1) return true;
         changeNoteCategory(noteUUID, category.uuid);
         return false;
     };
@@ -49,11 +52,10 @@ export default class CategoryItem extends React.Component<PropsType> {
                 onDragOver={this.onDragOver}
                 onDrop={this.onDrop}
                 className={rowLabelClassName}
-                style={isOver ? {color: 'green', backgroundColor: 'gray'} : {backgroundColor: 'gray'}}
+                style={isOver ? {color: 'green'} : {}}
             >
                 <span className={rowTitleClassName}>
                     {title}
-1
                 </span>
             </div>
         );

@@ -20,7 +20,7 @@ message NoteHistory {
 
 message Note {
      required string uuid = 1;
-     required string categoryUUID = 2;
+     repeated string categoryUUIDs = 2;
      required string title = 3;
      repeated string tags = 4;
      enum NoteType {

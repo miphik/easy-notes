@@ -31,24 +31,54 @@ class NoteStore {
             [WITHOUT_CATEGORY]: [],
         };
         const catUUIDs = categoryStore.categoryAllItemUUIDS;
-        notes.forEach((note: NoteType) => {
-            if (!catUUIDs[note.categoryUUID]) {
-                newNotes[WITHOUT_CATEGORY].push(note);
-            } else {
-                if (!newNotes[note.categoryUUID]) newNotes[note.categoryUUID] = [];
-                newNotes[note.categoryUUID].push(note);
-            }
+        notes.filter((note: NoteType) => !note.isDeleted)
+            .forEach((note: NoteType) => {
+                if (!note.categoryUUIDs) note.categoryUUIDs = [];
+                if (!note.categoryUUIDs.length) {
+                    newNotes[WITHOUT_CATEGORY].push(note);
+                }
+                note.categoryUUIDs.forEach((catUUID: string) => {
+                    if (!catUUIDs[catUUID]) {
+                        newNotes[WITHOUT_CATEGORY].push(note);
+                    } else {
+                        if (!newNotes[catUUID]) newNotes[catUUID] = [];
+                        newNotes[catUUID].push(note);
+                    }
+                });
 
-            note.tags.forEach((tag: string) => {
-                if (!this.tags[tag]) this.tags[tag] = [];
-                this.tags[tag].push(note.uuid);
+                note.tags.forEach((tag: string) => {
+                    if (!this.tags[tag]) this.tags[tag] = [];
+                    this.tags[tag].push(note.uuid);
+                });
             });
-        });
         this.notes = observable.map(newNotes);
     };
 
     @action
     setSelectedNoteInner = (note: NoteType) => this.selectedNote = note;
+
+    @action
+    removeNote = (
+        noteUUID: string,
+        errorCallback: () => void,
+        successCallback: () => void,
+    ) => {
+        const notes = this.noteItems.map((item: NoteType) => {
+            if (item.uuid === noteUUID) {
+                // eslint-disable-next-line no-param-reassign
+                item.isDeleted = true;
+                item.updatedAt = moment().format();
+            }
+            return item;
+        });
+        this.setNotes(notes);
+        localStorageService.saveNotesList(notes, (err: Error) => {
+            console.error('localStorageService.removeNote', err);
+            errorCallback(err);
+        }, successCallback);
+        remoteStorageService.saveNotesList(notes, (err: Error) => console
+            .error('remoteStorageService.removeNote', err));
+    };
 
     @action
     setSelectedNote = (note: NoteType) => {
@@ -59,7 +89,7 @@ class NoteStore {
     };
 
     @action
-    setNoteCategory = (noteUUID: string, categoryUUID: string) => {
+    setNoteCategory = (noteUUID: string, categoryUUID: string, isRemoving: boolean = false) => {
         let note = null;
         let changedNoteExists = false;
         if (this.selectedNote && this.selectedNote.uuid === noteUUID) {
@@ -68,7 +98,12 @@ class NoteStore {
         const notes = this.noteItems.map((noteItem: NoteType) => {
             if (noteUUID === noteItem.uuid) {
                 changedNoteExists = true;
-                noteItem.categoryUUID = categoryUUID;
+                if (isRemoving) {
+                    noteItem.categoryUUIDs = noteItem.categoryUUIDs
+                        .filter((catUUID: string) => catUUID !== categoryUUID);
+                } else {
+                    noteItem.categoryUUIDs.push(categoryUUID);
+                }
                 noteItem.updatedAt = moment().format();
                 if (note) note = {...noteItem};
                 this.setSelectedNoteInner(note);
@@ -81,7 +116,8 @@ class NoteStore {
                 localStorageService.saveNote(note, (err: Error) => console.error('localStorageService.saveNote', err));
                 remoteStorageService.saveNote(
                     note,
-                    (err: Error) => console.error('remoteStorageService.saveNote', err));
+                    (err: Error) => console.error('remoteStorageService.saveNote', err),
+                );
             }
             localStorageService.saveNotesList(notes, (err: Error) => console
                 .error('localStorageService.saveNotesList', err));
@@ -123,7 +159,7 @@ class NoteStore {
         const note = {...noteItem};
         const isNew = !note.uuid;
 
-        note.categoryUUID = categoryStore.getSelectedCategory.uuid;
+        note.categoryUUIDs = [categoryStore.getSelectedCategory.uuid];
         note.updatedAt = moment().format();
         if (isNew) {
             note.createdAt = note.updatedAt;
@@ -143,9 +179,10 @@ class NoteStore {
     };
 
     get noteItems() {
-        const notes = [];
-        this.notes.toJS().forEach((catNotes: Array<NoteType>) => notes.push(...catNotes));
-        return notes;
+        const notes = {};
+        this.notes.toJS().forEach((catNotes: Array<NoteType>) => catNotes
+            .forEach((catNote: NoteType) => notes[catNote.uuid] = catNote));
+        return Object.values(notes);
     }
 
     get getTags() {

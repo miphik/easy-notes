@@ -5,29 +5,26 @@ import type {NoteType} from 'types/NoteType';
 type PropsType = {
     note: NoteType,
     noteIsSelected: boolean,
+    noteIsDragging: boolean,
     onSelectNode: (note: NoteType) => void,
 };
 
-export default class NoteItem extends React.Component<PropsType> {
-    onDragStart = event => {
-        const {note} = this.props;
-        event.dataTransfer.effectAllowed = 'move';
-        event.dataTransfer.setData('Text', note.uuid);
-        event.dataTransfer.items.add('Text', 'category');
-        // event.dataTransfer.setDragImage(event.target, 100, 100);
-        return true;
-    };
-
+export default class NoteItem extends React.PureComponent<PropsType> {
     render() {
         const {
-            note, onSelectNode, noteIsSelected,
+            note, onSelectNode, noteIsSelected, noteIsDragging,
         } = this.props;
+        const style = {};
+        if (noteIsDragging) {
+            style.border = '1px dashed gray';
+        }
+        if (noteIsSelected) {
+            style.color = 'red';
+        }
         return (
             <div
-                onDragStart={this.onDragStart}
-                draggable
                 onClick={onSelectNode(note)}
-                style={noteIsSelected ? {color: 'red'} : {}}
+                style={style}
             >
                 {note.title}
             </div>

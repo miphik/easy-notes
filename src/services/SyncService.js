@@ -238,6 +238,8 @@ const syncCategoriesData = (
             localStorageService.saveCategoriesList(mergedIndex);
         }
         successCallback(mergedIndex);
+    } else {
+        successCallback([]);
     }
 };
 
