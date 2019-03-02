@@ -175,11 +175,16 @@ class NoteStore {
             const notes = this.noteItems;
             notes.unshift(note);
             this.setNotes(notes);
+            this.setSelectedNote(note);
         } else {
             this.setNotes(this.noteItems
-                .map((item: NoteType) => (
-                    item.uuid === note.uuid ? note : item
-                )));
+                .map((item: NoteType) => {
+                    if (item.uuid === note.uuid) {
+                        this.setSelectedNote(note);
+                        return note;
+                    }
+                    return item;
+                }));
         }
         localStorageService.saveNote(note);
         localStorageService.saveNotesList(this.noteItems, errorCallback, successCallback);

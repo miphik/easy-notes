@@ -20,11 +20,12 @@ type PropsType = {
 };
 
 const MESSAGES = {
-    removedCategoryExplanation:  <Fm
+    removedCategoryExplanation: <Fm
                                     id="NoteList.render.removed_category_explanation"
                                     defaultMessage="Notes are available here for 30 days.
                                     After that time, notes will be permanently deleted"
                                 />,
+    newNoteTitle:               <Fm id="NoteList.render.new_note_title" defaultMessage="Untitled"/>,
     addNewNote:                 <Fm id="NoteList.render.add_new_note" defaultMessage="Add new note"/>,
     removeNoteFromCategory:     <Fm
                                     id="NoteList.render.remove_note_from_category"
@@ -71,7 +72,6 @@ export default class NoteList extends React.Component<PropsType> {
 
     state = {
         noteModalIsOpen:      false,
-        noteModalIsForNew:    false,
         removeCategoryIsOver: false,
         noteIsDragging:       false,
     };
@@ -87,31 +87,32 @@ export default class NoteList extends React.Component<PropsType> {
         }
     }
 
-
-    openNoteModalForNew = () => this.setState({
-        noteModalIsOpen:   true,
-        noteModalIsForNew: true,
-    });
+    openNoteModalForNew = () => {
+        const {createUpdateNote, syncNotes} = this.props;
+        this.setState({
+            noteModalIsOpen: true,
+        });
+        createUpdateNote({title: formatMessageIntl(MESSAGES.newNoteTitle)}, emptyFunc, () => {
+            syncNotes();
+        });
+    };
 
     openNoteModal = () => this.setState({
-        noteModalIsOpen:   true,
-        noteModalIsForNew: false,
+        noteModalIsOpen: true,
     });
 
     closeNoteModal = () => this.setState({noteModalIsOpen: false});
 
-    onSubmitNoteForm = (values: NoteType, update = !this.state.noteModalIsForNew) => {
-        const {createUpdateNote, syncNotes} = this.props;
-        createUpdateNote(values, emptyFunc, () => {
+    updateNoteTitle = (noteTitle: string) => {
+        if (noteTitle === null) {
+            this.closeNoteModal();
+            return true;
+        }
+        const {createUpdateNote, syncNotes, selectedNote} = this.props;
+        const note = {...selectedNote};
+        note.title = noteTitle;
+        createUpdateNote(note, emptyFunc, () => {
             syncNotes();
-            showNotification(
-                formatMessageIntl(update ? MESSAGES.noteUpdatedSuccessfully : MESSAGES.noteCreatedSuccessfully),
-                '',
-                {
-                    type:     'success',
-                    duration: 7,
-                },
-            );
             this.closeNoteModal();
         });
         return true;
@@ -178,7 +179,7 @@ export default class NoteList extends React.Component<PropsType> {
     };
 
     render() {
-        const {noteModalIsForNew, noteModalIsOpen, removeCategoryIsOver, noteIsDragging} = this.state;
+        const {noteModalIsOpen, removeCategoryIsOver, noteIsDragging} = this.state;
         const {notes, selectedCategory, selectedNote} = this.props;
         return (
             <div>
@@ -232,6 +233,8 @@ export default class NoteList extends React.Component<PropsType> {
                         >
                             <NoteItem
                                 note={note}
+                                noteIsEditing={noteModalIsOpen}
+                                updateNoteTitle={this.updateNoteTitle}
                                 noteIsDragging={noteIsDragging === note.uuid}
                                 noteIsSelected={selectedNote && note.uuid === selectedNote.uuid}
                                 onSelectNode={this.onSelectNode}
@@ -240,13 +243,13 @@ export default class NoteList extends React.Component<PropsType> {
                     ))}
                     <br/>
                 </div>
-                <NoteForm
+                {/*<NoteForm
                     isNew={noteModalIsForNew}
                     onSubmit={this.onSubmitNoteForm}
                     isVisible={noteModalIsOpen}
                     onClose={this.closeNoteModal}
                     initialValues={{}}
-                />
+                />*/}
             </div>
         );
     }

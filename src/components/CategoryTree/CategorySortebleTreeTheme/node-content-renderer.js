@@ -42,6 +42,8 @@ class FileThemeNodeContentRenderer extends Component {
             swapLength,
             swapDepth,
             onSelectNode,
+            updateCategoryName,
+            categoryIsEditing,
             selectedNode,
             changeNoteCategory,
             treeId, // Not needed, but preserved for other renderers
@@ -124,8 +126,10 @@ class FileThemeNodeContentRenderer extends Component {
 
                 <div
                     onClick={(event) => {
-                        event.stopPropagation();
-                        onSelectNode(node);
+                        if (!categoryIsEditing) {
+                            event.stopPropagation();
+                            onSelectNode(node);
+                        }
                     }}
                     className={
                         styles.rowWrapper
@@ -187,6 +191,9 @@ class FileThemeNodeContentRenderer extends Component {
                                     </div>
                                     <CategoryItem
                                         category={node}
+                                        isNodeSelected={isNodeSelected}
+                                        updateCategoryName={updateCategoryName}
+                                        categoryIsEditing={categoryIsEditing}
                                         changeNoteCategory={changeNoteCategory}
                                         title={typeof nodeTitle === 'function'
                                             ? nodeTitle({

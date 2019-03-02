@@ -1,4 +1,5 @@
 // @flow
+import {Input} from 'antd';
 import * as React from 'react';
 import type {CategoryType} from 'types/NoteType';
 
@@ -6,14 +7,17 @@ type PropsType = {
     title: string | object,
     rowTitleClassName: string,
     rowLabelClassName: string,
+    categoryIsEditing: boolean,
+    isNodeSelected: boolean,
     category: CategoryType,
     changeNoteCategory: (noteUUID: string, categoryUUIDs: Array<string>) => void,
+    updateCategoryName: (categoryName: string) => void,
 };
 
-// @DropTarget('category_drop', chessSquareTarget, collect)
 export default class CategoryItem extends React.Component<PropsType> {
     state = {
-        isOver: false,
+        isOver:       false,
+        categoryName: null,
     };
 
     onDragLeave = () => this.setState({isOver: false});
@@ -41,23 +45,58 @@ export default class CategoryItem extends React.Component<PropsType> {
         return false;
     };
 
+    onChangeCategoryName = event => this.setState({categoryName: event.currentTarget.value});
+
+    handleKeyPress = event => {
+        const isEscape = event.key === 'Escape';
+        if (event.key === 'Enter' || isEscape) {
+            const {categoryIsEditing, isNodeSelected, updateCategoryName} = this.props;
+            const {categoryName} = this.state;
+            if (categoryIsEditing
+                && isNodeSelected
+                && (
+                    categoryName || categoryName === null || isEscape
+                )) {
+                this.setState({categoryName: null});
+                event.preventDefault();
+                updateCategoryName(isEscape ? null : categoryName);
+            }
+        }
+    };
+
     render() {
-        const {isOver} = this.state;
+        const {isOver, categoryName} = this.state;
         const {
-            rowLabelClassName, rowTitleClassName, title,
+            rowLabelClassName, rowTitleClassName, title, categoryIsEditing,
+            isNodeSelected, category,
         } = this.props;
+
         return (
-            <div
-                onDragLeave={this.onDragLeave}
-                onDragOver={this.onDragOver}
-                onDrop={this.onDrop}
-                className={rowLabelClassName}
-                style={isOver ? {color: 'green'} : {}}
-            >
-                <span className={rowTitleClassName}>
-                    {title}
-                </span>
-            </div>
+            <React.Fragment>
+                {categoryIsEditing && isNodeSelected ? (
+                    <div>
+                        <Input
+                            autoFocus
+                            onKeyDown={this.handleKeyPress}
+                            onChange={this.onChangeCategoryName}
+                            value={categoryName || category.title}
+                            defaultValue={category.title}
+                        />
+                    </div>
+                ) : (
+                    <div
+                        onDragLeave={this.onDragLeave}
+                        onDragOver={this.onDragOver}
+                        onDrop={this.onDrop}
+                        className={rowLabelClassName}
+                        style={isOver ? {color: 'green'} : {}}
+                    >
+                        <span className={rowTitleClassName}>
+                            {title}
+                        </span>
+                    </div>
+                )}
+            </React.Fragment>
         );
     }
 }

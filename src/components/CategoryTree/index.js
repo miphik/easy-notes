@@ -16,6 +16,7 @@ import type {CategoryType} from 'types/NoteType';
 import {emptyFunc} from 'utils/General';
 
 const MESSAGES = {
+    newCategoryName:             <Fm id="CategoryItem.render.new_category_name" defaultMessage="New category"/>,
     withoutCategory:             <Fm id="CategoryTree.render.without_category" defaultMessage="Uncategorized"/>,
     removedCategory:             <Fm id="CategoryTree.render.removed_category" defaultMessage="Removed"/>,
     rootCategoryWhenEdit:        <Fm id="CategoryTree.render.root_category_when_edit" defaultMessage="ROOT"/>,
@@ -67,34 +68,34 @@ type PropsType = {
 export default class CategoryTree extends React.Component<PropsType> {
     state = {
         categoryModalIsOpen:   false,
-        categoryModalIsForNew: false,
     };
 
-    openCategoryModalForNew = () => this.setState({
-        categoryModalIsOpen:   true,
-        categoryModalIsForNew: true,
-    });
+    openCategoryModalForNew = () => {
+        const {createUpdateCategory, syncCategories, selectedCategory} = this.props;
+        this.setState({
+            categoryModalIsOpen:   true,
+        });
+        createUpdateCategory({title: formatMessageIntl(MESSAGES.newCategoryName)}, emptyFunc, () => {
+            syncCategories();
+        });
+    };
 
     openCategoryModal = () => this.setState({
         categoryModalIsOpen:   true,
-        categoryModalIsForNew: false,
     });
 
     closeCategoryModal = () => this.setState({categoryModalIsOpen: false});
 
-    onSubmitCategoryForm = (values: CategoryType, update = !this.state.categoryModalIsForNew) => {
-        const {createUpdateCategory, syncCategories, changeExpandedNodes} = this.props;
-        createUpdateCategory(values, emptyFunc, () => {
-            if (update) this.onSelectCategory(values);
+    updateCategoryName = (categoryName: string) => {
+        if (categoryName === null) {
+            this.closeCategoryModal();
+            return true;
+        }
+        const {createUpdateCategory, syncCategories, selectedCategory} = this.props;
+        const cat = {...selectedCategory};
+        cat.title = categoryName;
+        createUpdateCategory(cat, emptyFunc, () => {
             syncCategories();
-            showNotification(
-                formatMessageIntl(update ? MESSAGES.categoryUpdatedSuccessfully : MESSAGES.categoryCreatedSuccessfully),
-                '',
-                {
-                    type:     'success',
-                    duration: 7,
-                },
-            );
             this.closeCategoryModal();
         });
         return true;
@@ -120,6 +121,7 @@ export default class CategoryTree extends React.Component<PropsType> {
     onSelectCategory = (node, path) => {
         if (!node.parentUUID) this.props.setSelectedCategory(EMPTY_CATEGORY);
         else this.props.setSelectedCategory(node);
+        this.closeCategoryModal();
     };
     onSelectRemovedCategory = () => {
         this.props.setSelectedCategory(DELETED_CATEGORY);
@@ -137,9 +139,9 @@ export default class CategoryTree extends React.Component<PropsType> {
 
     render() {
         const {categoriesAsTree, selectedCategory, categoriesIsLoading} = this.props;
-        const {categoryModalIsForNew, categoryModalIsOpen} = this.state;
+        const {categoryModalIsOpen} = this.state;
         let formInitialValues = {};
-        if (categoryModalIsForNew && selectedCategory) {
+        if (selectedCategory) {
             formInitialValues.parent = selectedCategory.uuid;
         } else if (selectedCategory) {
             formInitialValues = {...selectedCategory};
@@ -188,7 +190,7 @@ export default class CategoryTree extends React.Component<PropsType> {
                 >
                     {MESSAGES.removedCategory}
                 </div>
-                <div style={{height: 400}} onClick={this.onClearSelectNode}>
+                <div style={{height: 400}} onClick={categoryModalIsOpen ? emptyFunc : this.onClearSelectNode}>
                     <Spinner show={categoriesIsLoading} size="small"/>
                     {!categoriesIsLoading ? (
                         <SortableTree
@@ -205,8 +207,10 @@ export default class CategoryTree extends React.Component<PropsType> {
                             getNodeKey={({node}) => node.uuid}
                             generateNodeProps={({node, path}) => (
                                 {
-                                    onSelectNode: this.onSelectCategory,
-                                    selectedNode: selectedCategory,
+                                    categoryIsEditing:  categoryModalIsOpen,
+                                    onSelectNode:       this.onSelectCategory,
+                                    updateCategoryName: this.updateCategoryName,
+                                    selectedNode:       selectedCategory,
                                     changeNoteCategory: this.props.setNoteCategory,
                                 }
                             )}
@@ -229,14 +233,14 @@ export default class CategoryTree extends React.Component<PropsType> {
                         </Popconfirm>
                     </div>
                 ))}*/}
-                <CategoryForm
+                {/*<CategoryForm
                     isNew={categoryModalIsForNew}
                     onSubmit={this.onSubmitCategoryForm}
                     isVisible={categoryModalIsOpen}
                     onClose={this.closeCategoryModal}
                     categories={categoriesAsTree}
                     initialValues={formInitialValues}
-                />
+                />*/}
             </div>
         );
     }

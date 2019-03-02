@@ -132,11 +132,16 @@ class CategoryStore {
             cat.createdAt = cat.updatedAt;
             cat.uuid = uuidv4();
             this.categories.unshift(cat);
+            this.setSelectedCategory(cat);
         } else {
             this.setCategories(this.categories
-                .map((item: CategoryType) => (
-                    item.uuid === cat.uuid ? cat : item
-                )));
+                .map((item: CategoryType) => {
+                    if (item.uuid === cat.uuid) {
+                        this.setSelectedCategory(cat);
+                        return cat;
+                    }
+                    return item;
+                }));
         }
 
         localStorageService.saveCategoriesList(this.categoryAllItems, errorCallback, successCallback);
