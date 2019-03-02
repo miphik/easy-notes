@@ -13,6 +13,7 @@ let remoteStorageService: StoreType = RemoteStoreService;
 let localStorageService: StoreType = LocalStoreService;
 
 export const WITHOUT_CATEGORY = 'WITHOUT_CATEGORY';
+export const REMOVED_CATEGORY = 'REMOVED_CATEGORY';
 
 export const setRemoteStorageService = (remoteService: StoreType) => remoteStorageService = remoteService;
 export const setLocalStorageService = (localService: StoreType) => localStorageService = localService;
@@ -29,11 +30,17 @@ class NoteStore {
         console.info('LOAD NOTES', notes);
         const newNotes = {
             [WITHOUT_CATEGORY]: [],
+            [REMOVED_CATEGORY]: [],
         };
         const catUUIDs = categoryStore.categoryAllItemUUIDS;
-        notes.filter((note: NoteType) => !note.isDeleted)
+        notes
             .forEach((note: NoteType) => {
                 if (!note.categoryUUIDs) note.categoryUUIDs = [];
+                if (note.isDeleted) {
+                    note.categoryUUIDs = [];
+                    newNotes[REMOVED_CATEGORY].push(note);
+                    return;
+                }
                 if (!note.categoryUUIDs.length) {
                     newNotes[WITHOUT_CATEGORY].push(note);
                 }

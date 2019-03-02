@@ -7,7 +7,7 @@ import * as React from 'react';
 import {FormattedMessage as Fm} from 'react-intl';
 import {formatMessageIntl} from 'services/LocaleService';
 import {showNotification} from 'services/NotificationService';
-import {WITHOUT_CATEGORY} from 'stores/NoteStore';
+import {REMOVED_CATEGORY, WITHOUT_CATEGORY} from 'stores/NoteStore';
 import type {CategoryType, NoteType} from 'types/NoteType';
 import {emptyFunc} from 'utils/General';
 
@@ -20,29 +20,34 @@ type PropsType = {
 };
 
 const MESSAGES = {
-    addNewNote:              <Fm id="NoteList.render.add_new_note" defaultMessage="Add new note"/>,
-    removeNoteFromCategory:  <Fm
-                                 id="NoteList.render.remove_note_from_category"
-                                 defaultMessage="Remove the note from this category"
-                             />,
-    updateNote:              <Fm id="NoteList.render.button_update_note" defaultMessage="Update note"/>,
-    removeNote:              <Fm id="NoteList.render.button_remove_note" defaultMessage="Remove note"/>,
-    deleteNoteSuccess:       <Fm
-                                 id="NoteList.onRemoveNote.delete_note_success"
-                                 defaultMessage="Note was successfully removed"
-                             />,
-    noteUpdatedSuccessfully: <Fm
-                                 id="NoteList.onSubmitNoteForm.note_updated_successfully"
-                                 defaultMessage="Note successfully updated"
-                             />,
-    noteCreatedSuccessfully: <Fm
-                                 id="NoteList.onSubmitNoteForm.note_created_successfully"
-                                 defaultMessage="New note successfully created"
-                             />,
-    deleteNoteConfirm:       <Fm
-                                 id="NoteList.render.delete_note_confirm"
-                                 defaultMessage="Are you sure about deleting this note?"
-                             />,
+    removedCategoryExplanation:  <Fm
+                                    id="NoteList.render.removed_category_explanation"
+                                    defaultMessage="Notes are available here for 30 days.
+                                    After that time, notes will be permanently deleted"
+                                />,
+    addNewNote:                 <Fm id="NoteList.render.add_new_note" defaultMessage="Add new note"/>,
+    removeNoteFromCategory:     <Fm
+                                    id="NoteList.render.remove_note_from_category"
+                                    defaultMessage="Remove the note from this category"
+                                />,
+    updateNote:                 <Fm id="NoteList.render.button_update_note" defaultMessage="Update note"/>,
+    removeNote:                 <Fm id="NoteList.render.button_remove_note" defaultMessage="Remove note"/>,
+    deleteNoteSuccess:          <Fm
+                                    id="NoteList.onRemoveNote.delete_note_success"
+                                    defaultMessage="Note was successfully removed"
+                                />,
+    noteUpdatedSuccessfully:    <Fm
+                                    id="NoteList.onSubmitNoteForm.note_updated_successfully"
+                                    defaultMessage="Note successfully updated"
+                                />,
+    noteCreatedSuccessfully:    <Fm
+                                    id="NoteList.onSubmitNoteForm.note_created_successfully"
+                                    defaultMessage="New note successfully created"
+                                />,
+    deleteNoteConfirm:          <Fm
+                                    id="NoteList.render.delete_note_confirm"
+                                    defaultMessage="Are you sure about deleting this note?"
+                                />,
 };
 
 @inject(stores => (
@@ -177,6 +182,9 @@ export default class NoteList extends React.Component<PropsType> {
         const {notes, selectedCategory, selectedNote} = this.props;
         return (
             <div>
+                {selectedCategory && selectedCategory.uuid === REMOVED_CATEGORY ? (
+                    <div>{MESSAGES.removedCategoryExplanation}</div>
+                ) : null}
                 {selectedCategory ? (
                     <Button onClick={this.openNoteModalForNew}>
                         {MESSAGES.addNewNote}

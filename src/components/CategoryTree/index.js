@@ -11,12 +11,13 @@ import SortableTree from 'react-sortable-tree';
 import {formatMessageIntl} from 'services/LocaleService';
 import {showNotification} from 'services/NotificationService';
 import {ROOT_CATEGORY_NAME} from 'src/constants/general';
-import {WITHOUT_CATEGORY} from 'stores/NoteStore';
+import {REMOVED_CATEGORY, WITHOUT_CATEGORY} from 'stores/NoteStore';
 import type {CategoryType} from 'types/NoteType';
 import {emptyFunc} from 'utils/General';
 
 const MESSAGES = {
     withoutCategory:             <Fm id="CategoryTree.render.without_category" defaultMessage="Uncategorized"/>,
+    removedCategory:             <Fm id="CategoryTree.render.removed_category" defaultMessage="Removed"/>,
     rootCategoryWhenEdit:        <Fm id="CategoryTree.render.root_category_when_edit" defaultMessage="ROOT"/>,
     addNewCategory:              <Fm id="CategoryTree.render.button_add_new_category" defaultMessage="Add category"/>,
     updateCategory:              <Fm id="CategoryTree.render.button_update_category" defaultMessage="Update category"/>,
@@ -39,6 +40,7 @@ const MESSAGES = {
                                  />,
 };
 const EMPTY_CATEGORY = {uuid: WITHOUT_CATEGORY, parentUUID: [ROOT_CATEGORY_NAME]};
+const DELETED_CATEGORY = {uuid: REMOVED_CATEGORY, parentUUID: [ROOT_CATEGORY_NAME]};
 
 type PropsType = {
     categories: Array<CategoryType>,
@@ -83,7 +85,7 @@ export default class CategoryTree extends React.Component<PropsType> {
     onSubmitCategoryForm = (values: CategoryType, update = !this.state.categoryModalIsForNew) => {
         const {createUpdateCategory, syncCategories, changeExpandedNodes} = this.props;
         createUpdateCategory(values, emptyFunc, () => {
-            if (update) this.onSelectNode(values);
+            if (update) this.onSelectCategory(values);
             syncCategories();
             showNotification(
                 formatMessageIntl(update ? MESSAGES.categoryUpdatedSuccessfully : MESSAGES.categoryCreatedSuccessfully),
@@ -115,9 +117,12 @@ export default class CategoryTree extends React.Component<PropsType> {
     };
 
     onClearSelectNode = () => this.props.setSelectedCategory(null);
-    onSelectNode = (node, path) => {
+    onSelectCategory = (node, path) => {
         if (!node.parentUUID) this.props.setSelectedCategory(EMPTY_CATEGORY);
         else this.props.setSelectedCategory(node);
+    };
+    onSelectRemovedCategory = () => {
+        this.props.setSelectedCategory(DELETED_CATEGORY);
     };
     onVisibilityToggle = ({expanded, node}) => this.props.changeExpandedNodes(expanded, node.uuid);
     onMoveNode = ({treeData, nextParentNode, node, treeIndex, prevTreeIndex, ...rest}) => {
@@ -170,9 +175,18 @@ export default class CategoryTree extends React.Component<PropsType> {
                         selectedCategory && selectedCategory.uuid === WITHOUT_CATEGORY
                             ? {color: 'red'} : {}
                     }
-                    onClick={this.onSelectNode}
+                    onClick={this.onSelectCategory}
                 >
                     {MESSAGES.withoutCategory}
+                </div>
+                <div
+                    style={
+                        selectedCategory && selectedCategory.uuid === REMOVED_CATEGORY
+                            ? {color: 'red'} : {}
+                    }
+                    onClick={this.onSelectRemovedCategory}
+                >
+                    {MESSAGES.removedCategory}
                 </div>
                 <div style={{height: 400}} onClick={this.onClearSelectNode}>
                     <Spinner show={categoriesIsLoading} size="small"/>
@@ -191,7 +205,7 @@ export default class CategoryTree extends React.Component<PropsType> {
                             getNodeKey={({node}) => node.uuid}
                             generateNodeProps={({node, path}) => (
                                 {
-                                    onSelectNode: this.onSelectNode,
+                                    onSelectNode: this.onSelectCategory,
                                     selectedNode: selectedCategory,
                                     changeNoteCategory: this.props.setNoteCategory,
                                 }
