@@ -1,6 +1,5 @@
 // @flow
 import {Button, Popconfirm} from 'antd';
-import CategoryForm from 'components/CategoryTree/CategoryForm';
 import FileExplorerTheme from 'components/CategoryTree/CategorySortebleTreeTheme';
 import Spinner from 'components/Spinner';
 import {inject, observer} from 'mobx-react';

@@ -7,16 +7,43 @@ import {inject} from 'mobx-react';
 /* eslint-disable import/no-extraneous-dependencies */
 import PropTypes from 'prop-types';
 import React from 'react';
-import {DragDropContext} from 'react-dnd';
-import HTML5Backend from 'react-dnd-html5-backend';
 import {FormattedMessage as Fm} from 'react-intl';
 import {NavLink} from 'react-router-dom';
 import SplitPane from 'react-split-pane';
+import LocalStorageService from 'services/LocalStorageService';
 import {WEBDAV_AUTH_PATH} from 'src/constants/routes';
 import './styles.styl';
 
 const MESSAGES = {
     addNewCategory: <Fm id="Home.render.button_add_new_category" defaultMessage="Add category"/>,
+};
+const COLUMNS_WIDTH_KEY = 'COLUMNS_WIDTH_KEY';
+
+type ColumnWidthType = {
+    minSize: number,
+    maxSize: number,
+    step: number,
+    size: number,
+};
+
+type ColumnsWidthType = {
+    first: ColumnWidthType,
+    second: ColumnWidthType,
+};
+
+const DEFAULT_COLUMNS_WIDTH: ColumnsWidthType = {
+    first:  {
+        minSize:     150,
+        maxSize:     500,
+        step:        50,
+        size:        180,
+    },
+    second: {
+        minSize:     150,
+        maxSize:     500,
+        step:        50,
+        size:        250,
+    },
 };
 
 @inject(stores => (
@@ -24,9 +51,24 @@ const MESSAGES = {
         remoteStoreIsAuth: stores.remoteAuthStore.isAuth,
     }
 ))
-@DragDropContext(HTML5Backend)
-export default class Home extends React.PureComponent {
+export default class Home extends React.Component {
+    state = {
+        columnsWidth: null,
+    };
 
+    componentDidMount() {
+        LocalStorageService.getAsync(COLUMNS_WIDTH_KEY, (error: Error, data: ColumnsWidthType) => {
+            const newColumnsWidth: ColumnsWidthType = {};
+            if (!error && data && Object.keys(data).length) {
+                newColumnsWidth.first = data.first;
+                newColumnsWidth.second = data.second;
+            } else {
+                newColumnsWidth.first = DEFAULT_COLUMNS_WIDTH.first;
+                newColumnsWidth.second = DEFAULT_COLUMNS_WIDTH.second;
+            }
+            this.setState({columnsWidth: newColumnsWidth});
+        });
+    }
 
     static propTypes = {
         remoteStoreIsAuth:    PropTypes.bool,
@@ -44,8 +86,22 @@ export default class Home extends React.PureComponent {
         categories:           [],
     };
 
+    onResizeFirstColumn = (newSize: number) => {
+        const {columnsWidth} = this.state;
+        columnsWidth.first.size = newSize;
+        LocalStorageService.setAsync(COLUMNS_WIDTH_KEY, columnsWidth);
+        this.setState({columnsWidth});
+    };
+    onResizeSecondColumn = (newSize: number) => {
+        const {columnsWidth} = this.state;
+        columnsWidth.second.size = newSize;
+        LocalStorageService.setAsync(COLUMNS_WIDTH_KEY, columnsWidth);
+        this.setState({columnsWidth});
+    };
+
     render() {
         const {remoteStoreIsAuth} = this.props;
+        const {columnsWidth} = this.state;
         //const wbIsAuth = RemoteStoreService.isAuth();
         /*if (wbIsAuth) RemoteStoreService.getNotesList(() => {}, data => {
             const notes = SerializationService.convertStringToNotesList(data);
@@ -56,39 +112,40 @@ export default class Home extends React.PureComponent {
         RemoteStorageService.saveNotesList(text, data => console.log(222, data), data => console.log(333, data));*/
         return (
             <div>
-                <SplitPane
+                {columnsWidth ? <SplitPane
                     split="vertical"
-                    minSize={150}
-                    maxSize={500}
-                    step={50}
-                    defaultSize={180}
+                    minSize={columnsWidth.first.minSize}
+                    maxSize={columnsWidth.first.maxSize}
+                    step={columnsWidth.first.step}
+                    size={columnsWidth.first.size}
+                    onDragFinished={this.onResizeFirstColumn}
                 >
-                        <CategoryTree/>
+                    <CategoryTree/>
 
-                        <SplitPane
-                            split="vertical"
-                            minSize={150}
-                            maxSize={500}
-                            step={50}
-                            defaultSize={250}
-                        >
+                    <SplitPane
+                        split="vertical"
+                        minSize={columnsWidth.second.minSize}
+                        maxSize={columnsWidth.second.maxSize}
+                        step={columnsWidth.second.step}
+                        size={columnsWidth.second.size}
+                        onDragFinished={this.onResizeSecondColumn}
+                    >
+                        <div>
+                            <Button>
+                                <NavLink to={WEBDAV_AUTH_PATH}>WEBDAV</NavLink>
+                            </Button>
+                            pane 2 size: 50% (of remaining space)
+                            <NoteList/>
+                        </div>
+                        <div>
                             <div>
-                                <Button>
-                                    <NavLink to={WEBDAV_AUTH_PATH}>WEBDAV</NavLink>
-                                </Button>
-                                pane 2 size: 50% (of remaining space)
-                                <NoteList/>
+                                AUTH: {remoteStoreIsAuth ? <Icon type="check"/> : <Icon type="cross"/>}
                             </div>
-                            <div>
-                                <div>
-                                    AUTH: {remoteStoreIsAuth ? <Icon type="check"/> : <Icon type="cross"/>}
-                                </div>
-                                pane 3
-                                <NoteEditor/>
-                            </div>
-                        </SplitPane>
-                </SplitPane>
-
+                            pane 3
+                            <NoteEditor/>
+                        </div>
+                    </SplitPane>
+                </SplitPane> : null}
             </div>
         );
     }

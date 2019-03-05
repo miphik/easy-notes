@@ -36,7 +36,7 @@ export default class NoteEditor extends React.Component {
         return null;
     }
 
-    debounceChangeNoteText = debounce(this.props.setSelectedNoteText, 250);
+    debounceChangeNoteText = debounce(this.props.setSelectedNoteText, 1000);
 
     onChangeNote = (event) => {
         const {value} = event.currentTarget;
