@@ -81,7 +81,7 @@ module.exports = {
     },
     plugins: [
         new webpack.ProgressPlugin(),
-        new CleanWebpackPlugin([PATHS.build], {
+        new CleanWebpackPlugin({
             root:    PATHS.root,
             verbose: true,
             dry:     false,

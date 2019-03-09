@@ -95,8 +95,8 @@ class AppLayout extends Component {
     render() {
         // const {} = this.props;
         return (
-            <div style={{marginTop: 50}}>
-                <div>
+            <div>
+                {/* <div>
                     <NavLink to="/">
                         <div className={styles.ul}>
                             LOGO
@@ -112,7 +112,7 @@ class AppLayout extends Component {
                 </div>
                 <div>
                     BREADCRUMPS
-                </div>
+                </div> */}
                 <section className="msp-content-inner">
                     <Switch>
                         <Route exact path={ABOUT_PATH} component={About}/>
