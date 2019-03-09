@@ -3,15 +3,18 @@ import {Button, Icon} from 'antd';
 import CategoryTree from 'components/CategoryTree';
 import NoteEditor from 'components/NoteEditor';
 import NoteList from 'components/NoteList';
+import memoizeOne from 'memoize-one';
 import {inject} from 'mobx-react';
 /* eslint-disable import/no-extraneous-dependencies */
 import PropTypes from 'prop-types';
+import Radium from 'radium';
 import React from 'react';
 import {FormattedMessage as Fm} from 'react-intl';
 import {NavLink} from 'react-router-dom';
 import SplitPane from 'react-split-pane';
 import LocalStorageService from 'services/LocalStorageService';
 import {WEBDAV_AUTH_PATH} from 'src/constants/routes';
+import type {ThemeType} from 'stores/ThemeStore';
 import './styles.styl';
 
 const MESSAGES = {
@@ -33,25 +36,45 @@ type ColumnsWidthType = {
 
 const DEFAULT_COLUMNS_WIDTH: ColumnsWidthType = {
     first:  {
-        minSize:     150,
-        maxSize:     500,
-        step:        50,
-        size:        180,
+        minSize: 150,
+        maxSize: 500,
+        step:    15,
+        size:    180,
     },
     second: {
-        minSize:     150,
-        maxSize:     500,
-        step:        50,
-        size:        250,
+        minSize: 150,
+        maxSize: 500,
+        step:    15,
+        size:    250,
     },
+};
+
+const STYLES = memoizeOne((theme: ThemeType) => (
+    {
+        firstColumn:  {
+            backgroundColor: theme.color.first,
+        },
+        secondColumn: {
+            backgroundColor: theme.color.second,
+        },
+        resizerStyle: {
+            backgroundColor: theme.color.black,
+            opacity:         0.4,
+        }
+    }
+));
+
+type PropsType = {
+    theme: ThemeType,
 };
 
 @inject(stores => (
     {
         remoteStoreIsAuth: stores.remoteAuthStore.isAuth,
+        theme:             stores.themeStore.getTheme,
     }
 ))
-export default class Home extends React.Component {
+export default class Home extends React.Component<PropsType> {
     state = {
         columnsWidth: null,
     };
@@ -100,7 +123,7 @@ export default class Home extends React.Component {
     };
 
     render() {
-        const {remoteStoreIsAuth} = this.props;
+        const {remoteStoreIsAuth, theme} = this.props;
         const {columnsWidth} = this.state;
         //const wbIsAuth = RemoteStoreService.isAuth();
         /*if (wbIsAuth) RemoteStoreService.getNotesList(() => {}, data => {
@@ -119,6 +142,8 @@ export default class Home extends React.Component {
                     step={columnsWidth.first.step}
                     size={columnsWidth.first.size}
                     onDragFinished={this.onResizeFirstColumn}
+                    paneStyle={STYLES(theme).firstColumn}
+                    resizerStyle={STYLES(theme).resizerStyle}
                 >
                     <CategoryTree/>
 
@@ -129,6 +154,8 @@ export default class Home extends React.Component {
                         step={columnsWidth.second.step}
                         size={columnsWidth.second.size}
                         onDragFinished={this.onResizeSecondColumn}
+                        paneStyle={STYLES(theme).secondColumn}
+                        resizerStyle={STYLES(theme).resizerStyle}
                     >
                         <div>
                             <Button>

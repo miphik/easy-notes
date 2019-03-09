@@ -1,9 +1,12 @@
 // @flow
-import {Button, Popconfirm} from 'antd';
+import {Popconfirm} from 'antd';
 import FileExplorerTheme from 'components/CategoryTree/CategorySortebleTreeTheme';
+import CButton from 'components/CButton';
 import Spinner from 'components/Spinner';
+import memoizeOne from 'memoize-one';
 import {inject, observer} from 'mobx-react';
 import moment from 'moment';
+import Radium from 'radium';
 import * as React from 'react';
 import {FormattedMessage as Fm} from 'react-intl';
 import SortableTree from 'react-sortable-tree';
@@ -11,8 +14,10 @@ import {formatMessageIntl} from 'services/LocaleService';
 import {showNotification} from 'services/NotificationService';
 import {ROOT_CATEGORY_NAME} from 'src/constants/general';
 import {REMOVED_CATEGORY, WITHOUT_CATEGORY} from 'stores/NoteStore';
+import type {ThemeType} from 'stores/ThemeStore';
 import type {CategoryType} from 'types/NoteType';
 import {emptyFunc} from 'utils/General';
+import styles from './styles.styl';
 
 const MESSAGES = {
     newCategoryName:             <Fm id="CategoryItem.render.new_category_name" defaultMessage="New category"/>,
@@ -42,11 +47,39 @@ const MESSAGES = {
 const EMPTY_CATEGORY = {uuid: WITHOUT_CATEGORY, parentUUID: [ROOT_CATEGORY_NAME]};
 const DELETED_CATEGORY = {uuid: REMOVED_CATEGORY, parentUUID: [ROOT_CATEGORY_NAME]};
 
+const STYLES = memoizeOne((theme: ThemeType) => (
+    {
+        buttonGroup:     {
+            flex: 1
+        },
+        buttonContainer: {
+            margin: theme.scaleFactor * 8,
+        },
+        removeButton:    {
+            color:    theme.color.button,
+            ':hover': {
+                color: theme.color.dangerButton,
+            }
+        },
+        addButton:       {
+            color:    theme.color.button,
+            ':hover': {
+                color: theme.color.buttonActive,
+            }
+        },
+        resizerStyle:    {
+            backgroundColor: theme.color.black,
+            opacity:         0.4
+        }
+    }
+));
+
 type PropsType = {
     categories: Array<CategoryType>,
     categoriesIsLoading: boolean,
-    bar?: string,
+    theme: ThemeType,
 };
+
 
 @inject(stores => (
     {
@@ -61,18 +94,20 @@ type PropsType = {
         selectedCategory:     stores.categoryStore.getSelectedCategory,
         categoriesIsLoading:  stores.categoryStore.getCategoriesIsLoading,
         setNoteCategory:      stores.noteStore.setNoteCategory,
+        theme:                stores.themeStore.getTheme,
     }
 ))
 @observer
+@Radium
 export default class CategoryTree extends React.Component<PropsType> {
     state = {
-        categoryModalIsOpen:   false,
+        categoryModalIsOpen: false,
     };
 
     openCategoryModalForNew = () => {
         const {createUpdateCategory, syncCategories, selectedCategory} = this.props;
         this.setState({
-            categoryModalIsOpen:   true,
+            categoryModalIsOpen: true,
         });
         createUpdateCategory({title: formatMessageIntl(MESSAGES.newCategoryName)}, emptyFunc, () => {
             syncCategories();
@@ -80,7 +115,7 @@ export default class CategoryTree extends React.Component<PropsType> {
     };
 
     openCategoryModal = () => this.setState({
-        categoryModalIsOpen:   true,
+        categoryModalIsOpen: true,
     });
 
     closeCategoryModal = () => this.setState({categoryModalIsOpen: false});
@@ -137,7 +172,7 @@ export default class CategoryTree extends React.Component<PropsType> {
     };
 
     render() {
-        const {categoriesAsTree, selectedCategory, categoriesIsLoading} = this.props;
+        const {categoriesAsTree, selectedCategory, categoriesIsLoading, theme} = this.props;
         const {categoryModalIsOpen} = this.state;
         let formInitialValues = {};
         if (selectedCategory) {
@@ -147,30 +182,44 @@ export default class CategoryTree extends React.Component<PropsType> {
             formInitialValues.parent = selectedCategory.parentUUID[0] === ROOT_CATEGORY_NAME
                 ? formatMessageIntl(MESSAGES.rootCategoryWhenEdit) : selectedCategory.parentUUID[0];
         }
+
         return (
             <div>
-                <div>HOME</div>
-                <Button onClick={this.openCategoryModalForNew}>
-                    {MESSAGES.addNewCategory}
-                </Button>
-                {selectedCategory ? <div>
-                    <Button onClick={this.openCategoryModal}>
-                        {MESSAGES.updateCategory}
-                    </Button>
-                    <Popconfirm
-                        placement="rightTop"
-                        title={MESSAGES.deleteCategoryConfirm}
-                        onConfirm={this.onRemoveCategory}
+                <div className={styles.button_container} style={STYLES(theme).buttonContainer}>
+                    <div className={styles.button_filler}/>
+                    <CButton
+                        className={styles.add_button}
+                        ghost
+                        icon="plus"
+                        onClick={this.openCategoryModalForNew}
+                        style={STYLES(theme).addButton}
+                    />
+                    <div
+                        className={`${styles.button_group} ${!!selectedCategory ? styles.button_group_show : ''}`}
                     >
-                        <Button
-                            type="danger"
+                        <CButton
+                            className={styles.add_button}
                             ghost
+                            icon="edit"
+                            onClick={this.openCategoryModal}
+                            style={STYLES(theme).addButton}
+                        />
+                        <Popconfirm
+                            style={{backgroundColor: 'gray'}}
+                            placement="rightTop"
+                            title={MESSAGES.deleteCategoryConfirm}
+                            onConfirm={this.onRemoveCategory}
                         >
-                            {MESSAGES.removeCategory}
-                        </Button>
-                    </Popconfirm>
-                </div> : null}
-                pane 1 size: 33%
+                            <CButton
+                                className={styles.add_button}
+                                ghost
+                                icon="delete"
+                                type="danger"
+                                style={STYLES(theme).removeButton}
+                            />
+                        </Popconfirm>
+                    </div>
+                </div>
                 <div
                     style={
                         selectedCategory && selectedCategory.uuid === WITHOUT_CATEGORY

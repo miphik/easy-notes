@@ -4,7 +4,7 @@ const postcss = require('./postcss');
 
 module.exports = function (paths) {
     return {
-        module: {
+        module:  {
             rules: [
                 {
                     test:    /\.scss$/,

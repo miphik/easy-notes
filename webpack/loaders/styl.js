@@ -9,7 +9,14 @@ module.exports = function (paths) {
                     include: paths,
                     use:     [
                         'style-loader',
-                        'css-loader',
+                        {
+                            loader:  'css-loader',
+                            options: {
+                                modules:        true,
+                                importLoaders:  true,
+                                localIdentName: '[path][local]__[hash:base64:5]',
+                            },
+                        },
                         postcss,
                         'stylus-loader',
                     ],

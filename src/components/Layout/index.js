@@ -1,25 +1,15 @@
-// import {Icon, Layout} from 'antd';
+// @flow
+import memoizeOne from 'memoize-one';
 import {inject, observer} from 'mobx-react';
-// import logo from 'app/images/logo-3-white.png';
-// import Routes from 'app/js/components/Layout/Routes';
-// import {PREVIOUS_PATH, redirectToLogin} from 'app/js/utils/ApiUtils';
-// import {setIntl} from 'app/js/utils/LocaleUtils';
-// import {inject, observer} from 'mobx-react';
 import React, {Component} from 'react';
 import {injectIntl} from 'react-intl';
-import {
-    NavLink, Route, Switch, withRouter,
-} from 'react-router-dom';
+import {Route, Switch, withRouter} from 'react-router-dom';
 import {setIntl} from 'services/LocaleService';
 import {ABOUT_PATH, HOME_PATH, WEBDAV_AUTH_PATH} from 'src/constants/routes';
 import About from 'src/pages/About';
-// import {onlyUpdateForKeys} from 'recompose';
-// import store from 'store';
-// import {unsetToken} from '../../utils/TokenManger';
-// import AppBreadcrumbs from '../AppBreadcrumbs';
 import Home from 'src/pages/Home';
 import WebdavAuth from 'src/pages/WebdavAuth';
-import styles from './Layout.styl';
+import type {ThemeType} from 'stores/ThemeStore';
 
 // import Header from './Header';
 // import Menu from './Menu';
@@ -28,6 +18,22 @@ import styles from './Layout.styl';
 // const MESSAGES = {
 //     versionTitle: <Fm id="AppLayout.render.version" defaultMessage="Admin UI #"/>,
 // };
+
+const STYLES = memoizeOne((theme: ThemeType) => (
+    {
+        wrapper: {
+            backgroundColor: theme.color.first,
+            color:           theme.color.textMain,
+            width:           '100%',
+            height:          '100%',
+            fontSize:        theme.mainFontSize,
+        },
+    }
+));
+
+type PropsType = {
+    theme: ThemeType,
+};
 
 @withRouter
 @injectIntl
@@ -39,11 +45,12 @@ import styles from './Layout.styl';
         loadLocalNotes:      stores.noteStore.loadLocalNotes,
         remoteStoreIsAuth:   stores.remoteAuthStore.isAuth,
         remoteStoreIsInited: stores.remoteAuthStore.isInited,
+        theme:               stores.themeStore.getTheme,
     }
 ))
 // @onlyUpdateForKeys(['profileStore', 'error', 'location'])
 @observer
-class AppLayout extends Component {
+class AppLayout extends Component<PropsType> {
     constructor(props) {
         super(props);
         setIntl(props.intl);
@@ -56,15 +63,6 @@ class AppLayout extends Component {
         if (remoteStoreIsInited && !remoteStoreIsAuth) {
             loadLocalCategories(loadLocalNotes);
         }
-        // const {profileStore} = this.props;
-        // profileStore.fetchUserProfile({
-        // Remove splash screen after load
-        // successCallback: () => setTimeout(() => {
-        // const splash = document.getElementsByClassName('splash')[0];
-        // splash.classList.add('splash_hide');
-        // setTimeout(() => (splash.style.display = 'none'), 500);
-        // }, 500),
-        // });
     }
 
     componentWillReceiveProps(nextProps) {
@@ -79,40 +77,13 @@ class AppLayout extends Component {
             )) {
             syncCategories(syncNotes);
         }
-        /* const wbIsAuth = RemoteStoreService.isAuth();
-        if (wbIsAuth) syncCategories();
-        else loadLocalData();*/
-        /* setIntl(nextProps.intl);
-        const {
-            profileStore: {error},
-        } = nextProps;
-        if (error) {
-            unsetToken();
-            redirectToLogin();
-        }*/
     }
 
     render() {
-        // const {} = this.props;
-        return (
-            <div>
-                {/* <div>
-                    <NavLink to="/">
-                        <div className={styles.ul}>
-                            LOGO
-                        </div>
-                    </NavLink>
+        const {theme} = this.props;
 
-                    <div className="msp-sider-menu-item-profile">
-                        MENU
-                        <NavLink to={ABOUT_PATH}>
-                            ABOUT
-                        </NavLink>
-                    </div>
-                </div>
-                <div>
-                    BREADCRUMPS
-                </div> */}
+        return (
+            <div style={STYLES(theme).wrapper} className={theme.isBlack ? 'AppLayout_is_black' : 'AppLayout_is_white'}>
                 <section className="msp-content-inner">
                     <Switch>
                         <Route exact path={ABOUT_PATH} component={About}/>

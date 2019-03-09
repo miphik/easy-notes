@@ -3,15 +3,15 @@ import Layout from 'components/Layout';
 import Spinner from 'components/Spinner';
 import {inject} from 'mobx-react';
 import PropTypes from 'prop-types';
-import React, {PureComponent} from 'react';
+import React, {Component} from 'react';
 import {hot} from 'react-hot-loader/root';
 import {IntlProvider} from 'react-intl';
 import {BrowserRouter as Router, Route} from 'react-router-dom';
+import 'react-sortable-tree/style.css';
 import {Slide, ToastContainer} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import SerializationService from 'services/SerializationService';
 import type {StoresType} from 'stores';
-import 'react-sortable-tree/style.css';
 // import {LocaleProvider} from 'antd';
 
 // import enUS from 'antd/lib/locale-provider/en_US';
@@ -26,7 +26,7 @@ import 'react-sortable-tree/style.css';
         remoteStoreIsInited: mobxStores.remoteAuthStore.isInited,
     }
 ))
-class App extends PureComponent {
+class App extends Component {
     state = {
         serializationInited: false,
     };
