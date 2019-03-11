@@ -61,6 +61,7 @@ export default class Popconfirmer extends React.PureComponent<PropsType> {
             <Popover
                 isOpen={isPopoverOpen}
                 onClickOutside={this.toggleOpenPopover}
+                transitionDuration={0.01}
                 position={['top', 'right', 'left', 'bottom']} // preferred position
                 containerStyle={style.container}
                 content={({position, targetRect, popoverRect}) => (
