@@ -1,8 +1,7 @@
 // @flow
-import {Popconfirm} from 'antd';
 import FileExplorerTheme from 'components/CategoryTree/CategorySortebleTreeTheme';
 import CButton from 'components/CButton';
-import Popover from 'react-awesome-popover';
+import Popconfirmer from 'components/Popconfirmer';
 import Spinner from 'components/Spinner';
 import memoizeOne from 'memoize-one';
 import {inject, observer} from 'mobx-react';
@@ -14,6 +13,7 @@ import SortableTree from 'react-sortable-tree';
 import {formatMessageIntl} from 'services/LocaleService';
 import {showNotification} from 'services/NotificationService';
 import {ROOT_CATEGORY_NAME} from 'src/constants/general';
+import {CONFIRM_BUTTON_TEXT, confirmButtonText} from 'src/constants/text';
 import {REMOVED_CATEGORY, WITHOUT_CATEGORY} from 'stores/NoteStore';
 import type {ThemeType} from 'stores/ThemeStore';
 import type {CategoryType} from 'types/NoteType';
@@ -50,6 +50,7 @@ const DELETED_CATEGORY = {uuid: REMOVED_CATEGORY, parentUUID: [ROOT_CATEGORY_NAM
 
 const STYLES = memoizeOne((theme: ThemeType) => (
     {
+        confirmButton:   {display: 'flex', justifyContent: 'center'},
         buttonGroup:     {
             flex: 1
         },
@@ -183,17 +184,18 @@ export default class CategoryTree extends React.Component<PropsType> {
             formInitialValues.parent = selectedCategory.parentUUID[0] === ROOT_CATEGORY_NAME
                 ? formatMessageIntl(MESSAGES.rootCategoryWhenEdit) : selectedCategory.parentUUID[0];
         }
+        const style = STYLES(theme);
 
         return (
             <div>
-                <div className={styles.button_container} style={STYLES(theme).buttonContainer}>
+                <div className={styles.button_container} style={style.buttonContainer}>
                     <div className={styles.button_filler}/>
                     <CButton
                         className={styles.add_button}
                         ghost
                         icon="plus"
                         onClick={this.openCategoryModalForNew}
-                        style={STYLES(theme).addButton}
+                        style={style.addButton}
                     />
                     <div
                         className={`${styles.button_group} ${!!selectedCategory ? styles.button_group_show : ''}`}
@@ -203,30 +205,38 @@ export default class CategoryTree extends React.Component<PropsType> {
                             ghost
                             icon="edit"
                             onClick={this.openCategoryModal}
-                            style={STYLES(theme).addButton}
+                            style={style.addButton}
                         />
 
-                        <Popconfirm
-                            style={{backgroundColor: 'gray', margin: 166}}
-
-                            placement="rightTop"
-                            title={MESSAGES.deleteCategoryConfirm}
-                            onConfirm={this.onRemoveCategory}
-                        >
-                            <CButton
+                        <Popconfirmer
+                            backgroundColor={theme.color.first}
+                            textColor={theme.color.textMain}
+                            scaleFactor={theme.scaleFactor}
+                            content={<div>
+                                {MESSAGES.deleteCategoryConfirm}
+                                <div style={style.confirmButton}>
+                                    <CButton
+                                        className={styles.add_button}
+                                        ghost
+                                        icon="check"
+                                        type="danger"
+                                        onClick={this.onRemoveCategory}
+                                        style={style.removeButton}
+                                    >
+                                        {CONFIRM_BUTTON_TEXT}
+                                    </CButton>
+                                </div>
+                            </div>}
+                            trigger={<CButton
                                 className={styles.add_button}
                                 ghost
                                 icon="delete"
                                 type="danger"
-                                style={STYLES(theme).removeButton}
-                            />
-                        </Popconfirm>
+                                style={style.removeButton}
+                            />}
+                        />
                     </div>
                 </div>
-                <Popover arrowFill="#1C262A">
-                    <button>The Target</button>
-                    <div style={{backgroundColor: '#1C262A', boxShadow: '2px 3px 9px 1px rgba(0,0,0,0.75)'}}>The content</div>
-                </Popover>
                 <div
                     style={
                         selectedCategory && selectedCategory.uuid === WITHOUT_CATEGORY
