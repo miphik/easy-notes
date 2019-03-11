@@ -2,6 +2,7 @@
 import {Popconfirm} from 'antd';
 import FileExplorerTheme from 'components/CategoryTree/CategorySortebleTreeTheme';
 import CButton from 'components/CButton';
+import Popover from 'react-awesome-popover';
 import Spinner from 'components/Spinner';
 import memoizeOne from 'memoize-one';
 import {inject, observer} from 'mobx-react';
@@ -204,8 +205,10 @@ export default class CategoryTree extends React.Component<PropsType> {
                             onClick={this.openCategoryModal}
                             style={STYLES(theme).addButton}
                         />
+
                         <Popconfirm
-                            style={{backgroundColor: 'gray'}}
+                            style={{backgroundColor: 'gray', margin: 166}}
+
                             placement="rightTop"
                             title={MESSAGES.deleteCategoryConfirm}
                             onConfirm={this.onRemoveCategory}
@@ -220,6 +223,10 @@ export default class CategoryTree extends React.Component<PropsType> {
                         </Popconfirm>
                     </div>
                 </div>
+                <Popover arrowFill="#1C262A">
+                    <button>The Target</button>
+                    <div style={{backgroundColor: '#1C262A', boxShadow: '2px 3px 9px 1px rgba(0,0,0,0.75)'}}>The content</div>
+                </Popover>
                 <div
                     style={
                         selectedCategory && selectedCategory.uuid === WITHOUT_CATEGORY
