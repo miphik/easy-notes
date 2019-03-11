@@ -1,7 +1,7 @@
 // @flow
 import FileExplorerTheme from 'components/CategoryTree/CategorySortebleTreeTheme';
-import CButton from 'components/CButton';
-import Popconfirmer from 'components/Popconfirmer';
+import CategoryItem from 'components/CategoryTree/CategoryItem';
+import ColumnToolbar from 'components/ColumnToolbar';
 import Spinner from 'components/Spinner';
 import memoizeOne from 'memoize-one';
 import {inject, observer} from 'mobx-react';
@@ -13,7 +13,6 @@ import SortableTree from 'react-sortable-tree';
 import {formatMessageIntl} from 'services/LocaleService';
 import {showNotification} from 'services/NotificationService';
 import {ROOT_CATEGORY_NAME} from 'src/constants/general';
-import {CONFIRM_BUTTON_TEXT, confirmButtonText} from 'src/constants/text';
 import {REMOVED_CATEGORY, WITHOUT_CATEGORY} from 'stores/NoteStore';
 import type {ThemeType} from 'stores/ThemeStore';
 import type {CategoryType} from 'types/NoteType';
@@ -82,7 +81,6 @@ type PropsType = {
     theme: ThemeType,
 };
 
-
 @inject(stores => (
     {
         createUpdateCategory: stores.categoryStore.createUpdateCategory,
@@ -103,24 +101,24 @@ type PropsType = {
 @Radium
 export default class CategoryTree extends React.Component<PropsType> {
     state = {
-        categoryModalIsOpen: false,
+        categoryIsEdit: false,
     };
 
-    openCategoryModalForNew = () => {
+    onAddNewCategory = () => {
         const {createUpdateCategory, syncCategories, selectedCategory} = this.props;
         this.setState({
-            categoryModalIsOpen: true,
+            categoryIsEdit: true,
         });
         createUpdateCategory({title: formatMessageIntl(MESSAGES.newCategoryName)}, emptyFunc, () => {
             syncCategories();
         });
     };
 
-    openCategoryModal = () => this.setState({
-        categoryModalIsOpen: true,
+    onEditCategory = () => this.setState({
+        categoryIsEdit: true,
     });
 
-    closeCategoryModal = () => this.setState({categoryModalIsOpen: false});
+    closeCategoryModal = () => this.setState({categoryIsEdit: false});
 
     updateCategoryName = (categoryName: string) => {
         if (categoryName === null) {
@@ -175,7 +173,7 @@ export default class CategoryTree extends React.Component<PropsType> {
 
     render() {
         const {categoriesAsTree, selectedCategory, categoriesIsLoading, theme} = this.props;
-        const {categoryModalIsOpen} = this.state;
+        const {categoryIsEdit} = this.state;
         let formInitialValues = {};
         if (selectedCategory) {
             formInitialValues.parent = selectedCategory.uuid;
@@ -188,56 +186,24 @@ export default class CategoryTree extends React.Component<PropsType> {
 
         return (
             <div>
-                <div className={styles.button_container} style={style.buttonContainer}>
-                    <div className={styles.button_filler}/>
-                    <CButton
-                        className={styles.add_button}
-                        ghost
-                        icon="plus"
-                        onClick={this.openCategoryModalForNew}
-                        style={style.addButton}
+                <ColumnToolbar
+                    theme={theme}
+                    selectedItem={selectedCategory}
+                    deleteConfirmText={MESSAGES.deleteCategoryConfirm}
+                    createNewItem={this.onAddNewCategory}
+                    updateItem={this.onEditCategory}
+                    deleteItem={this.onRemoveCategory}
+                />
+                <div onClick={this.onSelectCategory}>
+                    <CategoryItem
+                        category={EMPTY_CATEGORY}
+                        isNodeSelected={selectedCategory && selectedCategory.uuid === WITHOUT_CATEGORY}
+                        title={MESSAGES.withoutCategory}
+                        rowLabelClassName={styles.rowLabel}
+                        rowTitleClassName={styles.rowTitle}
                     />
-                    <div
-                        className={`${styles.button_group} ${!!selectedCategory ? styles.button_group_show : ''}`}
-                    >
-                        <CButton
-                            className={styles.add_button}
-                            ghost
-                            icon="edit"
-                            onClick={this.openCategoryModal}
-                            style={style.addButton}
-                        />
-
-                        <Popconfirmer
-                            backgroundColor={theme.color.first}
-                            textColor={theme.color.textMain}
-                            scaleFactor={theme.scaleFactor}
-                            content={<div>
-                                {MESSAGES.deleteCategoryConfirm}
-                                <div style={style.confirmButton}>
-                                    <CButton
-                                        className={styles.add_button}
-                                        ghost
-                                        icon="check"
-                                        type="danger"
-                                        onClick={this.onRemoveCategory}
-                                        style={style.removeButton}
-                                    >
-                                        {CONFIRM_BUTTON_TEXT}
-                                    </CButton>
-                                </div>
-                            </div>}
-                            trigger={<CButton
-                                className={styles.add_button}
-                                ghost
-                                icon="delete"
-                                type="danger"
-                                style={style.removeButton}
-                            />}
-                        />
-                    </div>
                 </div>
-                <div
+                {/*<div
                     style={
                         selectedCategory && selectedCategory.uuid === WITHOUT_CATEGORY
                             ? {color: 'red'} : {}
@@ -245,7 +211,7 @@ export default class CategoryTree extends React.Component<PropsType> {
                     onClick={this.onSelectCategory}
                 >
                     {MESSAGES.withoutCategory}
-                </div>
+                </div>*/}
                 <div
                     style={
                         selectedCategory && selectedCategory.uuid === REMOVED_CATEGORY
@@ -255,7 +221,7 @@ export default class CategoryTree extends React.Component<PropsType> {
                 >
                     {MESSAGES.removedCategory}
                 </div>
-                <div style={{height: 400}} onClick={categoryModalIsOpen ? emptyFunc : this.onClearSelectNode}>
+                <div style={{height: 400}} onClick={categoryIsEdit ? emptyFunc : this.onClearSelectNode}>
                     <Spinner show={categoriesIsLoading} size="small"/>
                     {!categoriesIsLoading ? (
                         <SortableTree
@@ -272,7 +238,7 @@ export default class CategoryTree extends React.Component<PropsType> {
                             getNodeKey={({node}) => node.uuid}
                             generateNodeProps={({node, path}) => (
                                 {
-                                    categoryIsEditing:  categoryModalIsOpen,
+                                    categoryIsEditing:  categoryIsEdit,
                                     onSelectNode:       this.onSelectCategory,
                                     updateCategoryName: this.updateCategoryName,
                                     selectedNode:       selectedCategory,
@@ -301,7 +267,7 @@ export default class CategoryTree extends React.Component<PropsType> {
                 {/*<CategoryForm
                     isNew={categoryModalIsForNew}
                     onSubmit={this.onSubmitCategoryForm}
-                    isVisible={categoryModalIsOpen}
+                    isVisible={categoryIsEdit}
                     onClose={this.closeCategoryModal}
                     categories={categoriesAsTree}
                     initialValues={formInitialValues}

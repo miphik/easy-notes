@@ -158,10 +158,6 @@ export default class Home extends React.Component<PropsType> {
                         resizerStyle={STYLES(theme).resizerStyle}
                     >
                         <div>
-                            <Button>
-                                <NavLink to={WEBDAV_AUTH_PATH}>WEBDAV</NavLink>
-                            </Button>
-                            pane 2 size: 50% (of remaining space)
                             <NoteList/>
                         </div>
                         <div>

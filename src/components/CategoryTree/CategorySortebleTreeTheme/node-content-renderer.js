@@ -136,9 +136,6 @@ class FileThemeNodeContentRenderer extends Component {
                         + (
                             !canDrag ? ` ${styles.rowWrapperDragDisabled}` : ''
                         )
-                        + (
-                            isNodeSelected ? ` ${styles.rowItemIsSelected}` : ''
-                        )
                     }
                 >
                     {/* Set the row preview to be used during drag and drop */}

@@ -70,6 +70,9 @@ export default class CategoryItem extends React.Component<PropsType> {
             rowLabelClassName, rowTitleClassName, title, categoryIsEditing,
             isNodeSelected, category,
         } = this.props;
+        const style = {};
+        if (isNodeSelected) style.color = 'red';
+        if (isOver) style.color = 'green';
 
         return (
             <React.Fragment>
@@ -89,7 +92,7 @@ export default class CategoryItem extends React.Component<PropsType> {
                         onDragOver={this.onDragOver}
                         onDrop={this.onDrop}
                         className={rowLabelClassName}
-                        style={isOver ? {color: 'green'} : {}}
+                        style={style}
                     >
                         <span className={rowTitleClassName}>
                             {title}

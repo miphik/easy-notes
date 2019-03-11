@@ -1,12 +1,15 @@
 // @flow
 import {Button, Popconfirm} from 'antd';
-import NoteForm from 'components/NoteList/NoteForm';
+import ColumnToolbar from 'components/ColumnToolbar';
+import CButton from 'components/CButton';
 import NoteItem from 'components/NoteList/NoteItem';
 import {inject, observer} from 'mobx-react';
 import * as React from 'react';
 import {FormattedMessage as Fm} from 'react-intl';
+import {NavLink} from 'react-router-dom';
 import {formatMessageIntl} from 'services/LocaleService';
 import {showNotification} from 'services/NotificationService';
+import {WEBDAV_AUTH_PATH} from 'src/constants/routes';
 import {REMOVED_CATEGORY, WITHOUT_CATEGORY} from 'stores/NoteStore';
 import type {CategoryType, NoteType} from 'types/NoteType';
 import {emptyFunc} from 'utils/General';
@@ -61,6 +64,7 @@ const MESSAGES = {
         syncNotes:        stores.noteStore.syncNotes,
         removeNote:       stores.noteStore.removeNote,
         setNoteCategory:  stores.noteStore.setNoteCategory,
+        theme:            stores.themeStore.getTheme,
     }
 ))
 @observer
@@ -71,7 +75,7 @@ export default class NoteList extends React.Component<PropsType> {
     };
 
     state = {
-        noteModalIsOpen:      false,
+        noteIsEdit:      false,
         removeCategoryIsOver: false,
         noteIsDragging:       false,
     };
@@ -87,21 +91,21 @@ export default class NoteList extends React.Component<PropsType> {
         }
     }
 
-    openNoteModalForNew = () => {
+    onAddNewNote = () => {
         const {createUpdateNote, syncNotes} = this.props;
         this.setState({
-            noteModalIsOpen: true,
+            noteIsEdit: true,
         });
         createUpdateNote({title: formatMessageIntl(MESSAGES.newNoteTitle)}, emptyFunc, () => {
             syncNotes();
         });
     };
 
-    openNoteModal = () => this.setState({
-        noteModalIsOpen: true,
+    onEditNote = () => this.setState({
+        noteIsEdit: true,
     });
 
-    closeNoteModal = () => this.setState({noteModalIsOpen: false});
+    closeNoteModal = () => this.setState({noteIsEdit: false});
 
     updateNoteTitle = (noteTitle: string) => {
         if (noteTitle === null) {
@@ -179,18 +183,22 @@ export default class NoteList extends React.Component<PropsType> {
     };
 
     render() {
-        const {noteModalIsOpen, removeCategoryIsOver, noteIsDragging} = this.state;
-        const {notes, selectedCategory, selectedNote} = this.props;
+        const {noteIsEdit, removeCategoryIsOver, noteIsDragging} = this.state;
+        const {notes, selectedCategory, selectedNote, theme} = this.props;
         return (
             <div>
                 {selectedCategory && selectedCategory.uuid === REMOVED_CATEGORY ? (
                     <div>{MESSAGES.removedCategoryExplanation}</div>
                 ) : null}
-                {selectedCategory ? (
-                    <Button onClick={this.openNoteModalForNew}>
-                        {MESSAGES.addNewNote}
-                    </Button>
-                ) : null}
+                <ColumnToolbar
+                    theme={theme}
+                    showAddButton={!!selectedCategory}
+                    selectedItem={selectedNote}
+                    deleteConfirmText={MESSAGES.deleteNoteConfirm}
+                    createNewItem={this.onAddNewNote}
+                    updateItem={this.onEditNote}
+                    deleteItem={this.onRemoveNote}
+                />
                 <div
                     style={{
                         backgroundColor: removeCategoryIsOver ? 'lightblue' : 'transparent',
@@ -204,24 +212,7 @@ export default class NoteList extends React.Component<PropsType> {
                 >
                     {MESSAGES.removeNoteFromCategory}
                 </div>
-                {selectedCategory && selectedNote ? <div>
-                    <Button onClick={this.openNoteModal}>
-                        {MESSAGES.updateNote}
-                    </Button>
-                    <Popconfirm
-                        // placement="rightTop"
-                        title={MESSAGES.deleteNoteConfirm}
-                        onConfirm={this.onRemoveNote}
-                    >
-                        <Button
-                            type="danger"
-                            ghost
-                        >
-                            {MESSAGES.removeNote}
-                        </Button>
-                    </Popconfirm>
-                </div> : null}
-                <div>NoteList {selectedCategory ? notes.length : 'Select any category'}</div>
+                <div>{selectedCategory ? notes.length : 'Select any category'}</div>
                 <div onClick={this.onClearSelectNode}>
                     <br/>
                     {notes.map((note: NoteType) => (
@@ -233,7 +224,7 @@ export default class NoteList extends React.Component<PropsType> {
                         >
                             <NoteItem
                                 note={note}
-                                noteIsEditing={noteModalIsOpen}
+                                noteIsEditing={noteIsEdit}
                                 updateNoteTitle={this.updateNoteTitle}
                                 noteIsDragging={noteIsDragging === note.uuid}
                                 noteIsSelected={selectedNote && note.uuid === selectedNote.uuid}
@@ -243,10 +234,12 @@ export default class NoteList extends React.Component<PropsType> {
                     ))}
                     <br/>
                 </div>
+
+                    <NavLink to={WEBDAV_AUTH_PATH}><CButton ghost icon="link"/></NavLink>
                 {/*<NoteForm
                     isNew={noteModalIsForNew}
                     onSubmit={this.onSubmitNoteForm}
-                    isVisible={noteModalIsOpen}
+                    isVisible={noteIsEdit}
                     onClose={this.closeNoteModal}
                     initialValues={{}}
                 />*/}
