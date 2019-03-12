@@ -109,6 +109,11 @@ class NoteStore {
                     noteItem.categoryUUIDs = noteItem.categoryUUIDs
                         .filter((catUUID: string) => catUUID !== categoryUUID);
                 } else {
+                    if (categoryUUID !== WITHOUT_CATEGORY && categoryUUID !== REMOVED_CATEGORY) {
+                        noteItem.categoryUUIDs = noteItem.categoryUUIDs
+                            .filter((catUUID: string) => catUUID !== WITHOUT_CATEGORY);
+                        noteItem.isDeleted = false;
+                    }
                     noteItem.categoryUUIDs.push(categoryUUID);
                 }
                 noteItem.updatedAt = moment().format();

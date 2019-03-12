@@ -1,15 +1,11 @@
 // @flow
-import {Button, Popconfirm} from 'antd';
 import ColumnToolbar from 'components/ColumnToolbar';
-import CButton from 'components/CButton';
 import NoteItem from 'components/NoteList/NoteItem';
 import {inject, observer} from 'mobx-react';
 import * as React from 'react';
 import {FormattedMessage as Fm} from 'react-intl';
-import {NavLink} from 'react-router-dom';
 import {formatMessageIntl} from 'services/LocaleService';
 import {showNotification} from 'services/NotificationService';
-import {WEBDAV_AUTH_PATH} from 'src/constants/routes';
 import {REMOVED_CATEGORY, WITHOUT_CATEGORY} from 'stores/NoteStore';
 import type {CategoryType, NoteType} from 'types/NoteType';
 import {emptyFunc} from 'utils/General';
@@ -75,7 +71,7 @@ export default class NoteList extends React.Component<PropsType> {
     };
 
     state = {
-        noteIsEdit:      false,
+        noteIsEdit:           false,
         removeCategoryIsOver: false,
         noteIsDragging:       false,
     };
@@ -149,9 +145,11 @@ export default class NoteList extends React.Component<PropsType> {
 
     onDragOver = event => {
         if (event.dataTransfer.items.length !== 2 || event.dataTransfer.items[1].type !== 'category') return true;
+        const {removeCategoryIsOver} = this.state;
         event.stopPropagation();
         event.preventDefault();
         event.dataTransfer.dropEffect = 'move';
+        if (removeCategoryIsOver) return false;
         this.setState({removeCategoryIsOver: true});
         return false;
     };
@@ -185,6 +183,10 @@ export default class NoteList extends React.Component<PropsType> {
     render() {
         const {noteIsEdit, removeCategoryIsOver, noteIsDragging} = this.state;
         const {notes, selectedCategory, selectedNote, theme} = this.props;
+        const isAddButtonDisabled = !selectedCategory
+            || selectedCategory.uuid === WITHOUT_CATEGORY
+            || selectedCategory.uuid === REMOVED_CATEGORY;
+
         return (
             <div>
                 {selectedCategory && selectedCategory.uuid === REMOVED_CATEGORY ? (
@@ -192,7 +194,7 @@ export default class NoteList extends React.Component<PropsType> {
                 ) : null}
                 <ColumnToolbar
                     theme={theme}
-                    addButtonIsDisabled={!selectedCategory}
+                    addButtonIsDisabled={isAddButtonDisabled}
                     selectedItem={selectedNote}
                     deleteConfirmText={MESSAGES.deleteNoteConfirm}
                     createNewItem={this.onAddNewNote}
@@ -235,7 +237,6 @@ export default class NoteList extends React.Component<PropsType> {
                     <br/>
                 </div>
 
-                    <NavLink to={WEBDAV_AUTH_PATH}><CButton ghost icon="link"/></NavLink>
                 {/*<NoteForm
                     isNew={noteModalIsForNew}
                     onSubmit={this.onSubmitNoteForm}

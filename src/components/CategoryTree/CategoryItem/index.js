@@ -1,20 +1,51 @@
 // @flow
 import {Input} from 'antd';
+import memoizeOne from 'memoize-one';
 import * as React from 'react';
+import type {ThemeType} from 'stores/ThemeStore';
 import type {CategoryType} from 'types/NoteType';
+
+const STYLES = memoizeOne((theme: ThemeType) => (
+    {
+        input:  {
+            background: 'transparent',
+            color:      'white',
+            border:     'none',
+            outline:    'none',
+            boxShadow:  'none',
+            marginLeft: -11,
+        },
+        item: {
+            display:    'flex',
+            alignItems: 'center',
+        },
+        overItem: {
+
+        },
+        selectedItem: {
+            backgroundColor: 'blue',
+        },
+    }
+));
 
 type PropsType = {
     title: string | object,
     rowTitleClassName: string,
     rowLabelClassName: string,
+    isNodeSelectable?: boolean,
     categoryIsEditing: boolean,
     isNodeSelected: boolean,
     category: CategoryType,
     changeNoteCategory: (noteUUID: string, categoryUUIDs: Array<string>) => void,
     updateCategoryName: (categoryName: string) => void,
+    theme: ThemeType,
 };
 
 export default class CategoryItem extends React.Component<PropsType> {
+    static defaultProps = {
+        isNodeSelectable: true,
+    };
+
     state = {
         isOver:       false,
         categoryName: null,
@@ -76,14 +107,12 @@ export default class CategoryItem extends React.Component<PropsType> {
         const {isOver, categoryName} = this.state;
         const {
             rowLabelClassName, rowTitleClassName, title, categoryIsEditing,
-            isNodeSelected, category,
+            isNodeSelected, category, theme, isNodeSelectable,
         } = this.props;
-        const style = {
-            display:    'flex',
-            alignItems: 'center',
-        };
-        if (isNodeSelected) style.color = 'red';
-        if (isOver) style.color = 'green';
+        const style = STYLES(theme);
+        let styleItem = style.item;
+        if (isNodeSelected && isNodeSelectable) styleItem = {...styleItem, ...style.selectedItem};
+        if (isOver) styleItem = {...styleItem, ...style.overItem};
 
         return (
             <React.Fragment>
@@ -96,14 +125,7 @@ export default class CategoryItem extends React.Component<PropsType> {
                             onBlur={this.editCancel}
                             value={categoryName || category.title}
                             defaultValue={category.title}
-                            style={{
-                                background: 'transparent',
-                                color:      'white',
-                                border:     'none',
-                                outline:    'none',
-                                boxShadow:  'none',
-                                marginLeft: -11,
-                            }}
+                            style={style.input}
                         />
                     </div>
                 ) : (
@@ -112,7 +134,7 @@ export default class CategoryItem extends React.Component<PropsType> {
                         onDragOver={this.onDragOver}
                         onDrop={this.onDrop}
                         className={rowLabelClassName}
-                        style={style}
+                        style={styleItem}
                     >
                         <span className={rowTitleClassName}>
                             {title}

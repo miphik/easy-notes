@@ -1,6 +1,7 @@
 // @flow
 import {Button, Icon} from 'antd';
 import CategoryTree from 'components/CategoryTree';
+import CButton from 'components/CButton';
 import NoteEditor from 'components/NoteEditor';
 import NoteList from 'components/NoteList';
 import memoizeOne from 'memoize-one';
@@ -164,7 +165,7 @@ export default class Home extends React.Component<PropsType> {
                             <div>
                                 AUTH: {remoteStoreIsAuth ? <Icon type="check"/> : <Icon type="cross"/>}
                             </div>
-                            pane 3
+                            <NavLink to={WEBDAV_AUTH_PATH}><CButton ghost icon="link"/></NavLink>
                             <NoteEditor/>
                         </div>
                     </SplitPane>

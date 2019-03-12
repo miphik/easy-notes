@@ -131,6 +131,7 @@ class FileThemeNodeContentRenderer extends Component {
                             onSelectNode(node);
                         }
                     }}
+                    style={isNodeSelected ? {backgroundColor: '#448AFF'} : {}}
                     className={
                         styles.rowWrapper
                         + (
@@ -189,6 +190,7 @@ class FileThemeNodeContentRenderer extends Component {
                                     <CategoryItem
                                         category={node}
                                         isNodeSelected={isNodeSelected}
+                                        isNodeSelectable={false}
                                         updateCategoryName={updateCategoryName}
                                         categoryIsEditing={categoryIsEditing}
                                         changeNoteCategory={changeNoteCategory}

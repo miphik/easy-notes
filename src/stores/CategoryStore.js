@@ -2,6 +2,7 @@
 import {action, observable} from 'mobx';
 import moment from 'moment';
 import {getFlatDataFromTree, getTreeFromFlatData} from 'react-sortable-tree';
+import LocalStorageService from 'services/LocalStorageService';
 import LocalStoreService from 'services/LocalStoreService';
 import RemoteStoreService from 'services/RemoteStoreService';
 import {loadLocalCategories, syncRemoteAndLocalCategories} from 'services/SyncService';
@@ -13,15 +14,23 @@ import uuidv4 from 'uuid/v4';
 
 let remoteStorageService: StoreType = RemoteStoreService;
 let localStorageService: StoreType = LocalStoreService;
+let localStorage = LocalStorageService;
 
 export const setRemoteStorageService = (remoteService: StoreType) => remoteStorageService = remoteService;
 export const setLocalStorageService = (localService: StoreType) => localStorageService = localService;
+export const setLocalStorage = localStr => localStorage = localStr;
+
+const EXPANDED_NODES = 'EXPANDED_NODES';
 
 const getKey = (node: CategoryType) => node.uuid;
 const getParentKey = (node: CategoryType) => node.parentUUID[0];
 const categoryComparator = (a: CategoryType, b: CategoryType) => a.orderNumber - b.orderNumber;
 
 class CategoryStore {
+    constructor() {
+        this.setExpandedNodes();
+    }
+
     @observable categories = observable.array();
 
     @observable expandedNodes = observable.map();
@@ -29,6 +38,14 @@ class CategoryStore {
     @observable selectedCategory = null;
 
     @observable categoriesIsLoading = true;
+
+    @action
+    setExpandedNodes = () => {
+        localStorage.getAsync(
+            EXPANDED_NODES,
+            (error: Error, data: Object) => this.expandedNodes = observable.map(data),
+        );
+    };
 
     @action
     setCategories = (categories: Array<CategoryType>) => {
@@ -63,7 +80,12 @@ class CategoryStore {
     };
 
     @action
-    changeExpandedNodes = (extended: boolean, nodeUUID: string) => this.expandedNodes.set(nodeUUID, extended);
+    changeExpandedNodes = (extended: boolean, nodeUUID: string) => {
+        this.expandedNodes.set(nodeUUID, extended);
+        const nodes = {};
+        this.expandedNodes.toJS().forEach((status: boolean, catUUID: string) => nodes[catUUID] = status);
+        localStorage.setAsync(EXPANDED_NODES, nodes);
+    };
 
     @action
     changeCategoryTree = (
