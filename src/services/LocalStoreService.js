@@ -131,7 +131,9 @@ export default class LocalStoreService {
         error: () => {} = () => {},
         success: () => {} = () => {},
     ) => {
-        const categories = serializationService.convertCategoriesListToString(data);
+        const categories = serializationService.convertCategoriesListToString(
+            data.map((item: CategoryType, index: number) => ({...item, orderNumber: index})),
+        );
         fs.writeFile(LOCAL_PROJECT_CATEGORIES_MAIN_FILE, categories, (errW: Error) => {
             if (errW) error(errW);
             else success();

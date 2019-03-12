@@ -3,26 +3,26 @@ import CButton from 'components/CButton';
 import Popconfirmer from 'components/Popconfirmer';
 import memoizeOne from 'memoize-one';
 import * as React from 'react';
-import {CONFIRM_BUTTON_TEXT} from 'src/constants/text';
+import {CANCEL_CONFIRM_BUTTON_TEXT, CONFIRM_BUTTON_TEXT} from 'src/constants/text';
 import type {ThemeType} from 'stores/ThemeStore';
 import styles from './styles.styl';
 
 const STYLES = memoizeOne((theme: ThemeType) => (
     {
-        confirmButton: {display: 'flex', justifyContent: 'center'},
-        buttonGroup:   {
+        confirmButton:   {display: 'flex', justifyContent: 'center'},
+        buttonGroup:     {
             flex: 1,
         },
         buttonContainer: {
             margin: theme.scaleFactor * 8,
         },
-        removeButton: {
+        removeButton:    {
             color:    theme.color.button,
             ':hover': {
                 color: theme.color.dangerButton,
             },
         },
-        addButton: {
+        addButton:       {
             color:    theme.color.button,
             ':hover': {
                 color: theme.color.buttonActive,
@@ -33,6 +33,7 @@ const STYLES = memoizeOne((theme: ThemeType) => (
 
 type PropsType = {
     theme: ThemeType,
+    addButtonIsDisabled?: boolean,
     showAddButton?: boolean,
     selectedItem: Object,
     deleteConfirmText: string,
@@ -42,26 +43,43 @@ type PropsType = {
 };
 
 export default class ColumnToolbar extends React.PureComponent<PropsType> {
+    state = {
+        deleteConfirmIsOpen: false,
+    };
+
     static defaultProps = {
-        showAddButton: true,
+        showAddButton:       true,
+        addButtonIsDisabled: false,
+    };
+
+    toggleOpenDeleteConfirm = () => this.setState({deleteConfirmIsOpen: !this.state.deleteConfirmIsOpen});
+
+    onClickConfirm = () => {
+        const {deleteItem} = this.props;
+        deleteItem();
+        this.toggleOpenDeleteConfirm();
     };
 
     render() {
         const {
-            theme, selectedItem, deleteConfirmText, createNewItem, updateItem, deleteItem, showAddButton,
+            theme, selectedItem, deleteConfirmText, createNewItem, updateItem, showAddButton, addButtonIsDisabled,
         } = this.props;
+        const {deleteConfirmIsOpen} = this.state;
         const style = STYLES(theme);
 
         return (
             <div className={styles.button_container} style={style.buttonContainer}>
                 <div className={styles.button_filler}/>
-                {showAddButton ? <CButton
-                    className={styles.add_button}
-                    ghost
-                    icon="plus"
-                    onClick={createNewItem}
-                    style={style.addButton}
-                /> : null}
+                {showAddButton ? (
+                    <CButton
+                        className={styles.add_button}
+                        disabled={addButtonIsDisabled}
+                        ghost
+                        icon="plus"
+                        onClick={createNewItem}
+                        style={style.addButton}
+                    />
+                ) : null}
                 <div
                     className={`${styles.button_group} ${selectedItem ? styles.button_group_show : ''}`}
                 >
@@ -74,6 +92,8 @@ export default class ColumnToolbar extends React.PureComponent<PropsType> {
                     />
 
                     <Popconfirmer
+                        isOpen={deleteConfirmIsOpen}
+                        onToggle={this.toggleOpenDeleteConfirm}
                         backgroundColor={theme.color.first}
                         textColor={theme.color.textMain}
                         scaleFactor={theme.scaleFactor}
@@ -84,9 +104,18 @@ export default class ColumnToolbar extends React.PureComponent<PropsType> {
                                     <CButton
                                         className={styles.add_button}
                                         ghost
+                                        icon="cross"
+                                        onClick={this.toggleOpenDeleteConfirm}
+                                        style={style.addButton}
+                                    >
+                                        {CANCEL_CONFIRM_BUTTON_TEXT}
+                                    </CButton>
+                                    <CButton
+                                        className={styles.add_button}
+                                        ghost
                                         icon="check"
                                         type="danger"
-                                        onClick={deleteItem}
+                                        onClick={this.onClickConfirm}
                                         style={style.removeButton}
                                     >
                                         {CONFIRM_BUTTON_TEXT}

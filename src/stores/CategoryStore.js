@@ -78,6 +78,9 @@ class CategoryStore {
         }).map((item, index) => {
             item.node.parentUUID = item.parentNode ? [item.parentNode.uuid] : [ROOT_CATEGORY_NAME];
             item.node.orderNumber = index;
+            if (this.selectedCategory && this.selectedCategory.uuid === item.node.uuid) {
+                this.selectedCategory = item.node;
+            }
             return item.node;
         });
 

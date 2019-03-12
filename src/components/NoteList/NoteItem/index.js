@@ -36,12 +36,23 @@ export default class NoteItem extends React.PureComponent<PropsType> {
 
     onChangeNoteTitle = event => this.setState({noteTitle: event.currentTarget.value});
 
+    editCancel = event => {
+        event.preventDefault();
+        event.stopPropagation();
+        this.setState({noteTitle: null});
+        const {updateNoteTitle} = this.props;
+        updateNoteTitle(null);
+    };
+
     render() {
         const {
             note, onSelectNode, noteIsDragging, noteIsEditing, noteIsSelected,
         } = this.props;
         const {noteTitle} = this.state;
-        const style = {};
+        const style = {
+            display:    'flex',
+            alignItems: 'center',
+        };
         if (noteIsDragging) {
             style.border = '1px dashed gray';
         }
@@ -53,7 +64,16 @@ export default class NoteItem extends React.PureComponent<PropsType> {
                 {noteIsEditing && noteIsSelected ? (
                     <div>
                         <Input
+                            style={{
+                                background: 'transparent',
+                                color:      'white',
+                                border:     'none',
+                                outline:    'none',
+                                boxShadow:  'none',
+                                marginLeft: -11,
+                            }}
                             autoFocus
+                            onBlur={this.editCancel}
                             onKeyDown={this.handleKeyPress}
                             onChange={this.onChangeNoteTitle}
                             value={noteTitle || note.title}

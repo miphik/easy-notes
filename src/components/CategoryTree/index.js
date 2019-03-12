@@ -109,7 +109,7 @@ export default class CategoryTree extends React.Component<PropsType> {
         this.setState({
             categoryIsEdit: true,
         });
-        createUpdateCategory({title: formatMessageIntl(MESSAGES.newCategoryName)}, emptyFunc, () => {
+        createUpdateCategory({title: formatMessageIntl(MESSAGES.newCategoryName), orderNumber: 0}, emptyFunc, () => {
             syncCategories();
         });
     };
@@ -161,12 +161,14 @@ export default class CategoryTree extends React.Component<PropsType> {
         this.props.setSelectedCategory(DELETED_CATEGORY);
     };
     onVisibilityToggle = ({expanded, node}) => this.props.changeExpandedNodes(expanded, node.uuid);
-    onMoveNode = ({treeData, nextParentNode, node, treeIndex, prevTreeIndex, ...rest}) => {
+    onMoveNode = ({treeData, nextParentNode, node, treeIndex, prevTreeIndex, path, nextTreeIndex, ...rest}) => {
         const {changeCategoryTree, changeExpandedNodes, syncCategories} = this.props;
         node.updatedAt = moment().format();
+        node.orderNumber = nextTreeIndex + 1;
+        let parentCategory = null;
         if (nextParentNode) {
             changeExpandedNodes(true, nextParentNode.uuid);
-            nextParentNode.updatedAt = moment().format();
+            // nextParentNode.updatedAt = moment().format();
         }
         changeCategoryTree(treeData, emptyFunc, syncCategories);
     };

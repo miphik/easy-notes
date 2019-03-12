@@ -64,13 +64,24 @@ export default class CategoryItem extends React.Component<PropsType> {
         }
     };
 
+    editCancel = event => {
+        event.preventDefault();
+        event.stopPropagation();
+        this.setState({categoryName: null});
+        const {updateCategoryName} = this.props;
+        updateCategoryName(null);
+    };
+
     render() {
         const {isOver, categoryName} = this.state;
         const {
             rowLabelClassName, rowTitleClassName, title, categoryIsEditing,
             isNodeSelected, category,
         } = this.props;
-        const style = {};
+        const style = {
+            display:    'flex',
+            alignItems: 'center',
+        };
         if (isNodeSelected) style.color = 'red';
         if (isOver) style.color = 'green';
 
@@ -82,8 +93,17 @@ export default class CategoryItem extends React.Component<PropsType> {
                             autoFocus
                             onKeyDown={this.handleKeyPress}
                             onChange={this.onChangeCategoryName}
+                            onBlur={this.editCancel}
                             value={categoryName || category.title}
                             defaultValue={category.title}
+                            style={{
+                                background: 'transparent',
+                                color:      'white',
+                                border:     'none',
+                                outline:    'none',
+                                boxShadow:  'none',
+                                marginLeft: -11,
+                            }}
                         />
                     </div>
                 ) : (

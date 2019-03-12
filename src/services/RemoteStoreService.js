@@ -249,7 +249,9 @@ export default class RemoteStoreService {
         success: () => {} = () => {},
     ) => {
         if (!RemoteStoreService.isClientInitialized(error)) return;
-        const categoriesAsString = serializationService.convertCategoriesListToString(data);
+        const categoriesAsString = serializationService.convertCategoriesListToString(
+            data.map((item: CategoryType, index: number) => ({...item, orderNumber: index})),
+        );
         webdavClient.putFileContents(WEBDAV_PROJECT_CATEGORIES_MAIN_FILE, categoriesAsString, {overwrite: true})
             .then(success)
             .catch(error);

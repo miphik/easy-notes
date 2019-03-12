@@ -192,7 +192,7 @@ export default class NoteList extends React.Component<PropsType> {
                 ) : null}
                 <ColumnToolbar
                     theme={theme}
-                    showAddButton={!!selectedCategory}
+                    addButtonIsDisabled={!selectedCategory}
                     selectedItem={selectedNote}
                     deleteConfirmText={MESSAGES.deleteNoteConfirm}
                     createNewItem={this.onAddNewNote}

@@ -3,6 +3,7 @@ import Color from 'color';
 import memoizeOne from 'memoize-one';
 import * as React from 'react';
 import Popover, {ArrowContainer} from 'react-tiny-popover';
+import {emptyFunc} from 'utils/General';
 
 type PropsType = {
     textColor?: string,
@@ -12,6 +13,8 @@ type PropsType = {
     padding?: number,
     trigger: React.Node,
     content: React.Node,
+    isOpen: boolean,
+    onToggle?: () => void,
 };
 
 const STYLES = memoizeOne((
@@ -36,31 +39,25 @@ const STYLES = memoizeOne((
 ));
 
 export default class Popconfirmer extends React.PureComponent<PropsType> {
-    state = {
-        isPopoverOpen: false,
-    };
-
     static defaultProps = {
         shadow:          '2px 3px 9px 1px rgba(0,0,0,0.75)',
         padding:         8,
         backgroundColor: 'white',
         scaleFactor:     1,
         textColor:       'black',
+        onToggle:        emptyFunc,
     };
-
-    toggleOpenPopover = () => this.setState({isPopoverOpen: !this.state.isPopoverOpen});
 
     render() {
         const {
-            trigger, content, scaleFactor, shadow, padding, backgroundColor, textColor,
+            trigger, content, scaleFactor, shadow, padding, backgroundColor, textColor, isOpen, onToggle,
         } = this.props;
-        const {isPopoverOpen} = this.state;
         const style = STYLES(scaleFactor, textColor, backgroundColor, shadow, padding);
 
         return (
             <Popover
-                isOpen={isPopoverOpen}
-                onClickOutside={this.toggleOpenPopover}
+                isOpen={isOpen}
+                onClickOutside={onToggle}
                 transitionDuration={0.01}
                 position={['top', 'right', 'left', 'bottom']} // preferred position
                 containerStyle={style.container}
@@ -79,7 +76,7 @@ export default class Popconfirmer extends React.PureComponent<PropsType> {
                     </ArrowContainer>
                 )}
             >
-                <div onClick={this.toggleOpenPopover}>
+                <div onClick={onToggle}>
                     {trigger}
                 </div>
             </Popover>
