@@ -40,10 +40,13 @@ class CategoryStore {
     @observable categoriesIsLoading = true;
 
     @action
+    setExpandedNodesInner = (error: Error, data: Object) => this.expandedNodes = observable.map(data);
+
+    @action
     setExpandedNodes = () => {
         localStorage.getAsync(
             EXPANDED_NODES,
-            (error: Error, data: Object) => this.expandedNodes = observable.map(data),
+            this.setExpandedNodesInner,
         );
     };
 

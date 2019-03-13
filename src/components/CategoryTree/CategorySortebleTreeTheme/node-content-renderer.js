@@ -1,6 +1,6 @@
 import CategoryItem from 'components/CategoryTree/CategoryItem';
-import React, {Component} from 'react';
 import PropTypes from 'prop-types';
+import React, {Component} from 'react';
 import styles from './node-content-renderer.scss';
 
 function isDescendant(older, younger) {
@@ -124,102 +124,35 @@ class FileThemeNodeContentRenderer extends Component {
                     />
                 )}
 
-                <div
-                    onClick={(event) => {
-                        if (!categoryIsEditing) {
-                            event.stopPropagation();
-                            onSelectNode(node);
-                        }
-                    }}
-                    style={isNodeSelected ? {backgroundColor: '#448AFF'} : {}}
-                    className={
-                        styles.rowWrapper
-                        + (
-                            !canDrag ? ` ${styles.rowWrapperDragDisabled}` : ''
-                        )
-                    }
-                >
-                    {/* Set the row preview to be used during drag and drop */}
-                    {connectDragPreview(
-                        <div style={{display: 'flex'}}>
-                            {scaffold}
-                            <div
-                                className={
-                                    styles.row
-                                    + (
-                                        isLandingPadActive ? ` ${styles.rowLandingPad}` : ''
-                                    )
-                                    + (
-                                        isLandingPadActive && !canDrop
-                                            ? ` ${styles.rowCancelPad}`
-                                            : ''
-                                    )
-                                    + (
-                                        isSearchMatch ? ` ${styles.rowSearchMatch}` : ''
-                                    )
-                                    + (
-                                        isSearchFocus ? ` ${styles.rowSearchFocus}` : ''
-                                    )
-                                    + (
-                                        className ? ` ${className}` : ''
-                                    )
-                                }
-                                style={{
-                                    opacity: isDraggedDescendant ? 0.5 : 1,
-                                    ...style,
-                                }}
-                            >
-                                <div
-                                    className={
-                                        styles.rowContents
-                                        + (
-                                            !canDrag ? ` ${styles.rowContentsDragDisabled}` : ''
-                                        )
-                                    }
-                                >
-                                    <div className={styles.rowToolbar}>
-                                        {icons.map((icon, index) => (
-                                            <div
-                                                key={index} // eslint-disable-line react/no-array-index-key
-                                                className={styles.toolbarButton}
-                                            >
-                                                {icon}
-                                            </div>
-                                        ))}
-                                    </div>
-                                    <CategoryItem
-                                        category={node}
-                                        isNodeSelected={isNodeSelected}
-                                        isNodeSelectable={false}
-                                        updateCategoryName={updateCategoryName}
-                                        categoryIsEditing={categoryIsEditing}
-                                        changeNoteCategory={changeNoteCategory}
-                                        title={typeof nodeTitle === 'function'
-                                            ? nodeTitle({
-                                                node,
-                                                path,
-                                                treeIndex,
-                                            })
-                                            : nodeTitle}
-                                        rowLabelClassName={styles.rowLabel}
-                                        rowTitleClassName={styles.rowTitle}
-                                    />
+                <CategoryItem
+                    onSelectCategory={onSelectNode}
+                    buttons={buttons}
+                    canDrag={canDrag}
+                    canDrop={canDrop}
+                    connectDragPreview={connectDragPreview}
+                    icons={icons}
+                    isDraggedDescendant={isDraggedDescendant}
+                    isLandingPadActive={isLandingPadActive}
+                    isSearchFocus={isSearchFocus}
+                    isSearchMatch={isSearchMatch}
+                    scaffold={scaffold}
+                    category={node}
+                    isNodeSelected={isNodeSelected}
+                    isNodeSelectable={false}
+                    updateCategoryName={updateCategoryName}
+                    categoryIsEditing={categoryIsEditing}
+                    changeNoteCategory={changeNoteCategory}
+                    title={typeof nodeTitle === 'function'
+                        ? nodeTitle({
+                            node,
+                            path,
+                            treeIndex,
+                        })
+                        : nodeTitle}
+                    rowLabelClassName={styles.rowLabel}
+                    rowTitleClassName={styles.rowTitle}
+                />
 
-                                    <div className={styles.rowToolbar}>
-                                        {buttons.map((btn, index) => (
-                                            <div
-                                                key={index} // eslint-disable-line react/no-array-index-key
-                                                className={styles.toolbarButton}
-                                            >
-                                                {btn}
-                                            </div>
-                                        ))}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>,
-                    )}
-                </div>
             </div>
         );
 

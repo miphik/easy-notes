@@ -1,3 +1,4 @@
+// @flow
 // Can override the following:
 //
 // style: PropTypes.shape({}),
@@ -13,11 +14,17 @@
 import nodeContentRenderer from './node-content-renderer';
 import treeNodeRenderer from './tree-node-renderer';
 
+type RowHeightType = { treeIndex: number, node: Object, path: Array<number> | Array<string> };
+
 const theme = {
     nodeContentRenderer,
     treeNodeRenderer,
     scaffoldBlockPxWidth: 16,
-    rowHeight:            44,
+    rowHeight:            32,
+    /* rowHeight:            (options: RowHeightType) => {
+        console.log(113213, options);
+        return 32;
+    },*/
     slideRegionSize:      50,
 };
 export default theme;

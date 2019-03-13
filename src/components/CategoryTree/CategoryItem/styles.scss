@@ -1,0 +1,117 @@
+.rowItemIsSelected {
+  color: red;
+}
+
+.row {
+  height: 100%;
+  white-space: nowrap;
+  display: flex;
+  flex: 1;
+  position: relative;
+
+  & > * {
+    box-sizing: border-box;
+  }
+}
+
+.rowWrapper {
+  height: 100%;
+  box-sizing: border-box;
+  cursor: move;
+  display: flex;
+
+  &:hover {
+    // opacity: 0.7;
+  }
+
+  &:active {
+    opacity: 1;
+  }
+}
+
+.rowWrapperDragDisabled {
+  cursor: default;
+}
+
+/**
+* The outline of where the element will go if dropped, displayed while dragging
+*/
+.rowLandingPad {
+  border: none;
+  box-shadow: none;
+  outline: none;
+
+  * {
+    opacity: 0 !important;
+  }
+
+  &::before {
+    //background-color: rgba(128, 222, 234, 0.28);
+    border-top: 3px solid #0080ff;
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: -1;
+  }
+}
+
+/**
+ * Alternate appearance of the landing pad when the dragged location is invalid
+ */
+.rowCancelPad {
+  @extend .rowLandingPad;
+
+  &::before {
+    border-top: 3px solid #e6a8ad;
+    // background-color: #e6a8ad;
+  }
+}
+
+/**
+ * Nodes matching the search conditions are highlighted
+ */
+.rowSearchMatch {
+  box-shadow: inset 0 -7px 7px -3px #0080ff;
+}
+
+/**
+ * The node that matches the search conditions and is currently focused
+ */
+.rowSearchFocus {
+  box-shadow: inset 0 -7px 7px -3px #fc6421;
+}
+
+%rowItem {
+   display: inline-block;
+   vertical-align: middle;
+ }
+
+.rowContents {
+  @extend %rowItem;
+  position: relative;
+  height: 100%;
+  width: 100%;
+  flex: 1 0 auto;
+  display: flex;
+  align-items: center;
+  // justify-content: space-between;
+}
+
+.rowLabel {
+  @extend %rowItem;
+  flex: 0 1 auto;
+  padding-right: 20px;
+}
+
+.rowToolbar {
+  @extend %rowItem;
+  flex: 0 1 auto;
+  display: flex;
+}
+
+.toolbarButton {
+  @extend %rowItem;
+}

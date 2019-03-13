@@ -141,13 +141,17 @@ export default class NoteList extends React.Component<PropsType> {
         });
     };
 
-    onDragLeave = () => this.setState({removeCategoryIsOver: false});
-
-    onDragOver = event => {
-        if (event.dataTransfer.items.length !== 2 || event.dataTransfer.items[1].type !== 'category') return true;
-        const {removeCategoryIsOver} = this.state;
+    onDragLeave = event => {
         event.stopPropagation();
         event.preventDefault();
+        this.setState({removeCategoryIsOver: false});
+    };
+
+    onDragOver = event => {
+        event.stopPropagation();
+        event.preventDefault();
+        if (event.dataTransfer.items.length !== 2 || event.dataTransfer.items[1].type !== 'category') return true;
+        const {removeCategoryIsOver} = this.state;
         event.dataTransfer.dropEffect = 'move';
         if (removeCategoryIsOver) return false;
         this.setState({removeCategoryIsOver: true});
@@ -155,10 +159,10 @@ export default class NoteList extends React.Component<PropsType> {
     };
 
     onDrop = event => {
-        const {noteUUID} = JSON.parse(event.dataTransfer.getData('Text'));
-        if (!noteUUID) return true;
         event.stopPropagation();
         event.preventDefault();
+        const {noteUUID} = JSON.parse(event.dataTransfer.getData('Text'));
+        if (!noteUUID) return true;
         const {selectedCategory, setNoteCategory} = this.props;
         setNoteCategory(noteUUID, selectedCategory.uuid, true);
         this.setState({removeCategoryIsOver: false, noteIsDragging: false});
@@ -212,7 +216,7 @@ export default class NoteList extends React.Component<PropsType> {
                     onDragOver={this.onDragOver}
                     onDrop={this.onDrop}
                 >
-                    {MESSAGES.removeNoteFromCategory}
+                    {formatMessageIntl(MESSAGES.removeNoteFromCategory)}
                 </div>
                 <div>{selectedCategory ? notes.length : 'Select any category'}</div>
                 <div onClick={this.onClearSelectNode}>
