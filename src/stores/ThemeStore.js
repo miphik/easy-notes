@@ -5,6 +5,10 @@ export type ThemeType = {
     isBlack: boolean,
     scaleFactor: number,
     mainFontSize: number,
+    measure: {
+        rowCategoryHeight: number,
+        scaffoldCategoryBlockPxWidth: number,
+    },
     color: {
         button: string,
         buttonActive: string,
@@ -22,7 +26,11 @@ const DEFAULT_THEME = (scale: number) => (
         isBlack:      true,
         scaleFactor:  scale,
         mainFontSize: 14 * scale,
-        color:        {
+        measure:      {
+            rowCategoryHeight:            32 * scale,
+            scaffoldCategoryBlockPxWidth: 16 * scale,
+        },
+        color: {
             button:       '#8e8e8e',
             buttonActive: '#d3d3d3',
 

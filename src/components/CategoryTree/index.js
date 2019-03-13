@@ -49,6 +49,9 @@ const DELETED_CATEGORY = {uuid: REMOVED_CATEGORY, parentUUID: [ROOT_CATEGORY_NAM
 
 const STYLES = memoizeOne((theme: ThemeType) => (
     {
+        categoryOutTree: {
+            paddingLeft: theme.measure.scaffoldCategoryBlockPxWidth,
+        },
         confirmButton:   {display: 'flex', justifyContent: 'center'},
         buttonGroup:     {
             flex: 1
@@ -80,6 +83,28 @@ type PropsType = {
     categoriesIsLoading: boolean,
     theme: ThemeType,
 };
+
+const scaffoldCategory = memoizeOne((theme: ThemeType, isSelected: boolean) => [
+    <div
+        style={{
+            height:   '100%',
+            position: 'relative',
+            display:  'inline-block',
+            flex:     '0 0 auto',
+            width:    3 * theme.scaleFactor,
+            backgroundColor: isSelected ? 'blue' : 'inherit',
+        }}
+    />,
+    <div
+        style={{
+            height:   '100%',
+            position: 'relative',
+            display:  'inline-block',
+            flex:     '0 0 auto',
+            width:    theme.measure.scaffoldCategoryBlockPxWidth
+        }}
+    />,
+]);
 
 @inject(stores => (
     {
@@ -184,7 +209,10 @@ export default class CategoryTree extends React.Component<PropsType> {
             formInitialValues.parent = selectedCategory.parentUUID[0] === ROOT_CATEGORY_NAME
                 ? formatMessageIntl(MESSAGES.rootCategoryWhenEdit) : selectedCategory.parentUUID[0];
         }
+        const treeTheme = FileExplorerTheme(theme);
         const style = STYLES(theme);
+        const withoutCategorySelected = selectedCategory && selectedCategory.uuid === WITHOUT_CATEGORY;
+        const removeCategorySelected = selectedCategory && selectedCategory.uuid === REMOVED_CATEGORY;
 
         return (
             <div>
@@ -196,33 +224,26 @@ export default class CategoryTree extends React.Component<PropsType> {
                     updateItem={this.onEditCategory}
                     deleteItem={this.onRemoveCategory}
                 />
-                <div onClick={this.onSelectCategory}>
                     <CategoryItem
+                        theme={theme}
+                        scaffold={scaffoldCategory(theme, withoutCategorySelected)}
                         category={EMPTY_CATEGORY}
-                        isNodeSelected={selectedCategory && selectedCategory.uuid === WITHOUT_CATEGORY}
+                        onSelectCategory={this.onSelectCategory}
+                        isNodeSelected={withoutCategorySelected}
                         title={MESSAGES.withoutCategory}
                         rowLabelClassName={styles.rowLabel}
                         rowTitleClassName={styles.rowTitle}
                     />
-                </div>
-                {/*<div
-                    style={
-                        selectedCategory && selectedCategory.uuid === WITHOUT_CATEGORY
-                            ? {color: 'red'} : {}
-                    }
-                    onClick={this.onSelectCategory}
-                >
-                    {MESSAGES.withoutCategory}
-                </div>*/}
-                <div
-                    style={
-                        selectedCategory && selectedCategory.uuid === REMOVED_CATEGORY
-                            ? {color: 'red'} : {}
-                    }
-                    onClick={this.onSelectRemovedCategory}
-                >
-                    {MESSAGES.removedCategory}
-                </div>
+                    <CategoryItem
+                        theme={theme}
+                        scaffold={scaffoldCategory(theme, removeCategorySelected)}
+                        category={REMOVED_CATEGORY}
+                        onSelectCategory={this.onSelectRemovedCategory}
+                        isNodeSelected={removeCategorySelected}
+                        title={MESSAGES.removedCategory}
+                        rowLabelClassName={styles.rowLabel}
+                        rowTitleClassName={styles.rowTitle}
+                    />
                 <div style={{height: 400}} onClick={categoryIsEdit ? emptyFunc : this.onClearSelectNode}>
                     <Spinner show={categoriesIsLoading} size="small"/>
                     {!categoriesIsLoading ? (
@@ -236,7 +257,7 @@ export default class CategoryTree extends React.Component<PropsType> {
                                 console.log(2112213, treeData);
                                 this.setState({treeData});
                             }} */
-                            theme={FileExplorerTheme}
+                            theme={treeTheme}
                             getNodeKey={({node}) => node.uuid}
                             generateNodeProps={({node, path}) => (
                                 {
@@ -245,35 +266,13 @@ export default class CategoryTree extends React.Component<PropsType> {
                                     updateCategoryName: this.updateCategoryName,
                                     selectedNode:       selectedCategory,
                                     changeNoteCategory: this.props.setNoteCategory,
+                                    theme,
                                 }
                             )}
                         />
                     ) : null}
                 </div>
                 <br/>
-                {/*{categories.map((category: CategoryType) => (
-                    <div key={category.uuid}>
-                        {category.title}
-&nbsp;
-                        <Popconfirm
-                            title={MESSAGES.deleteCategoryConfirm}
-                            onConfirm={this.onRemoveCategory(category.uuid)}
-                        >
-                            <Icon
-                                className="ant-btn-danger"
-                                type="delete"
-                            />
-                        </Popconfirm>
-                    </div>
-                ))}*/}
-                {/*<CategoryForm
-                    isNew={categoryModalIsForNew}
-                    onSubmit={this.onSubmitCategoryForm}
-                    isVisible={categoryIsEdit}
-                    onClose={this.closeCategoryModal}
-                    categories={categoriesAsTree}
-                    initialValues={formInitialValues}
-                />*/}
             </div>
         );
     }

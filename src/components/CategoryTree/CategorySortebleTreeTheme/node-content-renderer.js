@@ -41,6 +41,7 @@ class FileThemeNodeContentRenderer extends Component {
             swapFrom,
             swapLength,
             swapDepth,
+            theme,
             onSelectNode,
             updateCategoryName,
             categoryIsEditing,
@@ -59,7 +60,19 @@ class FileThemeNodeContentRenderer extends Component {
         const isLandingPadActive = !didDrop && isDragging;
 
         // Construct the scaffold representing the structure of the tree
-        const scaffold = [];
+        const scaffold = [
+            <div
+                key={0}
+                style={{
+                    height:          '100%',
+                    position:        'relative',
+                    display:         'inline-block',
+                    flex:            '0 0 auto',
+                    width:           3 * theme.scaleFactor,
+                    backgroundColor: isNodeSelected ? 'blue' : 'inherit',
+                }}
+            />,
+        ];
         lowerSiblingCounts.forEach((lowerSiblingCount, i) => {
             scaffold.push(
                 <div
@@ -129,6 +142,7 @@ class FileThemeNodeContentRenderer extends Component {
                     buttons={buttons}
                     canDrag={canDrag}
                     canDrop={canDrop}
+                    theme={theme}
                     connectDragPreview={connectDragPreview}
                     icons={icons}
                     isDraggedDescendant={isDraggedDescendant}
@@ -138,7 +152,7 @@ class FileThemeNodeContentRenderer extends Component {
                     scaffold={scaffold}
                     category={node}
                     isNodeSelected={isNodeSelected}
-                    isNodeSelectable={false}
+                    isNodeSelectable
                     updateCategoryName={updateCategoryName}
                     categoryIsEditing={categoryIsEditing}
                     changeNoteCategory={changeNoteCategory}

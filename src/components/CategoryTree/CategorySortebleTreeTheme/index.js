@@ -11,20 +11,21 @@
 // nodeContentRenderer: PropTypes.func,
 // placeholderRenderer: PropTypes.func,
 
+import type {ThemeType} from 'stores/ThemeStore';
 import nodeContentRenderer from './node-content-renderer';
 import treeNodeRenderer from './tree-node-renderer';
 
 type RowHeightType = { treeIndex: number, node: Object, path: Array<number> | Array<string> };
 
-const theme = {
+const theme = (theme: ThemeType) => ({
     nodeContentRenderer,
     treeNodeRenderer,
-    scaffoldBlockPxWidth: 16,
-    rowHeight:            32,
+    scaffoldBlockPxWidth: theme.measure.scaffoldCategoryBlockPxWidth,
+    rowHeight:            theme.measure.rowCategoryHeight,
     /* rowHeight:            (options: RowHeightType) => {
         console.log(113213, options);
         return 32;
     },*/
-    slideRegionSize:      50,
-};
+    slideRegionSize:      theme.scaleFactor * 50,
+});
 export default theme;

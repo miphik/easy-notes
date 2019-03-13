@@ -4,7 +4,6 @@ import memoizeOne from 'memoize-one';
 import * as React from 'react';
 import type {ThemeType} from 'stores/ThemeStore';
 import type {CategoryType} from 'types/NoteType';
-import {emptyFunc} from 'utils/General';
 import styles from './styles.scss';
 
 const STYLES = memoizeOne((theme: ThemeType) => (
@@ -18,15 +17,20 @@ const STYLES = memoizeOne((theme: ThemeType) => (
             marginLeft: -11,
         },
         item: {
-            display:    'flex',
-            alignItems: 'center',
-            border: '1px dashed transparent',
+            display:                'flex',
+            cursor:                 'pointer',
+            height:                 theme.measure.rowCategoryHeight,
+            alignItems:             'center',
+            border:                 '1px dashed transparent',
+            borderTopLeftRadius:    8 * theme.scaleFactor,
+            borderBottomLeftRadius: 8 * theme.scaleFactor,
+            overflow:               'hidden',
         },
         overItem: {
             border: '1px dashed white',
         },
         selectedItem: {
-            backgroundColor: 'blue',
+            backgroundColor: 'rgba(255, 255, 255, 0.2)',
         },
     }
 ));
@@ -58,7 +62,7 @@ type PropsType = {
 export default class CategoryItem extends React.Component<PropsType> {
     static defaultProps = {
         isNodeSelectable:    true,
-        isDraggedDescendant: true,
+        isDraggedDescendant: false,
         isSearchMatch:       false,
         isSearchFocus:       false,
         canDrop:             false,
@@ -67,7 +71,7 @@ export default class CategoryItem extends React.Component<PropsType> {
         scaffold:            [],
         icons:               [],
         buttons:             [],
-        connectDragPreview:  emptyFunc,
+        connectDragPreview:  (node: React.Node) => node,
     };
 
     state = {
@@ -162,7 +166,7 @@ export default class CategoryItem extends React.Component<PropsType> {
             >
                 {/* Set the row preview to be used during drag and drop */}
                 {connectDragPreview(
-                    <div style={{display: 'flex', flex: 1}}>
+                    <div style={{display: 'flex', flex: 1, height: '100%'}}>
                         {scaffold}
                         <div
                             className={
