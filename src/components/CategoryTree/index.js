@@ -242,7 +242,7 @@ export default class CategoryTree extends React.Component<PropsType> {
                     theme={theme}
                     icons={[<Icon type="delete"/>]}
                     scaffold={scaffoldCategory(theme, removeCategorySelected)}
-                    category={REMOVED_CATEGORY}
+                    category={DELETED_CATEGORY}
                     onSelectCategory={this.onSelectRemovedCategory}
                     isNodeSelected={removeCategorySelected}
                     title={MESSAGES.removedCategory}

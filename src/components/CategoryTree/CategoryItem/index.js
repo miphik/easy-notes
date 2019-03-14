@@ -4,6 +4,7 @@ import Color from 'color';
 import memoizeOne from 'memoize-one';
 import Radium from 'radium';
 import * as React from 'react';
+import {REMOVED_CATEGORY, WITHOUT_CATEGORY} from 'stores/NoteStore';
 import type {ThemeType} from 'stores/ThemeStore';
 import type {CategoryType} from 'types/NoteType';
 import styles from './styles.scss';
@@ -92,9 +93,13 @@ export default class CategoryItem extends React.Component<PropsType> {
     onDragLeave = () => this.setState({isOver: false});
 
     onDragOver = event => {
+        const {category} = this.props;
         event.stopPropagation();
         event.preventDefault();
-        if (event.dataTransfer.items.length !== 2 || event.dataTransfer.items[1].type !== 'category') return true;
+        if (event.dataTransfer.items.length !== 2
+            || event.dataTransfer.items[1].type !== 'category'
+            || category.uuid === WITHOUT_CATEGORY
+            || category.uuid === REMOVED_CATEGORY) return true;
         event.dataTransfer.dropEffect = 'move';
         this.setState({isOver: true});
         return false;
@@ -108,6 +113,7 @@ export default class CategoryItem extends React.Component<PropsType> {
         const {noteUUID, categoryUUIDs} = JSON.parse(text);
         if (!noteUUID) return true;
         const {changeNoteCategory, category} = this.props;
+        if (category.uuid === WITHOUT_CATEGORY || category.uuid === REMOVED_CATEGORY) return true;
         this.onDragLeave();
         if (categoryUUIDs.indexOf(category.uuid) !== -1) return true;
         changeNoteCategory(noteUUID, category.uuid);
