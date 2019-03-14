@@ -14,9 +14,11 @@ export type ThemeType = {
         buttonActive: string,
         dangerButton: string,
         black: string,
+        white: string,
         first: string,
         second: string,
         third: string,
+        marker: string,
         textMain: string,
     },
 };
@@ -37,10 +39,13 @@ const DEFAULT_THEME = (scale: number) => (
             dangerButton: '#f5222d',
 
             black: '#000',
+            white: '#fff',
 
             first:  '#1C262A',
             second: '#242E32',
             third:  '#32373A',
+
+            marker: '#06AED5',
 
             textMain: '#d3d3d3',
         },

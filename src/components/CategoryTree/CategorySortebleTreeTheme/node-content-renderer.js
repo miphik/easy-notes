@@ -1,5 +1,7 @@
+import {Icon} from 'antd';
 import CategoryItem from 'components/CategoryTree/CategoryItem';
 import PropTypes from 'prop-types';
+import Radium from 'radium';
 import React, {Component} from 'react';
 import styles from './node-content-renderer.scss';
 
@@ -14,6 +16,7 @@ function isDescendant(older, younger) {
 }
 
 // eslint-disable-next-line react/prefer-stateless-function
+@Radium
 class FileThemeNodeContentRenderer extends Component {
     render() {
         const {
@@ -69,7 +72,7 @@ class FileThemeNodeContentRenderer extends Component {
                     display:         'inline-block',
                     flex:            '0 0 auto',
                     width:           3 * theme.scaleFactor,
-                    backgroundColor: isNodeSelected ? 'blue' : 'inherit',
+                    backgroundColor: isNodeSelected ? theme.color.marker : 'inherit',
                 }}
             />,
         ];
@@ -117,7 +120,37 @@ class FileThemeNodeContentRenderer extends Component {
                 {toggleChildrenVisibility
                 && node.children
                 && node.children.length > 0 && (
-                    <button
+                    <div
+                        className={
+                            node.expanded ? styles.collapseButton : styles.expandButton
+                        }
+                        style={{
+                            left: (
+                                lowerSiblingCounts.length - 0.7
+                            ) * scaffoldBlockPxWidth,
+                            fontSize: theme.scaleFactor * 12,
+                            ':hover': {
+                                filter: `drop-shadow(0 0 0px ${theme.color.white})
+                                drop-shadow(0 0 1px ${theme.color.white})
+                                drop-shadow(0 0 0 ${theme.color.white})`,
+                            },
+                        }}
+                    >
+
+                        <Icon
+                            onClick={(event) => {
+                                event.stopPropagation();
+                                toggleChildrenVisibility({
+                                    node,
+                                    path,
+                                    treeIndex,
+                                });
+                            }}
+                            type={node.expanded ? 'down' : 'right'}
+                        />
+                    </div>
+                )}
+                {/* <button
                         type="button"
                         aria-label={node.expanded ? 'Collapse' : 'Expand'}
                         className={
@@ -134,9 +167,7 @@ class FileThemeNodeContentRenderer extends Component {
                             treeIndex,
                         })
                         }
-                    />
-                )}
-
+                    />*/}
                 <CategoryItem
                     onSelectCategory={onSelectNode}
                     buttons={buttons}

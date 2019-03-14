@@ -1,6 +1,8 @@
 // @flow
 import {Input} from 'antd';
+import Color from 'color';
 import memoizeOne from 'memoize-one';
+import Radium from 'radium';
 import * as React from 'react';
 import type {ThemeType} from 'stores/ThemeStore';
 import type {CategoryType} from 'types/NoteType';
@@ -8,29 +10,36 @@ import styles from './styles.scss';
 
 const STYLES = memoizeOne((theme: ThemeType) => (
     {
-        input: {
+        input:         {
             background: 'transparent',
             color:      'white',
             border:     'none',
             outline:    'none',
             boxShadow:  'none',
-            marginLeft: -11,
+            marginLeft: -11 * theme.scaleFactor,
         },
-        item: {
+        item:          {
             display:                'flex',
             cursor:                 'pointer',
             height:                 theme.measure.rowCategoryHeight,
             alignItems:             'center',
             border:                 '1px dashed transparent',
-            borderTopLeftRadius:    8 * theme.scaleFactor,
-            borderBottomLeftRadius: 8 * theme.scaleFactor,
+            borderTopLeftRadius:    4 * theme.scaleFactor,
+            borderBottomLeftRadius: 4 * theme.scaleFactor,
             overflow:               'hidden',
+            ':hover':               {
+                color: theme.color.white,
+            },
         },
-        overItem: {
+        toolbarButton: {
+            marginRight: 8 * theme.scaleFactor,
+            fontSize:    18 * theme.scaleFactor,
+        },
+        overItem:      {
             border: '1px dashed white',
         },
-        selectedItem: {
-            backgroundColor: 'rgba(255, 255, 255, 0.2)',
+        selectedItem:  {
+            backgroundColor: Color(theme.color.textMain).alpha(0.2),
         },
     }
 ));
@@ -59,6 +68,7 @@ type PropsType = {
     theme: ThemeType,
 };
 
+@Radium
 export default class CategoryItem extends React.Component<PropsType> {
     static defaultProps = {
         isNodeSelectable:    true,
@@ -147,7 +157,9 @@ export default class CategoryItem extends React.Component<PropsType> {
         return (
             <div
                 onClick={event => {
-                    if (!categoryIsEditing) {
+                    if (isNodeSelected) {
+                        event.stopPropagation();
+                    } else if (!categoryIsEditing) {
                         event.stopPropagation();
                         onSelectCategory(category);
                     }
@@ -205,6 +217,7 @@ export default class CategoryItem extends React.Component<PropsType> {
                                         <div
                                             key={index} // eslint-disable-line react/no-array-index-key
                                             className={styles.toolbarButton}
+                                            style={style.toolbarButton}
                                         >
                                             {icon}
                                         </div>

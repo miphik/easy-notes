@@ -1,4 +1,5 @@
 // @flow
+import {Icon} from 'antd';
 import FileExplorerTheme from 'components/CategoryTree/CategorySortebleTreeTheme';
 import CategoryItem from 'components/CategoryTree/CategoryItem';
 import ColumnToolbar from 'components/ColumnToolbar';
@@ -86,16 +87,18 @@ type PropsType = {
 
 const scaffoldCategory = memoizeOne((theme: ThemeType, isSelected: boolean) => [
     <div
+        key="left_marker"
         style={{
-            height:   '100%',
-            position: 'relative',
-            display:  'inline-block',
-            flex:     '0 0 auto',
-            width:    3 * theme.scaleFactor,
-            backgroundColor: isSelected ? 'blue' : 'inherit',
+            height:          '100%',
+            position:        'relative',
+            display:         'inline-block',
+            flex:            '0 0 auto',
+            width:           3 * theme.scaleFactor,
+            backgroundColor: isSelected ? theme.color.marker : 'inherit',
         }}
     />,
     <div
+        key="left_space"
         style={{
             height:   '100%',
             position: 'relative',
@@ -218,32 +221,35 @@ export default class CategoryTree extends React.Component<PropsType> {
             <div>
                 <ColumnToolbar
                     theme={theme}
-                    selectedItem={selectedCategory}
+                    selectedItem={!withoutCategorySelected && !removeCategorySelected && selectedCategory}
                     deleteConfirmText={MESSAGES.deleteCategoryConfirm}
                     createNewItem={this.onAddNewCategory}
                     updateItem={this.onEditCategory}
                     deleteItem={this.onRemoveCategory}
                 />
-                    <CategoryItem
-                        theme={theme}
-                        scaffold={scaffoldCategory(theme, withoutCategorySelected)}
-                        category={EMPTY_CATEGORY}
-                        onSelectCategory={this.onSelectCategory}
-                        isNodeSelected={withoutCategorySelected}
-                        title={MESSAGES.withoutCategory}
-                        rowLabelClassName={styles.rowLabel}
-                        rowTitleClassName={styles.rowTitle}
-                    />
-                    <CategoryItem
-                        theme={theme}
-                        scaffold={scaffoldCategory(theme, removeCategorySelected)}
-                        category={REMOVED_CATEGORY}
-                        onSelectCategory={this.onSelectRemovedCategory}
-                        isNodeSelected={removeCategorySelected}
-                        title={MESSAGES.removedCategory}
-                        rowLabelClassName={styles.rowLabel}
-                        rowTitleClassName={styles.rowTitle}
-                    />
+                <CategoryItem
+                    theme={theme}
+                    icons={[<Icon type="inbox"/>]}
+                    scaffold={scaffoldCategory(theme, withoutCategorySelected)}
+                    category={EMPTY_CATEGORY}
+                    onSelectCategory={this.onSelectCategory}
+                    isNodeSelected={withoutCategorySelected}
+                    title={MESSAGES.withoutCategory}
+                    rowLabelClassName={styles.rowLabel}
+                    rowTitleClassName={styles.rowTitle}
+                />
+                <CategoryItem
+                    theme={theme}
+                    icons={[<Icon type="delete"/>]}
+                    scaffold={scaffoldCategory(theme, removeCategorySelected)}
+                    category={REMOVED_CATEGORY}
+                    onSelectCategory={this.onSelectRemovedCategory}
+                    isNodeSelected={removeCategorySelected}
+                    title={MESSAGES.removedCategory}
+                    rowLabelClassName={styles.rowLabel}
+                    rowTitleClassName={styles.rowTitle}
+                />
+                <br/>
                 <div style={{height: 400}} onClick={categoryIsEdit ? emptyFunc : this.onClearSelectNode}>
                     <Spinner show={categoriesIsLoading} size="small"/>
                     {!categoriesIsLoading ? (

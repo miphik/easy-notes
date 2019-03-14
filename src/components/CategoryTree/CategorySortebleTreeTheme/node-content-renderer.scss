@@ -7,35 +7,14 @@
   z-index: 2;
   position: absolute;
   top: 50%;
-  width: 30px;
-  height: 30px;
-  transform: translate3d(-50%, -50%, 0);
+  width: 32px;
+  height: 32px;
+  transform: translate3d(-30%, -50%, 0);
   cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
-  &::after {
-    content: '';
-    position: absolute;
-    transform-origin: 5px 4px;
-    transform: translate3d(-50%, -20%, 0);
-    border: solid transparent 8px;
-    border-left-width: 5px;
-    border-right-width: 5px;
-    border-top-color: gray;
-    margin-left: 7px;
-  }
-
-  &:hover::after {
-    border-top-color: black;
-  }
-
-  &:focus {
-    outline: none;
-
-    &::after {
-      filter: drop-shadow(0 0 1px #83bef9) drop-shadow(0 0 1px #83bef9)
-      drop-shadow(0 0 1px #83bef9);
-    }
-  }
 }
 
 .expandButton::after {
