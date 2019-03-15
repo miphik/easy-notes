@@ -1,4 +1,5 @@
 // @flow
+import {DELETED_CATEGORY, EMPTY_CATEGORY} from 'components/CategoryTree';
 import {action, observable} from 'mobx';
 import moment from 'moment';
 import {getFlatDataFromTree, getTreeFromFlatData} from 'react-sortable-tree';
@@ -219,6 +220,8 @@ class CategoryStore {
                 cat.value = cat.uuid;
                 return cat;
             });
+        // categories.unshift(EMPTY_CATEGORY);
+        // categories.unshift(DELETED_CATEGORY);
         return getTreeFromFlatData({
             flatData: categories,
             rootKey:  ROOT_CATEGORY_NAME,

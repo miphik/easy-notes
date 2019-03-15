@@ -1,8 +1,9 @@
 // @flow
 import {Icon} from 'antd';
-import FileExplorerTheme from 'components/CategoryTree/CategorySortebleTreeTheme';
 import CategoryItem from 'components/CategoryTree/CategoryItem';
+import FileExplorerTheme from 'components/CategoryTree/CategorySortebleTreeTheme';
 import ColumnToolbar from 'components/ColumnToolbar';
+import ScrollableColumn from 'components/ScrollableColumn';
 import Spinner from 'components/Spinner';
 import memoizeOne from 'memoize-one';
 import {inject, observer} from 'mobx-react';
@@ -45,8 +46,16 @@ const MESSAGES = {
                                      defaultMessage="Category was successfully removed"
                                  />,
 };
-const EMPTY_CATEGORY = {uuid: WITHOUT_CATEGORY, parentUUID: [ROOT_CATEGORY_NAME]};
-const DELETED_CATEGORY = {uuid: REMOVED_CATEGORY, parentUUID: [ROOT_CATEGORY_NAME]};
+export const EMPTY_CATEGORY = {
+    title:      MESSAGES.withoutCategory,
+    uuid:       WITHOUT_CATEGORY,
+    parentUUID: [ROOT_CATEGORY_NAME]
+};
+export const DELETED_CATEGORY = {
+    title:      MESSAGES.removedCategory,
+    uuid:       REMOVED_CATEGORY,
+    parentUUID: [ROOT_CATEGORY_NAME]
+};
 
 const STYLES = memoizeOne((theme: ThemeType) => (
     {
@@ -218,43 +227,58 @@ export default class CategoryTree extends React.Component<PropsType> {
         const removeCategorySelected = selectedCategory && selectedCategory.uuid === REMOVED_CATEGORY;
 
         return (
-            <div>
-                <ColumnToolbar
-                    theme={theme}
-                    selectedItem={!withoutCategorySelected && !removeCategorySelected && selectedCategory}
-                    deleteConfirmText={MESSAGES.deleteCategoryConfirm}
-                    createNewItem={this.onAddNewCategory}
-                    updateItem={this.onEditCategory}
-                    deleteItem={this.onRemoveCategory}
-                />
-                <CategoryItem
-                    theme={theme}
-                    icons={[<Icon type="inbox"/>]}
-                    scaffold={scaffoldCategory(theme, withoutCategorySelected)}
-                    category={EMPTY_CATEGORY}
-                    onSelectCategory={this.onSelectCategory}
-                    isNodeSelected={withoutCategorySelected}
-                    title={MESSAGES.withoutCategory}
-                    rowLabelClassName={styles.rowLabel}
-                    rowTitleClassName={styles.rowTitle}
-                />
-                <CategoryItem
-                    theme={theme}
-                    icons={[<Icon type="delete"/>]}
-                    scaffold={scaffoldCategory(theme, removeCategorySelected)}
-                    category={DELETED_CATEGORY}
-                    onSelectCategory={this.onSelectRemovedCategory}
-                    isNodeSelected={removeCategorySelected}
-                    title={MESSAGES.removedCategory}
-                    rowLabelClassName={styles.rowLabel}
-                    rowTitleClassName={styles.rowTitle}
-                />
-                <br/>
-                <div style={{height: 400}} onClick={categoryIsEdit ? emptyFunc : this.onClearSelectNode}>
+            <ScrollableColumn
+                showScrollShadow
+                autoHideScrollbar
+                shadowColor={theme.color.first}
+                scrollColor={theme.color.second}
+                scaleFactor={theme.scaleFactor}
+                width="inherit"
+                toolbar={
+                    <React.Fragment>
+                        <ColumnToolbar
+                            theme={theme}
+                            selectedItem={!withoutCategorySelected && !removeCategorySelected && selectedCategory}
+                            deleteConfirmText={MESSAGES.deleteCategoryConfirm}
+                            createNewItem={this.onAddNewCategory}
+                            updateItem={this.onEditCategory}
+                            deleteItem={this.onRemoveCategory}
+                        />
+                    </React.Fragment>
+                }
+            >
+
+                <div style={{    display: 'flex',
+                    flex: 1,
+                    flexDirection: 'column',}} onClick={categoryIsEdit ? emptyFunc : this.onClearSelectNode}>
+                    <CategoryItem
+                        theme={theme}
+                        icons={[<Icon type="inbox"/>]}
+                        scaffold={scaffoldCategory(theme, withoutCategorySelected)}
+                        category={EMPTY_CATEGORY}
+                        onSelectCategory={this.onSelectCategory}
+                        isNodeSelected={withoutCategorySelected}
+                        title={MESSAGES.withoutCategory}
+                        rowLabelClassName={styles.rowLabel}
+                        rowTitleClassName={styles.rowTitle}
+                    />
+                    <CategoryItem
+                        theme={theme}
+                        icons={[<Icon type="delete"/>]}
+                        scaffold={scaffoldCategory(theme, removeCategorySelected)}
+                        category={DELETED_CATEGORY}
+                        onSelectCategory={this.onSelectRemovedCategory}
+                        isNodeSelected={removeCategorySelected}
+                        title={MESSAGES.removedCategory}
+                        rowLabelClassName={styles.rowLabel}
+                        rowTitleClassName={styles.rowTitle}
+                    />
+                    <br/>
                     <Spinner show={categoriesIsLoading} size="small"/>
                     {!categoriesIsLoading ? (
                         <SortableTree
                             // dndType="category_drop"
+                            isVirtualized={false}
                             treeData={categoriesAsTree}
                             onVisibilityToggle={this.onVisibilityToggle}
                             onMoveNode={this.onMoveNode}
@@ -278,8 +302,7 @@ export default class CategoryTree extends React.Component<PropsType> {
                         />
                     ) : null}
                 </div>
-                <br/>
-            </div>
+            </ScrollableColumn>
         );
     }
 }

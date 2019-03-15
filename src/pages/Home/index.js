@@ -54,6 +54,8 @@ const STYLES = memoizeOne((theme: ThemeType) => (
     {
         firstColumn:  {
             backgroundColor: theme.color.first,
+            display: 'flex',
+            flexDirection: 'column',
         },
         secondColumn: {
             backgroundColor: theme.color.second,

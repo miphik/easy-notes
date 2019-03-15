@@ -7,6 +7,18 @@ html
   margin: 0;
   width: 100%;
   height: 100%;
+  overflow: hidden;
 
 button
   overflow hidden !important;
+
+::-webkit-scrollbar-thumb {
+  background-color: hsla(0, 0%, 100%, .4);
+  background-clip: padding-box;
+  border: 5px solid transparent;
+  border-radius: 7px;
+}
+
+::-webkit-scrollbar {
+  size: 13px;
+}

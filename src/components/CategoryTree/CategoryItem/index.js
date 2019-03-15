@@ -93,9 +93,9 @@ export default class CategoryItem extends React.Component<PropsType> {
     onDragLeave = () => this.setState({isOver: false});
 
     onDragOver = event => {
-        const {category} = this.props;
         event.stopPropagation();
         event.preventDefault();
+        const {category} = this.props;
         if (event.dataTransfer.items.length !== 2
             || event.dataTransfer.items[1].type !== 'category'
             || category.uuid === WITHOUT_CATEGORY
@@ -106,8 +106,6 @@ export default class CategoryItem extends React.Component<PropsType> {
     };
 
     onDrop = event => {
-        event.stopPropagation();
-        event.preventDefault();
         const text = event.dataTransfer.getData('Text');
         if (!text) return true;
         const {noteUUID, categoryUUIDs} = JSON.parse(text);
@@ -116,6 +114,8 @@ export default class CategoryItem extends React.Component<PropsType> {
         if (category.uuid === WITHOUT_CATEGORY || category.uuid === REMOVED_CATEGORY) return true;
         this.onDragLeave();
         if (categoryUUIDs.indexOf(category.uuid) !== -1) return true;
+        event.stopPropagation();
+        event.preventDefault();
         changeNoteCategory(noteUUID, category.uuid);
         return false;
     };

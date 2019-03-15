@@ -169,7 +169,9 @@ export default class NoteList extends React.Component<PropsType> {
         return false;
     };
 
-    onNoteDragEnd = () => {
+    onNoteDragEnd = event => {
+        event.stopPropagation();
+        event.preventDefault();
         this.setState({noteIsDragging: false});
     };
 
@@ -210,7 +212,9 @@ export default class NoteList extends React.Component<PropsType> {
                         backgroundColor: removeCategoryIsOver ? 'lightblue' : 'transparent',
                         height:          50,
                         position:        'relative',
-                        top:             noteIsDragging && selectedCategory.uuid !== WITHOUT_CATEGORY ? 0 : -11000
+                        top:             noteIsDragging && selectedCategory.uuid !== WITHOUT_CATEGORY ? 0 : -11000,
+                        border: '1px dashed white',
+                        borderRadius: 4,
                     }}
                     onDragLeave={this.onDragLeave}
                     onDragOver={this.onDragOver}
