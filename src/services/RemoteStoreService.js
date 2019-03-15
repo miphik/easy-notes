@@ -303,7 +303,7 @@ export default class RemoteStoreService {
 
     static deleteNote = (data, error = () => {}, success = () => {}) => {
         if (!RemoteStoreService.isClientInitialized(error)) {
-
+            return;
         }
     };
 }
