@@ -5,7 +5,12 @@ import moment from 'moment';
 import * as path from 'path';
 import type {SerializationServiceType} from 'services/SerializationService';
 import SerializationService from 'services/SerializationService';
-import {NOTE_DATE_FORMAT} from 'src/constants/general';
+import {
+    NOTE_DATE_FORMAT,
+    NOTE_DAY_DATE_FORMAT,
+    NOTE_MONTH_DATE_FORMAT,
+    NOTE_YAER_DATE_FORMAT
+} from 'src/constants/general';
 import type {
     CategoriesType, CategoryType, NotesType, NoteType,
 } from 'types/NoteType';
@@ -25,11 +30,21 @@ const LOCAL_PROJECT_FULL_PATH = path.resolve(USER_DATA_PATH, LOCAL_PROJECT_PATH)
 if (!fs.existsSync(LOCAL_PROJECT_FULL_PATH)) {
     fs.mkdirSync(LOCAL_PROJECT_FULL_PATH);
 }
+const NOTE_YEAR_PATH_PART = (note: NoteType) => moment(note.createdAt).format(NOTE_YAER_DATE_FORMAT);
+const NOTE_MONTH_PATH_PART = (note: NoteType) => moment(note.createdAt).format(NOTE_MONTH_DATE_FORMAT);
+const NOTE_DAY_PATH_PART = (note: NoteType) => moment(note.createdAt).format(NOTE_DAY_DATE_FORMAT);
+
 const LOCAL_PROJECT_MAIN_FILE = `${LOCAL_PROJECT_FULL_PATH}/${INDEX_FILE_NAME}`;
-const LOCAL_PROJECT_NOTE_DIR = (note: NoteType) => `${LOCAL_PROJECT_FULL_PATH}/${moment(note.createdAt)
-    .format(NOTE_DATE_FORMAT)}`;
-const LOCAL_PROJECT_NOTE_FILE = (note: NoteType) => `${LOCAL_PROJECT_FULL_PATH}/${moment(note.createdAt)
-    .format(NOTE_DATE_FORMAT)}/${note.uuid}`;
+
+const LOCAL_PROJECT_NOTE_FILE = (note: NoteType) => `${LOCAL_PROJECT_FULL_PATH}/${NOTE_YEAR_PATH_PART(note)}/`
+    + `${NOTE_MONTH_PATH_PART(note)}/${NOTE_DAY_PATH_PART(note)}/${note.uuid}`;
+
+const LOCAL_PROJECT_YEAR_NOTE_DIR = (note: NoteType) => `${LOCAL_PROJECT_FULL_PATH}/${NOTE_YEAR_PATH_PART(note)}`;
+const LOCAL_PROJECT_MONTH_NOTE_DIR = (note: NoteType) => `${LOCAL_PROJECT_FULL_PATH}/${NOTE_YEAR_PATH_PART(note)}/`
+    + `${NOTE_MONTH_PATH_PART(note)}`;
+const LOCAL_PROJECT_DAY_NOTE_DIR = (note: NoteType) => `${LOCAL_PROJECT_FULL_PATH}/${NOTE_YEAR_PATH_PART(note)}/`
+    + `${NOTE_MONTH_PATH_PART(note)}/${NOTE_DAY_PATH_PART(note)}`;
+
 const LOCAL_PROJECT_CATEGORIES_MAIN_FILE = `${LOCAL_PROJECT_FULL_PATH}/${INDEX_CATEGORIES_FILE_NAME}`;
 
 console.info('LOCAL_PROJECT_FULL_PATH', LOCAL_PROJECT_FULL_PATH);
@@ -65,9 +80,18 @@ export default class LocalStoreService {
     };
 
     static createNoteDir = (note: NoteType, error: () => {} = () => {}, success: () => {} = () => {}) => {
-        const noteDir = LOCAL_PROJECT_NOTE_DIR(note);
-        if (!fs.existsSync(noteDir)) {
-            fs.mkdirSync(noteDir);
+        const noteYearDir = LOCAL_PROJECT_YEAR_NOTE_DIR(note);
+        const noteMonthDir = LOCAL_PROJECT_MONTH_NOTE_DIR(note);
+        const noteDayDir = LOCAL_PROJECT_DAY_NOTE_DIR(note);
+
+        if (!fs.existsSync(noteYearDir)) {
+            fs.mkdirSync(noteYearDir);
+        }
+        if (!fs.existsSync(noteMonthDir)) {
+            fs.mkdirSync(noteMonthDir);
+        }
+        if (!fs.existsSync(noteDayDir)) {
+            fs.mkdirSync(noteDayDir);
         }
     };
 

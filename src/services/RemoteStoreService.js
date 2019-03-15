@@ -3,7 +3,12 @@ import moment from 'moment';
 import LocalStorageService from 'services/LocalStorageService';
 import type {SerializationServiceType} from 'services/SerializationService';
 import SerializationService from 'services/SerializationService';
-import {NOTE_DATE_FORMAT} from 'src/constants/general';
+import {
+    NOTE_DATE_FORMAT,
+    NOTE_DAY_DATE_FORMAT,
+    NOTE_MONTH_DATE_FORMAT,
+    NOTE_YAER_DATE_FORMAT,
+} from 'src/constants/general';
 import type {CategoryType, NoteType} from 'src/types/NoteType';
 import type {CategoriesType, NotesType} from 'types/NoteType';
 import {createClient} from 'webdav';
@@ -13,7 +18,16 @@ const WEBDAV_PROJECT_PATH = '/easy-notes';
 const WEBDAV_PROJECT_MAIN_FILE = `${WEBDAV_PROJECT_PATH}/notes.index`;
 const WEBDAV_PROJECT_CATEGORIES_MAIN_FILE = `${WEBDAV_PROJECT_PATH}/categories.index`;
 const NOTE_DATE_PATH_PART = (note: NoteType) => moment(note.createdAt).format(NOTE_DATE_FORMAT);
-const WEBDAV_PROJECT_NOTE_DIR = (note: NoteType) => `${WEBDAV_PROJECT_PATH}/${NOTE_DATE_PATH_PART(note)}`;
+const NOTE_YEAR_PATH_PART = (note: NoteType) => moment(note.createdAt).format(NOTE_YAER_DATE_FORMAT);
+const NOTE_MONTH_PATH_PART = (note: NoteType) => moment(note.createdAt).format(NOTE_MONTH_DATE_FORMAT);
+const NOTE_DAY_PATH_PART = (note: NoteType) => moment(note.createdAt).format(NOTE_DAY_DATE_FORMAT);
+const WEBDAV_PROJECT_YEAR_NOTE_DIR = (note: NoteType) => `${WEBDAV_PROJECT_PATH}/${NOTE_YEAR_PATH_PART(note)}`;
+const WEBDAV_PROJECT_MONTH_NOTE_DIR = (note: NoteType) => `${WEBDAV_PROJECT_PATH}/${NOTE_YEAR_PATH_PART(note)}/`
+    + `${NOTE_MONTH_PATH_PART(note)}`;
+const WEBDAV_PROJECT_DAY_NOTE_DIR = (note: NoteType) => `${WEBDAV_PROJECT_PATH}/${NOTE_YEAR_PATH_PART(note)}/`
+    + `${NOTE_MONTH_PATH_PART(note)}/${NOTE_DAY_PATH_PART(note)}`;
+const WEBDAV_PROJECT_NOTE_DIR = (note: NoteType) => `${WEBDAV_PROJECT_PATH}/${NOTE_YEAR_PATH_PART(note)}/`
+    + `${NOTE_MONTH_PATH_PART(note)}/${NOTE_DAY_PATH_PART(note)}/${note.uuid}`;
 const WEBDAV_PROJECT_NOTE_FILE = (note: NoteType) => `${WEBDAV_PROJECT_PATH}/${NOTE_DATE_PATH_PART(note)}/${note.uuid}`;
 
 let webdavClient;
@@ -129,7 +143,7 @@ export default class RemoteStoreService {
 
     static saveNoteContent = (note: NoteType, error: () => {} = () => {}, success: () => {} = () => {}) => {
         const noteAsString = serializationService.convertNoteToString(note);
-        webdavClient.putFileContents(WEBDAV_PROJECT_NOTE_FILE(note), noteAsString, {overwrite: true})
+        webdavClient.putFileContents(WEBDAV_PROJECT_NOTE_DIR(note), noteAsString, {overwrite: true})
             .then(success)
             .catch(error);
     };
@@ -153,11 +167,39 @@ export default class RemoteStoreService {
             .catch(error);
     };
 
-    static createNoteDir = (note: NoteType, error: () => {} = () => {}, success: () => {} = () => {}) => {
-        const noteDir = WEBDAV_PROJECT_NOTE_DIR(note);
-        RemoteStoreService.getDirectoryContent(noteDir, () => webdavClient.createDirectory(noteDir)
+    static createDay = (noteDayDir, success, error) => RemoteStoreService.getDirectoryContent(
+        noteDayDir,
+        () => webdavClient.createDirectory(noteDayDir)
             .then(success)
-            .catch(error), success);
+            .catch(error),
+        success,
+    );
+
+    static createMonth = (noteMonthDir, noteDayDir, success, error) => RemoteStoreService.getDirectoryContent(
+        noteMonthDir,
+        () => webdavClient.createDirectory(noteMonthDir)
+            .then(() => RemoteStoreService.createDay(noteDayDir, success, error))
+            .catch(error),
+        () => RemoteStoreService.createDay(noteDayDir, success, error),
+    );
+
+    static createYear = (
+        noteYearDir, noteMonthDir, noteDayDir, success, error,
+    ) => RemoteStoreService.getDirectoryContent(
+        noteYearDir,
+        () => webdavClient.createDirectory(noteYearDir)
+            .then(() => RemoteStoreService.createMonth(noteMonthDir, noteDayDir, success, error))
+            .catch(error), () => RemoteStoreService.createMonth(noteMonthDir, noteDayDir, success, error),
+    );
+
+    static createNoteDir = (note: NoteType, error: () => {} = () => {}, success: () => {} = () => {}) => {
+        const noteYearDir = WEBDAV_PROJECT_YEAR_NOTE_DIR(note);
+        const noteMonthDir = WEBDAV_PROJECT_MONTH_NOTE_DIR(note);
+        const noteDayDir = WEBDAV_PROJECT_DAY_NOTE_DIR(note);
+        const noteDir = WEBDAV_PROJECT_NOTE_DIR(note);
+
+        RemoteStoreService.getDirectoryContent(noteDir, () => RemoteStoreService
+            .createYear(noteYearDir, noteMonthDir, noteDayDir, success, error), success);
     };
 
     static saveNote = (
@@ -250,7 +292,9 @@ export default class RemoteStoreService {
     ) => {
         if (!RemoteStoreService.isClientInitialized(error)) return;
         const categoriesAsString = serializationService.convertCategoriesListToString(
-            data.map((item: CategoryType, index: number) => ({...item, orderNumber: index})),
+            data.map((item: CategoryType, index: number) => (
+                {...item, orderNumber: index}
+            )),
         );
         webdavClient.putFileContents(WEBDAV_PROJECT_CATEGORIES_MAIN_FILE, categoriesAsString, {overwrite: true})
             .then(success)
@@ -258,6 +302,6 @@ export default class RemoteStoreService {
     };
 
     static deleteNote = (data, error = () => {}, success = () => {}) => {
-        if (!RemoteStoreService.isClientInitialized(error)) return;
+        if (!RemoteStoreService.isClientInitialized(error))
     };
 }

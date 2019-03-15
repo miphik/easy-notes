@@ -30,7 +30,7 @@ const DEFAULT_THEME = (scale: number) => (
         mainFontSize: 14 * scale,
         measure:      {
             rowCategoryHeight:            32 * scale,
-            scaffoldCategoryBlockPxWidth: 24 * scale,
+            scaffoldCategoryBlockPxWidth: 16 * scale,
         },
         color: {
             button:       '#8e8e8e',
