@@ -52,6 +52,9 @@ const DEFAULT_COLUMNS_WIDTH: ColumnsWidthType = {
 
 const STYLES = memoizeOne((theme: ThemeType) => (
     {
+        container: {
+            border: '1px solid gray',
+        },
         firstColumn:  {
             backgroundColor: theme.color.first,
             display: 'flex',
@@ -128,6 +131,7 @@ export default class Home extends React.Component<PropsType> {
     render() {
         const {remoteStoreIsAuth, theme} = this.props;
         const {columnsWidth} = this.state;
+        const style = STYLES(theme);
         //const wbIsAuth = RemoteStoreService.isAuth();
         /*if (wbIsAuth) RemoteStoreService.getNotesList(() => {}, data => {
             const notes = SerializationService.convertStringToNotesList(data);
@@ -140,6 +144,7 @@ export default class Home extends React.Component<PropsType> {
             <div>
                 {columnsWidth ? <SplitPane
                     split="vertical"
+                    style={style.container}
                     minSize={columnsWidth.first.minSize}
                     maxSize={columnsWidth.first.maxSize}
                     step={columnsWidth.first.step}
