@@ -1,0 +1,21 @@
+.empty {
+  font-size: inherit !important;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+
+  :global {
+    .ant-empty-image {
+      height: 10em;
+      opacity: 0.8;
+    }
+  }
+}
+
+.hide_image {
+  :global {
+    .ant-empty-image {
+      display: none;
+    }
+  }
+}

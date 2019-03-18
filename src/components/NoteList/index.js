@@ -1,5 +1,6 @@
 // @flow
 import ColumnToolbar from 'components/ColumnToolbar';
+import Nodata from 'components/Nodata';
 import NoteItem from 'components/NoteList/NoteItem';
 import {inject, observer} from 'mobx-react';
 import * as React from 'react';
@@ -192,6 +193,7 @@ export default class NoteList extends React.Component<PropsType> {
         const isAddButtonDisabled = !selectedCategory
             || selectedCategory.uuid === WITHOUT_CATEGORY
             || selectedCategory.uuid === REMOVED_CATEGORY;
+        const notesIsEmpty = !notes.length;
 
         return (
             <div>
@@ -222,7 +224,8 @@ export default class NoteList extends React.Component<PropsType> {
                 >
                     {formatMessageIntl(MESSAGES.removeNoteFromCategory)}
                 </div>
-                <div>{selectedCategory ? notes.length : 'Select any category'}</div>
+                <div>{selectedCategory ? notes.length : <Nodata showImage={false} text="select any"/>}</div>
+                <div>{selectedCategory && notesIsEmpty ? <Nodata/> : null}</div>
                 <div onClick={this.onClearSelectNode}>
                     <br/>
                     {notes.map((note: NoteType) => (
