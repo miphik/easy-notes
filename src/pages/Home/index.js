@@ -1,12 +1,11 @@
 // @flow
-import {Button, Icon} from 'antd';
+import {Icon} from 'antd';
 import CategoryTree from 'components/CategoryTree';
 import CButton from 'components/CButton';
 import NoteEditor from 'components/NoteEditor';
 import NoteList from 'components/NoteList';
 import memoizeOne from 'memoize-one';
 import {inject} from 'mobx-react';
-/* eslint-disable import/no-extraneous-dependencies */
 import PropTypes from 'prop-types';
 import Radium from 'radium';
 import React from 'react';
@@ -15,8 +14,10 @@ import {NavLink} from 'react-router-dom';
 import SplitPane from 'react-split-pane';
 import LocalStorageService from 'services/LocalStorageService';
 import {WEBDAV_AUTH_PATH} from 'src/constants/routes';
+import backgroundImage from 'src/images/background3.png';
 import type {ThemeType} from 'stores/ThemeStore';
 import './styles.styl';
+import type {CategoryType, NoteType} from 'types/NoteType';
 
 const MESSAGES = {
     addNewCategory: <Fm id="Home.render.button_add_new_category" defaultMessage="Add category"/>,
@@ -50,33 +51,66 @@ const DEFAULT_COLUMNS_WIDTH: ColumnsWidthType = {
     },
 };
 
-const STYLES = memoizeOne((theme: ThemeType) => (
+const STYLES = memoizeOne((theme: ThemeType, isCategorySelected: boolean, isNoteSelected: boolean) => (
     {
-        container: {
+        container:       {
             border: '1px solid gray',
         },
-        firstColumn:  {
+        firstColumn:     {
             backgroundColor: theme.color.first,
-            display: 'flex',
-            flexDirection: 'column',
+            display:         'flex',
+            flexDirection:   'column',
         },
-        secondColumn: {
+        containerSecond: {
+            position: 'absolute',
+            top:      '50%',
+            //background: `${theme.color.second} url(${backgroundImage}) left center no-repeat`,
+        },
+        secondAndThirdColumn:    {
             backgroundColor: theme.color.second,
+            zIndex: isCategorySelected ? 1 : 0,
         },
-        resizerStyle: {
+        secondColumn:    {
+            backgroundColor: theme.color.second,
+            width: '100%',
+            height: '100%',
+        },
+        thirdColumn:    {
+            backgroundColor: theme.color.second,
+            zIndex: isNoteSelected ? 1 : 0,
+            width: '100%',
+            height: '100%',
+        },
+        backgroundImage: {
+            position:  'relative',
+            content:   ' ',
+            //top:      '-50%',
+            //left:     0,
+            width:     '100%',
+            marginTop: '-20%',
+            // height:   '100%',
+            zIndex:    0,
+            filter:    theme.isBlack ? 'invert(100%)' : '',
+            opacity:   0.2,
+        },
+        resizerStyle:    {
             backgroundColor: theme.color.black,
             opacity:         0.4,
-        }
+        },
     }
 ));
 
 type PropsType = {
     theme: ThemeType,
+    selectedCategory: CategoryType,
+    selectedNote: NoteType,
 };
 
 @inject(stores => (
     {
         remoteStoreIsAuth: stores.remoteAuthStore.isAuth,
+        selectedCategory:  stores.categoryStore.getSelectedCategory,
+        selectedNote:      stores.noteStore.getSelectedNote,
         theme:             stores.themeStore.getTheme,
     }
 ))
@@ -129,9 +163,9 @@ export default class Home extends React.Component<PropsType> {
     };
 
     render() {
-        const {remoteStoreIsAuth, theme} = this.props;
+        const {remoteStoreIsAuth, theme, selectedCategory, selectedNote} = this.props;
         const {columnsWidth} = this.state;
-        const style = STYLES(theme);
+        const style = STYLES(theme, !!selectedCategory, !!selectedNote);
         //const wbIsAuth = RemoteStoreService.isAuth();
         /*if (wbIsAuth) RemoteStoreService.getNotesList(() => {}, data => {
             const notes = SerializationService.convertStringToNotesList(data);
@@ -150,32 +184,40 @@ export default class Home extends React.Component<PropsType> {
                     step={columnsWidth.first.step}
                     size={columnsWidth.first.size}
                     onDragFinished={this.onResizeFirstColumn}
-                    paneStyle={STYLES(theme).firstColumn}
-                    resizerStyle={STYLES(theme).resizerStyle}
+                    paneStyle={style.firstColumn}
+                    resizerStyle={style.resizerStyle}
                 >
                     <CategoryTree/>
 
-                    <SplitPane
-                        split="vertical"
-                        minSize={columnsWidth.second.minSize}
-                        maxSize={columnsWidth.second.maxSize}
-                        step={columnsWidth.second.step}
-                        size={columnsWidth.second.size}
-                        onDragFinished={this.onResizeSecondColumn}
-                        paneStyle={STYLES(theme).secondColumn}
-                        resizerStyle={STYLES(theme).resizerStyle}
-                    >
-                        <div>
-                            <NoteList/>
-                        </div>
-                        <div>
+                    <div>
+
+                        <SplitPane
+                            split="vertical"
+                            //style={style.secondColumn}
+                            minSize={columnsWidth.second.minSize}
+                            maxSize={columnsWidth.second.maxSize}
+                            step={columnsWidth.second.step}
+                            size={columnsWidth.second.size}
+                            onDragFinished={this.onResizeSecondColumn}
+                            paneStyle={style.secondAndThirdColumn}
+                            pane2Style={style.thirdColumn}
+                            resizerStyle={style.resizerStyle}
+                        >
                             <div>
-                                AUTH: {remoteStoreIsAuth ? <Icon type="check"/> : <Icon type="cross"/>}
+                                <NoteList/>
                             </div>
-                            <NavLink to={WEBDAV_AUTH_PATH}><CButton ghost icon="link"/></NavLink>
-                            <NoteEditor/>
+                            <div>
+                                <div>
+                                    AUTH: {remoteStoreIsAuth ? <Icon type="check"/> : <Icon type="cross"/>}
+                                </div>
+                                <NavLink to={WEBDAV_AUTH_PATH}><CButton ghost icon="link"/></NavLink>
+                                <NoteEditor/>
+                            </div>
+                        </SplitPane>
+                        <div style={style.containerSecond}>
+                            <img style={style.backgroundImage} src={backgroundImage}/>
                         </div>
-                    </SplitPane>
+                    </div>
                 </SplitPane> : null}
             </div>
         );
