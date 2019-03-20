@@ -41,8 +41,8 @@ const DEFAULT_THEME = (scale: number) => (
             black: '#000',
             white: '#fff',
 
-            first:  '#1C262A',
-            second: '#242E32',
+            first:  '#242E32',
+            second: '#1C262A',
             third:  '#32373A',
 
             marker: '#06AED5',
