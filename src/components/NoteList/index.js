@@ -225,7 +225,7 @@ export default class NoteList extends React.Component<PropsType> {
                     {formatMessageIntl(MESSAGES.removeNoteFromCategory)}
                 </div>
                 {/*<div>{selectedCategory ? notes.length : <Nodata showImage={false} text="select any"/>}</div>*/}
-                <div>{selectedCategory && notesIsEmpty ? <Nodata/> : null}</div>
+                {/*<div>{selectedCategory && notesIsEmpty ? <Nodata/> : null}</div>*/}
                 <div onClick={this.onClearSelectNode}>
                     <br/>
                     {notes.map((note: NoteType) => (

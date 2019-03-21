@@ -2,6 +2,7 @@
 import {Icon} from 'antd';
 import CategoryItem from 'components/CategoryTree/CategoryItem';
 import FileExplorerTheme from 'components/CategoryTree/CategorySortebleTreeTheme';
+import CButton from 'components/CButton';
 import ColumnToolbar from 'components/ColumnToolbar';
 import ScrollableColumn from 'components/ScrollableColumn';
 import Spinner from 'components/Spinner';
@@ -11,10 +12,12 @@ import moment from 'moment';
 import Radium from 'radium';
 import * as React from 'react';
 import {FormattedMessage as Fm} from 'react-intl';
+import {NavLink} from 'react-router-dom';
 import SortableTree from 'react-sortable-tree';
 import {formatMessageIntl} from 'services/LocaleService';
 import {showNotification} from 'services/NotificationService';
 import {ROOT_CATEGORY_NAME} from 'src/constants/general';
+import {WEBDAV_AUTH_PATH} from 'src/constants/routes';
 import {REMOVED_CATEGORY, WITHOUT_CATEGORY} from 'stores/NoteStore';
 import type {ThemeType} from 'stores/ThemeStore';
 import type {CategoryType} from 'types/NoteType';
@@ -84,13 +87,25 @@ const STYLES = memoizeOne((theme: ThemeType) => (
         resizerStyle:    {
             backgroundColor: theme.color.black,
             opacity:         0.4
-        }
+        },
+        footerContainer: {
+            padding:        8 * theme.scaleFactor,
+            display:        'flex',
+            justifyContent: 'flex-end',
+        },
+        footerButton:    {
+            border:  'none',
+            padding: 4 * theme.scaleFactor,
+            height:  24 * theme.scaleFactor,
+            display: 'flex',
+        },
     }
 ));
 
 type PropsType = {
     categories: Array<CategoryType>,
     categoriesIsLoading: boolean,
+    remoteStoreIsAuth: boolean,
     theme: ThemeType,
 };
 
@@ -120,6 +135,7 @@ const scaffoldCategory = memoizeOne((theme: ThemeType, isSelected: boolean) => [
 
 @inject(stores => (
     {
+        remoteStoreIsAuth:    stores.remoteAuthStore.isAuth,
         createUpdateCategory: stores.categoryStore.createUpdateCategory,
         syncCategories:       stores.categoryStore.syncCategories,
         categoriesAsTree:     stores.categoryStore.categoryItemsAsTree,
@@ -211,7 +227,7 @@ export default class CategoryTree extends React.Component<PropsType> {
     };
 
     render() {
-        const {categoriesAsTree, selectedCategory, categoriesIsLoading, theme} = this.props;
+        const {categoriesAsTree, selectedCategory, categoriesIsLoading, theme, remoteStoreIsAuth} = this.props;
         const {categoryIsEdit} = this.state;
         let formInitialValues = {};
         if (selectedCategory) {
@@ -235,22 +251,32 @@ export default class CategoryTree extends React.Component<PropsType> {
                 scaleFactor={theme.scaleFactor}
                 width="inherit"
                 toolbar={
-                    <React.Fragment>
-                        <ColumnToolbar
-                            theme={theme}
-                            selectedItem={!withoutCategorySelected && !removeCategorySelected && selectedCategory}
-                            deleteConfirmText={MESSAGES.deleteCategoryConfirm}
-                            createNewItem={this.onAddNewCategory}
-                            updateItem={this.onEditCategory}
-                            deleteItem={this.onRemoveCategory}
-                        />
-                    </React.Fragment>
+                    <ColumnToolbar
+                        theme={theme}
+                        selectedItem={!withoutCategorySelected && !removeCategorySelected && selectedCategory}
+                        deleteConfirmText={MESSAGES.deleteCategoryConfirm}
+                        createNewItem={this.onAddNewCategory}
+                        updateItem={this.onEditCategory}
+                        deleteItem={this.onRemoveCategory}
+                    />
+                }
+                footer={
+                    <div style={style.footerContainer}>
+                        <span style={style.footerButton}>
+                            {remoteStoreIsAuth ? <Icon type="check"/> : <Icon type="cross"/>}
+                        </span>
+                        <NavLink to={WEBDAV_AUTH_PATH}><CButton style={style.footerButton} ghost icon="link"/></NavLink>
+                    </div>
                 }
             >
 
-                <div style={{    display: 'flex',
-                    flex: 1,
-                    flexDirection: 'column',}} onClick={categoryIsEdit ? emptyFunc : this.onClearSelectNode}>
+                <div
+                    style={{
+                        display:       'flex',
+                        flex:          1,
+                        flexDirection: 'column',
+                    }} onClick={categoryIsEdit ? emptyFunc : this.onClearSelectNode}
+                >
                     <CategoryItem
                         theme={theme}
                         icons={[<Icon type="inbox"/>]}

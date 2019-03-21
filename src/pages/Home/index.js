@@ -9,17 +9,18 @@ import {inject} from 'mobx-react';
 import PropTypes from 'prop-types';
 import React from 'react';
 import {FormattedMessage as Fm} from 'react-intl';
-import {NavLink} from 'react-router-dom';
 import SplitPane from 'react-split-pane';
 import LocalStorageService from 'services/LocalStorageService';
-import {WEBDAV_AUTH_PATH} from 'src/constants/routes';
-import backgroundImage from 'src/images/background6.png';
+import backgroundImage from 'src/images/background7.png';
 import type {ThemeType} from 'stores/ThemeStore';
 import './styles.styl';
 import type {CategoryType, NoteType} from 'types/NoteType';
 
 const MESSAGES = {
     addNewCategory: <Fm id="Home.render.button_add_new_category" defaultMessage="Add category"/>,
+    noNotes:        <Fm id="Home.render.no_notes" defaultMessage="no notes"/>,
+    oneNote:        <Fm id="Home.render.one_note" defaultMessage="1 note"/>,
+    notes:          (count: number) => <Fm id="Home.render.notes" defaultMessage="{count} notes" values={{count}}/>,
 };
 const COLUMNS_WIDTH_KEY = 'COLUMNS_WIDTH_KEY';
 
@@ -52,50 +53,64 @@ const DEFAULT_COLUMNS_WIDTH: ColumnsWidthType = {
 
 const STYLES = memoizeOne((theme: ThemeType, isCategorySelected: boolean, isNoteSelected: boolean) => (
     {
-        container:       {
+        container:            {
             border: '1px solid gray',
         },
-        firstColumn:     {
+        firstColumn:          {
             backgroundColor: theme.color.first,
             display:         'flex',
             flexDirection:   'column',
         },
-        containerSecond: {
-            position: 'absolute',
-            top:      '50%',
+        containerSecond:      {
+            position:   'absolute',
+            top:        0,
+            bottom:     0,
+            display:    'flex',
+            alignItems: 'flex-end',
             //background: `${theme.color.second} url(${backgroundImage}) left center no-repeat`,
         },
-        secondAndThirdColumn:    {
+        secondAndThirdColumn: {
             backgroundColor: theme.color.second,
-            zIndex: isCategorySelected ? 1 : 0,
+            zIndex:          isCategorySelected ? 1 : 0,
         },
-        secondColumn:    {
+        secondColumn:         {
             backgroundColor: theme.color.second,
-            width: '100%',
-            height: '100%',
+            width:           '100%',
+            height:          '100%',
         },
-        thirdColumn:    {
+        thirdColumn:          {
             backgroundColor: theme.color.second,
-            zIndex: isNoteSelected ? 1 : 0,
-            width: '100%',
-            height: '100%',
+            zIndex:          isNoteSelected ? 1 : 0,
+            width:           '100%',
+            height:          '100%',
         },
-        backgroundImage: {
-            position:  'relative',
-            content:   ' ',
+        backgroundImage:      {
+            position:   'relative',
+            content:    ' ',
             //top:      '-50%',
             //left:     0,
-            width:     '100%',
-            marginTop: '-20%',
+            //width:     '100%',
+            //marginTop: '-20%',
             // height:   '100%',
-            zIndex:    0,
-            filter:    theme.isBlack ? 'invert(100%)' : '',
-            opacity:   0.2,
+            height:     '70%',
+            zIndex:     0,
+            userSelect: 'none',
+            filter:     !theme.isBlack ? 'invert(100%)' : '',
+            opacity:    0.2,
         },
-        resizerStyle:    {
+        resizerStyle:         {
             backgroundColor: theme.color.black,
             opacity:         0.4,
         },
+        notesCounter:         {
+            display:        'flex',
+            flex:           1,
+            height:         '4em',
+            justifyContent: 'center',
+            alignItems:     'center',
+            fontSize:       '2em',
+            opacity:        0.25,
+        }
     }
 ));
 
@@ -107,10 +122,10 @@ type PropsType = {
 
 @inject(stores => (
     {
-        remoteStoreIsAuth: stores.remoteAuthStore.isAuth,
-        selectedCategory:  stores.categoryStore.getSelectedCategory,
-        selectedNote:      stores.noteStore.getSelectedNote,
-        theme:             stores.themeStore.getTheme,
+        selectedCategory: stores.categoryStore.getSelectedCategory,
+        selectedNote:     stores.noteStore.getSelectedNote,
+        theme:            stores.themeStore.getTheme,
+        notesCount:       stores.noteStore.getNoteItemsByCategory.length,
     }
 ))
 export default class Home extends React.Component<PropsType> {
@@ -133,7 +148,6 @@ export default class Home extends React.Component<PropsType> {
     }
 
     static propTypes = {
-        remoteStoreIsAuth:    PropTypes.bool,
         createUpdateCategory: PropTypes.func,
         syncCategories:       PropTypes.func,
         removeCategory:       PropTypes.func,
@@ -141,7 +155,6 @@ export default class Home extends React.Component<PropsType> {
     };
 
     static defaultProps = {
-        remoteStoreIsAuth:    false,
         createUpdateCategory: () => {},
         syncCategories:       () => {},
         removeCategory:       () => {},
@@ -162,17 +175,11 @@ export default class Home extends React.Component<PropsType> {
     };
 
     render() {
-        const {remoteStoreIsAuth, theme, selectedCategory, selectedNote} = this.props;
+        const {theme, selectedCategory, selectedNote, notesCount} = this.props;
         const {columnsWidth} = this.state;
-        const style = STYLES(theme, !!selectedCategory, !!selectedNote);
-        //const wbIsAuth = RemoteStoreService.isAuth();
-        /*if (wbIsAuth) RemoteStoreService.getNotesList(() => {}, data => {
-            const notes = SerializationService.convertStringToNotesList(data);
-            console.log(2222, notes);
-        });*/
-        /*const text = SerializationService.convertNotesListToString([{title: '435435435 drgdfgварекпарое'}]);
-        console.log(1111, text);
-        RemoteStorageService.saveNotesList(text, data => console.log(222, data), data => console.log(333, data));*/
+        const isCategorySelected = !!selectedCategory;
+        const isNoteSelected = !!selectedNote;
+        const style = STYLES(theme, isCategorySelected && notesCount, isNoteSelected);
         return (
             <div>
                 {columnsWidth ? <SplitPane
@@ -206,10 +213,13 @@ export default class Home extends React.Component<PropsType> {
                                 <NoteList/>
                             </div>
                             <div>
-                                <div>
-                                    AUTH: {remoteStoreIsAuth ? <Icon type="check"/> : <Icon type="cross"/>}
-                                </div>
-                                <NavLink to={WEBDAV_AUTH_PATH}><CButton ghost icon="link"/></NavLink>
+                                {!isNoteSelected ? <div style={style.notesCounter}>
+                                    {isCategorySelected && notesCount === 0
+                                        ? MESSAGES.noNotes
+                                        : null}
+                                    {notesCount === 1 ? MESSAGES.oneNote : null}
+                                    {notesCount > 1 ? MESSAGES.notes(notesCount) : null}
+                                </div> : null}
                                 <NoteEditor/>
                             </div>
                         </SplitPane>
