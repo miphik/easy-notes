@@ -27,14 +27,33 @@ const WEBDAV_PROJECT_MONTH_NOTE_DIR = (note: NoteType) => `${WEBDAV_PROJECT_PATH
 const WEBDAV_PROJECT_DAY_NOTE_DIR = (note: NoteType) => `${WEBDAV_PROJECT_PATH}/${NOTE_YEAR_PATH_PART(note)}/`
     + `${NOTE_MONTH_PATH_PART(note)}/${NOTE_DAY_PATH_PART(note)}`;
 const WEBDAV_PROJECT_NOTE_DIR = (note: NoteType) => `${WEBDAV_PROJECT_PATH}/${NOTE_YEAR_PATH_PART(note)}/`
-    + `${NOTE_MONTH_PATH_PART(note)}/${NOTE_DAY_PATH_PART(note)}/${note.uuid}`;
-const WEBDAV_PROJECT_NOTE_FILE = (note: NoteType) => `${WEBDAV_PROJECT_PATH}/${NOTE_DATE_PATH_PART(note)}/${note.uuid}`;
+    + `${NOTE_MONTH_PATH_PART(note)}/${NOTE_DAY_PATH_PART(note)}`;
+
+const WEBDAV_PROJECT_NOTE_FILE = (note: NoteType) => `${WEBDAV_PROJECT_NOTE_DIR(note)}/${note.uuid}`;
+
+const DIRS_FOR_CREATING = {
+    years:  {},
+    months: {},
+    days:   {},
+};
 
 let webdavClient;
 let serializationService = SerializationService;
 
 export const setSerializationService = (serializeService: SerializationServiceType) => {
     serializationService = serializeService;
+};
+
+const createDirs = async (dirsForCreating, existingDirs) => {
+    await Promise.all(Object.keys(dirsForCreating.years)
+        .filter((dirDateYear: string) => !existingDirs[dirDateYear])
+        .map(async (dirDateYear: string) => webdavClient.createDirectory(dirDateYear)));
+    await Promise.all(Object.keys(dirsForCreating.months)
+        .filter((dirDateYear: string) => !existingDirs[dirDateYear])
+        .map(async (dirDateYear: string) => webdavClient.createDirectory(dirDateYear)));
+    await Promise.all(Object.keys(dirsForCreating.days)
+        .filter((dirDateYear: string) => !existingDirs[dirDateYear])
+        .map(async (dirDateYear: string) => webdavClient.createDirectory(dirDateYear)));
 };
 
 export default class RemoteStoreService {
@@ -143,26 +162,26 @@ export default class RemoteStoreService {
 
     static saveNoteContent = (note: NoteType, error: () => {} = () => {}, success: () => {} = () => {}) => {
         const noteAsString = serializationService.convertNoteToString(note);
-        webdavClient.putFileContents(WEBDAV_PROJECT_NOTE_DIR(note), noteAsString, {overwrite: true})
+        webdavClient.putFileContents(WEBDAV_PROJECT_NOTE_FILE(note), noteAsString, {overwrite: true})
             .then(success)
             .catch(error);
     };
 
     static createNotesDir = (notes: Array<NoteType>, error: () => {} = () => {}, success: () => {} = () => {}) => {
-        const dirsForCreating = {};
-        notes.forEach((note: NoteType) => dirsForCreating[NOTE_DATE_PATH_PART(note)] = note);
-        webdavClient.getDirectoryContents(WEBDAV_PROJECT_PATH)
+        const dirsForCreating = {...DIRS_FOR_CREATING};
+        notes.forEach((note: NoteType) => {
+            dirsForCreating.years[WEBDAV_PROJECT_YEAR_NOTE_DIR(note)] = note;
+            dirsForCreating.months[WEBDAV_PROJECT_MONTH_NOTE_DIR(note)] = note;
+            dirsForCreating.days[WEBDAV_PROJECT_DAY_NOTE_DIR(note)] = note;
+        });
+        webdavClient.getDirectoryContents(WEBDAV_PROJECT_PATH, {deep: true})
             .then(items => {
                 const existingDirs = {};
                 items.forEach(item => {
                     if (item.type === 'directory') existingDirs[item.basename] = true;
                 });
-                const promises = [];
-                Object.keys(dirsForCreating)
-                    .filter((dirDatePart: string) => !existingDirs[dirDatePart])
-                    .forEach((dirDatePart: string) => promises
-                        .push(webdavClient.createDirectory(WEBDAV_PROJECT_NOTE_DIR(dirsForCreating[dirDatePart]))));
-                Promise.all(promises).then(success);
+
+                createDirs(dirsForCreating, existingDirs).then(success).catch(error);
             })
             .catch(error);
     };
@@ -303,7 +322,7 @@ export default class RemoteStoreService {
 
     static deleteNote = (data, error = () => {}, success = () => {}) => {
         if (!RemoteStoreService.isClientInitialized(error)) {
-            return;
+
         }
     };
 }

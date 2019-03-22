@@ -157,10 +157,18 @@ class NoteStore {
     };
 
     @action
-    syncNotes = () => syncRemoteAndLocalNotes(this.setNotes);
+    syncNotes = () => syncRemoteAndLocalNotes(this.setNotes, this.syncNotesError);
+
+    syncNotesError = (errors: Array<Error>) => {
+
+    };
 
     @action
-    loadLocalNotes = () => loadLocalNotes(this.setNotes);
+    loadLocalNotes = () => loadLocalNotes(this.setNotes, this.loadLocalNotesError);
+
+    loadLocalNotesError = (errors: Array<Error>) => {
+
+    };
 
     @action
     createUpdateNote = (

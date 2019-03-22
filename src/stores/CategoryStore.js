@@ -1,5 +1,4 @@
 // @flow
-import {DELETED_CATEGORY, EMPTY_CATEGORY} from 'components/CategoryTree';
 import {action, observable} from 'mobx';
 import moment from 'moment';
 import {getFlatDataFromTree, getTreeFromFlatData} from 'react-sortable-tree';
@@ -73,7 +72,12 @@ class CategoryStore {
             this.setCategories(categories);
             successCallback();
         },
+        this.syncCategoriesError,
     );
+
+    syncCategoriesError = (errors: Array<Error>) => {
+
+    };
 
     @action
     setSelectedCategory = (category: CategoryType) => {
@@ -120,7 +124,12 @@ class CategoryStore {
             this.setCategories(categories);
             successCallback();
         },
+        this.loadLocalCategoriesError,
     );
+
+    loadLocalCategoriesError = (errors: Array<Error>) => {
+
+    };
 
     @action
     removeCategory = (

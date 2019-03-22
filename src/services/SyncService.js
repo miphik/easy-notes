@@ -104,46 +104,39 @@ const showMergeConflictDialog = () => {
     });
 };
 
-const saveNoteToStore = (fromStore: StoreType, toStore: StoreType, note: NoteType, isFromLocalStore: boolean) => {
-    fromStore.getNote(note, (err: Error) => {
-        notificationService.showNotification(
-            formatMessageIntl(isFromLocalStore
-                ? MESSAGES.localNoteNotFound(note.uuid)
-                : MESSAGES.remoteNoteNotFound(note.uuid)),
-            err.toString(),
-            {
-                type:     'error',
-                duration: 10,
-            },
-        );
-    }, (noteFull: NoteType) => {
-        toStore.saveNote(noteFull, (err: Error) => {
-            notificationService.showNotification(
-                formatMessageIntl(
-                    isFromLocalStore
-                        ? MESSAGES.remoteWriteNoteError
-                        : MESSAGES.localWriteNoteError,
-                    err.toString(),
-                    {
-                        type:     'error',
-                        duration: 10,
-                    },
-                ),
+const saveNoteToStore = (
+    fromStore: StoreType,
+    toStore: StoreType,
+    note: NoteType, isFromLocalStore: boolean,
+    errorCallback: (errors: Array<Error>) => {} = () => {},
+) => {
+    const errors = [];
+    fromStore.getNote(
+        note,
+        (err: Error) => errors.push(err),
+        (noteFull: NoteType) => {
+            toStore.saveNote(
+                noteFull,
+                (err: Error) => errors.push(err),
+                emptyFunc,
+                false,
             );
-        }, emptyFunc, false);
-    });
+        },
+    );
+    if (errors.length) errorCallback(errors);
 };
 
 const syncData = (
     remoteNotes: Array<NoteType> = [],
     localNotes: Array<NoteType> = [],
     successCallback: () => {} = () => {},
+    errorCallback: (errors: Array<Error>) => {} = () => {},
 ) => {
     if (!remoteNotes.length && localNotes.length) {
         remoteStorageService.saveNotesList(localNotes);
         remoteStorageService.createNotesDir(localNotes, emptyFunc, () => {
             localNotes.forEach((note: NoteType) => saveNoteToStore(
-                localStorageService, remoteStorageService, note, true,
+                localStorageService, remoteStorageService, note, true, errorCallback,
             ));
         });
         successCallback(localNotes);
@@ -151,10 +144,11 @@ const syncData = (
         localStorageService.saveNotesList(remoteNotes);
         localStorageService.createNotesDir(remoteNotes);
         remoteNotes.forEach((note: NoteType) => saveNoteToStore(
-            remoteStorageService, localStorageService, note, false,
+            remoteStorageService, localStorageService, note, false, errorCallback,
         ));
         successCallback(remoteNotes);
     } else if (remoteNotes.length && localNotes.length) {
+        const errors = [];
         const {mergedIndex, updateOperations} = mergeIndex(remoteNotes, localNotes);
         updateOperations.forEach((operation: UpdateOperationType) => {
             const fromStore = operation.isFromLocalStore ? localStorageService : remoteStorageService;
@@ -162,33 +156,11 @@ const syncData = (
             switch (operation.action) {
                 case UPDATE_NEW_NOTE_OPERATION:
                 case ADD_NEW_NOTE_OPERATION: {
-                    fromStore.getNote(operation.note, (err: Error) => {
-                        notificationService.showNotification(
-                            formatMessageIntl(operation.isFromLocalStore
-                                ? MESSAGES.localNoteNotFound(operation.note.uuid)
-                                : MESSAGES.remoteNoteNotFound(operation.note.uuid)),
-                            err.toString(),
-                            {
-                                type:     'error',
-                                duration: 10,
-                            },
-                        );
-                    }, (note: NoteType) => {
-                        toStore.saveNote(note, (err: Error) => {
-                            notificationService.showNotification(
-                                formatMessageIntl(
-                                    operation.isFromLocalStore
-                                        ? MESSAGES.remoteWriteNoteError
-                                        : MESSAGES.localWriteNoteError,
-                                    err.toString(),
-                                    {
-                                        type:     'error',
-                                        duration: 10,
-                                    },
-                                ),
-                            );
-                        });
-                    });
+                    fromStore.getNote(
+                        operation.note,
+                        (err: Error) => errors.push(err),
+                        (note: NoteType) => toStore.saveNote(note, (err: Error) => errors.push(err)),
+                    );
                     break;
                 }
                 case DELETE_NEW_NOTE_OPERATION: {
@@ -215,6 +187,7 @@ const syncData = (
         remoteStorageService.saveNotesList(mergedIndex);
         localStorageService.saveNotesList(mergedIndex);
         successCallback(mergedIndex);
+        if (errors.length) errorCallback(errors);
     }
 };
 
@@ -243,101 +216,53 @@ const syncCategoriesData = (
     }
 };
 
-export const loadLocalCategories = (successCallback: () => {} = () => {}) => {
+export const loadLocalCategories = (
+    successCallback: () => {} = () => {},
+    errorCallback: (errors: Array<Error>) => {} = () => {},
+) => {
     localStorageService.getCategoriesList(
-        (err: Error) => {
-            notificationService.showNotification(
-                formatMessageIntl(
-                    MESSAGES.localReadCategoriesError,
-                    err.toString(),
-                    {
-                        type:     'error',
-                        duration: 10,
-                    },
-                ),
-            );
-        },
+        (err: Error) => errorCallback(err),
         (localCategories: CategoriesType) => successCallback(localCategories.categories),
     );
 };
 
-export const loadLocalNotes = (successCallback: () => {} = () => {}) => {
+export const loadLocalNotes = (
+    successCallback: () => {} = () => {},
+    errorCallback: (errors: Array<Error>) => {} = () => {},
+) => {
     localStorageService.getNotesList(
-        (err: Error) => {
-            notificationService.showNotification(
-                formatMessageIntl(
-                    MESSAGES.localReadNotesError,
-                    err.toString(),
-                    {
-                        type:     'error',
-                        duration: 10,
-                    },
-                ),
-            );
-        },
+        (err: Error) => errorCallback([err]),
         (localNotes: NotesType) => successCallback(localNotes.notes),
     );
 };
 
-export const syncRemoteAndLocalCategories = (successCallback: () => {} = () => {}) => {
-    remoteStorageService.getCategoriesList((err: Error) => {
-        notificationService.showNotification(
-            formatMessageIntl(
-                MESSAGES.remoteReadCategoriesError,
-                err.toString(),
-                {
-                    type:     'error',
-                    duration: 10,
-                },
-            ),
-        );
-    }, (remoteCategories: CategoriesType) => {
-        localStorageService.getCategoriesList(
-            (err: Error) => {
-                notificationService.showNotification(
-                    formatMessageIntl(
-                        MESSAGES.localReadCategoriesError,
-                        err.toString(),
-                        {
-                            type:     'error',
-                            duration: 10,
-                        },
-                    ),
-                );
-            },
-            (localCategories: CategoriesType) => syncCategoriesData(
-                remoteCategories.categories,
-                localCategories.categories,
-                successCallback,
-            ),
-        );
-    });
-};
-
-export const syncRemoteAndLocalNotes = (successCallback: () => {} = () => {}) => {
-    remoteStorageService.getNotesList((err: Error) => {
-        notificationService.showNotification(
-            formatMessageIntl(
-                MESSAGES.remoteReadNotesError,
-                err.toString(),
-                {
-                    type:     'error',
-                    duration: 10,
-                },
-            ),
-        );
-    }, (remoteNotes: NotesType) => {
-        localStorageService.getNotesList((err: Error) => {
-            notificationService.showNotification(
-                formatMessageIntl(
-                    MESSAGES.localReadNotesError,
-                    err.toString(),
-                    {
-                        type:     'error',
-                        duration: 10,
-                    },
+export const syncRemoteAndLocalCategories = (
+    successCallback: () => {} = () => {},
+    errorCallback: (errors: Array<Error>) => {} = () => {},
+) => {
+    remoteStorageService.getCategoriesList(
+        (err: Error) => errorCallback([err]),
+        (remoteCategories: CategoriesType) => {
+            localStorageService.getCategoriesList(
+                (err: Error) => errorCallback([err]),
+                (localCategories: CategoriesType) => syncCategoriesData(
+                    remoteCategories.categories,
+                    localCategories.categories,
+                    successCallback,
                 ),
             );
-        }, (localNotes: NotesType) => syncData(remoteNotes.notes, localNotes.notes, successCallback));
+        },
+    );
+};
+
+export const syncRemoteAndLocalNotes = (
+    successCallback: () => {} = () => {},
+    errorCallback: (errors: Array<Error>) => {} = () => {},
+) => {
+    remoteStorageService.getNotesList((err: Error) => errorCallback([err]), (remoteNotes: NotesType) => {
+        localStorageService.getNotesList(
+            (err: Error) => errorCallback([err]),
+            (localNotes: NotesType) => syncData(remoteNotes.notes, localNotes.notes, successCallback, errorCallback),
+        );
     });
 };
