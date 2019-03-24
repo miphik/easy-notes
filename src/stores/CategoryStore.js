@@ -1,4 +1,5 @@
 // @flow
+import debounce from 'lodash/debounce';
 import {action, observable} from 'mobx';
 import moment from 'moment';
 import {getFlatDataFromTree, getTreeFromFlatData} from 'react-sortable-tree';
@@ -35,6 +36,10 @@ class CategoryStore {
 
     @observable expandedNodes = observable.map();
 
+    @observable categoriesAreSyncing = false;
+
+    @observable syncError = null;
+
     @observable selectedCategory = null;
 
     @observable categoriesIsLoading = true;
@@ -52,6 +57,7 @@ class CategoryStore {
 
     @action
     setCategories = (categories: Array<CategoryType>) => {
+        this.debounceChangeSyncingStatus(false);
         const cats = categories
             .map((category: CategoryType) => {
                 if (!category.parentUUID || !category.parentUUID.length) {
@@ -67,17 +73,27 @@ class CategoryStore {
     };
 
     @action
-    syncCategories = (successCallback: () => void = () => {}) => syncRemoteAndLocalCategories(
-        (categories: Array<CategoryType>) => {
-            this.setCategories(categories);
-            successCallback();
-        },
-        this.syncCategoriesError,
-    );
+    syncCategories = (successCallback: () => void = () => {}) => {
+        this.changeSyncingStatus(true);
+        this.syncCategoriesError(null);
+        syncRemoteAndLocalCategories(
+            (categories: Array<CategoryType>) => {
+                this.setCategories(categories);
+                successCallback();
+            },
+            this.syncCategoriesError,
+        );
+    };
 
     syncCategoriesError = (errors: Array<Error>) => {
-
+        this.debounceChangeSyncingStatus(false);
+        this.syncError = errors;
     };
+
+    @action
+    changeSyncingStatus = (status: boolean) => this.categoriesAreSyncing = status;
+
+    debounceChangeSyncingStatus = debounce(this.changeSyncingStatus, 10);
 
     @action
     setSelectedCategory = (category: CategoryType) => {
@@ -184,6 +200,14 @@ class CategoryStore {
 
         localStorageService.saveCategoriesList(this.categoryAllItems, errorCallback, successCallback);
     };
+
+    get getSyncErrors() {
+        return this.syncError;
+    }
+
+    get areCategoriesSyncing() {
+        return this.categoriesAreSyncing;
+    }
 
     get getExpandedNodes() {
         return this.expandedNodes.toJS();

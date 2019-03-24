@@ -1,4 +1,5 @@
 // @flow
+import debounce from 'lodash/debounce';
 import {action, observable} from 'mobx';
 import moment from 'moment';
 import LocalStoreService from 'services/LocalStoreService';
@@ -27,6 +28,7 @@ class NoteStore {
 
     @action
     setNotes = (notes: Array<NoteStore>) => {
+        this.changeSyncingStatus(false);
         console.info('LOAD NOTES', notes);
         const newNotes = {
             [WITHOUT_CATEGORY]: [],
@@ -157,10 +159,18 @@ class NoteStore {
     };
 
     @action
-    syncNotes = () => syncRemoteAndLocalNotes(this.setNotes, this.syncNotesError);
+    syncNotes = () => {
+        categoryStore.changeSyncingStatus(true);
+        syncRemoteAndLocalNotes(this.setNotes, this.syncNotesError);
+    };
 
+    @action
+    changeSyncingStatus = categoryStore.debounceChangeSyncingStatus;
+
+    @action
     syncNotesError = (errors: Array<Error>) => {
-
+        this.changeSyncingStatus(false);
+        categoryStore.syncCategoriesError(errors);
     };
 
     @action

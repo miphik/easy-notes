@@ -84,15 +84,21 @@ export default class LocalStoreService {
         const noteMonthDir = LOCAL_PROJECT_MONTH_NOTE_DIR(note);
         const noteDayDir = LOCAL_PROJECT_DAY_NOTE_DIR(note);
 
-        if (!fs.existsSync(noteYearDir)) {
-            fs.mkdirSync(noteYearDir);
+        try {
+            if (!fs.existsSync(noteYearDir)) {
+                fs.mkdirSync(noteYearDir);
+            }
+            if (!fs.existsSync(noteMonthDir)) {
+                fs.mkdirSync(noteMonthDir);
+            }
+            if (!fs.existsSync(noteDayDir)) {
+                fs.mkdirSync(noteDayDir);
+            }
+        } catch (e) {
+            error(e);
+            return;
         }
-        if (!fs.existsSync(noteMonthDir)) {
-            fs.mkdirSync(noteMonthDir);
-        }
-        if (!fs.existsSync(noteDayDir)) {
-            fs.mkdirSync(noteDayDir);
-        }
+        success();
     };
 
     static saveNote = (

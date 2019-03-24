@@ -110,20 +110,18 @@ const saveNoteToStore = (
     note: NoteType, isFromLocalStore: boolean,
     errorCallback: (errors: Array<Error>) => {} = () => {},
 ) => {
-    const errors = [];
     fromStore.getNote(
         note,
-        (err: Error) => errors.push(err),
+        errorCallback,
         (noteFull: NoteType) => {
             toStore.saveNote(
                 noteFull,
-                (err: Error) => errors.push(err),
+                errorCallback,
                 emptyFunc,
                 false,
             );
         },
     );
-    if (errors.length) errorCallback(errors);
 };
 
 const syncData = (
@@ -133,20 +131,33 @@ const syncData = (
     errorCallback: (errors: Array<Error>) => {} = () => {},
 ) => {
     if (!remoteNotes.length && localNotes.length) {
-        remoteStorageService.saveNotesList(localNotes);
-        remoteStorageService.createNotesDir(localNotes, emptyFunc, () => {
+        const errors = [];
+        const setError = (err: Error) => errors.push(err);
+        remoteStorageService.createNotesDir(localNotes, setError, () => {
             localNotes.forEach((note: NoteType) => saveNoteToStore(
-                localStorageService, remoteStorageService, note, true, errorCallback,
+                localStorageService, remoteStorageService, note, true, setError,
             ));
+            // @TODO just hack to caught promise errors, change later
+            setTimeout(() => {
+                remoteStorageService.saveNotesList(localNotes, setError);
+                successCallback(localNotes);
+                if (errors.length) errorCallback(errors);
+            }, 2000);
         });
-        successCallback(localNotes);
     } else if (remoteNotes.length && !localNotes.length) {
-        localStorageService.saveNotesList(remoteNotes);
-        localStorageService.createNotesDir(remoteNotes);
-        remoteNotes.forEach((note: NoteType) => saveNoteToStore(
-            remoteStorageService, localStorageService, note, false, errorCallback,
-        ));
-        successCallback(remoteNotes);
+        const errors = [];
+        const setError = (err: Error) => errors.push(err);
+        localStorageService.createNotesDir(remoteNotes, setError, () => {
+            remoteNotes.forEach((note: NoteType) => saveNoteToStore(
+                remoteStorageService, localStorageService, note, false, setError,
+            ));
+            // @TODO just hack to caught promise errors, change later
+            setTimeout(() => {
+                localStorageService.saveNotesList(remoteNotes, setError);
+                successCallback(remoteNotes);
+                if (errors.length) errorCallback(errors);
+            }, 2000);
+        });
     } else if (remoteNotes.length && localNotes.length) {
         const errors = [];
         const {mergedIndex, updateOperations} = mergeIndex(remoteNotes, localNotes);
@@ -184,10 +195,12 @@ const syncData = (
                     throw new Error(`Something went wrong, there is no any action with type: ${operation.action}`);
             }
         });
-        remoteStorageService.saveNotesList(mergedIndex);
-        localStorageService.saveNotesList(mergedIndex);
-        successCallback(mergedIndex);
         if (errors.length) errorCallback(errors);
+        else {
+            remoteStorageService.saveNotesList(mergedIndex);
+            localStorageService.saveNotesList(mergedIndex);
+        }
+        successCallback(mergedIndex);
     }
 };
 
