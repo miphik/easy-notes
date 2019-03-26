@@ -1,7 +1,5 @@
 // @flow
-import {Icon} from 'antd';
 import CategoryTree from 'components/CategoryTree';
-import CButton from 'components/CButton';
 import NoteEditor from 'components/NoteEditor';
 import NoteList from 'components/NoteList';
 import memoizeOne from 'memoize-one';
@@ -13,8 +11,8 @@ import SplitPane from 'react-split-pane';
 import LocalStorageService from 'services/LocalStorageService';
 import backgroundImage from 'src/images/background7.png';
 import type {ThemeType} from 'stores/ThemeStore';
-import './styles.styl';
 import type {CategoryType, NoteType} from 'types/NoteType';
+import './styles.styl';
 
 const MESSAGES = {
     addNewCategory: <Fm id="Home.render.button_add_new_category" defaultMessage="Add category"/>,
@@ -62,15 +60,18 @@ const STYLES = memoizeOne((theme: ThemeType, isCategorySelected: boolean, isNote
             flexDirection:   'column',
         },
         containerSecond:      {
-            position:   'absolute',
-            top:        0,
-            bottom:     0,
-            display:    'flex',
-            alignItems: 'flex-end',
+            background:         `url(${backgroundImage}) ${theme.color.second}`,
+            backgroundRepeat:   'repeat-x',
+            backgroundSize:     'auto 70%',
+            backgroundPosition: 'bottom left',
+            width:              '100%',
+            height:             '100%',
+            position:           'absolute',
+            opacity:            0.2,
             //background: `${theme.color.second} url(${backgroundImage}) left center no-repeat`,
         },
         secondAndThirdColumn: {
-            backgroundColor: theme.color.second,
+            backgroundColor: isCategorySelected ? theme.color.second : 'transparent',
             zIndex:          isCategorySelected ? 1 : 0,
         },
         secondColumn:         {
@@ -79,7 +80,7 @@ const STYLES = memoizeOne((theme: ThemeType, isCategorySelected: boolean, isNote
             height:          '100%',
         },
         thirdColumn:          {
-            backgroundColor: theme.color.second,
+            backgroundColor: isNoteSelected ? theme.color.second : 'transparent',
             zIndex:          isNoteSelected ? 1 : 0,
             width:           '100%',
             height:          '100%',
@@ -100,7 +101,7 @@ const STYLES = memoizeOne((theme: ThemeType, isCategorySelected: boolean, isNote
         },
         resizerStyle:         {
             backgroundColor: theme.color.black,
-            opacity:         0.4,
+            opacity:         1,
         },
         notesCounter:         {
             display:        'flex',
@@ -196,7 +197,7 @@ export default class Home extends React.Component<PropsType> {
                     <CategoryTree/>
 
                     <div>
-
+                        <div style={style.containerSecond}/>
                         <SplitPane
                             split="vertical"
                             //style={style.secondColumn}
@@ -223,9 +224,6 @@ export default class Home extends React.Component<PropsType> {
                                 <NoteEditor/>
                             </div>
                         </SplitPane>
-                        <div style={style.containerSecond}>
-                            <img style={style.backgroundImage} src={backgroundImage}/>
-                        </div>
                     </div>
                 </SplitPane> : null}
             </div>

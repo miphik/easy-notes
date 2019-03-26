@@ -4,6 +4,8 @@ const webpack = require('webpack');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+const CompressionPlugin = require('compression-webpack-plugin');
+const WebpackMd5Hash = require('webpack-md5-hash');
 const LodashModuleReplacementPlugin = require('lodash-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
 
@@ -49,6 +51,7 @@ module.exports = function (env, argv) {
         common.plugins.push(new webpack.optimize.ModuleConcatenationPlugin());
         common.plugins.push(new webpack.optimize.OccurrenceOrderPlugin());
         common.plugins.push(new OptimizeCssAssetsPlugin());
+        common.plugins.push(new WebpackMd5Hash());
         common.plugins.push(new TerserPlugin({
             terserOptions: {
                 parallel:  4,
@@ -97,6 +100,9 @@ module.exports = function (env, argv) {
             },
         }));*/
         common.plugins.push(new BundleAnalyzerPlugin());
+        common.plugins.push(new CompressionPlugin({
+            algorithm: 'gzip',
+        }));
         return merge([
             common,
             extractCSS(),

@@ -53,13 +53,13 @@ export default class StatusIcon extends React.Component<PropsType> {
         const {theme, categoriesAreSyncing, remoteStoreIsAuth, syncErrors} = this.props;
         const style = STYLES(theme, !!syncErrors);
 
-        let icon = null;
-        if (categoriesAreSyncing || !!syncErrors) {
-            icon = <Icon type="disconnect"/>;
+        let icon = <Icon type="disconnect"/>;
+        if (!!syncErrors) {
+            icon = <Icon type="warning"/>;
         } else if (categoriesAreSyncing) {
             icon = <Icon type="sync" spin/>;
         } else if (remoteStoreIsAuth) {
-            icon = <Icon type="cloud"/>;
+            icon = <Icon type="share-alt"/>;
         }
 
         return (

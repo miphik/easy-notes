@@ -90,10 +90,15 @@ class CategoryStore {
         this.syncError = errors;
     };
 
-    @action
-    changeSyncingStatus = (status: boolean) => this.categoriesAreSyncing = status;
+    changeSyncingStatus = (status: boolean) => {
+        if (this.categoriesAreSyncing && !status) setTimeout(() => this.changeSyncingStatusInner(status), 500);
+        else if (status !== this.categoriesAreSyncing) this.changeSyncingStatusInner(status);
+    };
 
-    debounceChangeSyncingStatus = debounce(this.changeSyncingStatus, 10);
+    @action
+    changeSyncingStatusInner = (status: boolean) => this.categoriesAreSyncing = status;
+
+    debounceChangeSyncingStatus = debounce(this.changeSyncingStatus, 100);
 
     @action
     setSelectedCategory = (category: CategoryType) => {

@@ -59,6 +59,7 @@ export default class NoteItem extends React.PureComponent<PropsType> {
         if (noteIsSelected) {
             style.color = 'red';
         }
+
         return (
             <React.Fragment>
                 {noteIsEditing && noteIsSelected ? (
