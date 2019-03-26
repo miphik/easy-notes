@@ -106,7 +106,7 @@ class FileThemeNodeContentRenderer extends Component {
                     <div
                         key={`highlight_${1 + i}`}
                         style={{
-                            width: scaffoldBlockPxWidth,
+                            width: '0.6em',
                             left:  scaffoldBlockPxWidth * i,
                         }}
                         className={`${styles.absoluteLineBlock} ${highlightLineClass}`}

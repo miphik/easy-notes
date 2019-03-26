@@ -60,7 +60,7 @@ const STYLES = memoizeOne((theme: ThemeType, isCategorySelected: boolean, isNote
             flexDirection:   'column',
         },
         containerSecond:      {
-            background:         `url(${backgroundImage}) ${theme.color.second}`,
+            background:         `url(${backgroundImage}) ${theme.color.black}`,
             backgroundRepeat:   'repeat-x',
             backgroundSize:     'auto 70%',
             backgroundPosition: 'bottom left',
