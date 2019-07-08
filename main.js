@@ -48,7 +48,8 @@ function createMainWindow(data = {}) {
         height:                      data.bounds && data.bounds.height ? data.bounds.height : 880,
         y:                           data.bounds && data.bounds.y ? data.bounds.y : null,
         webPreferences: {
-            webSecurity: false
+            webSecurity: false,
+            nodeIntegration: true,
         },
         /* webPreferences: {
             //preload:                        `${__dirname}/preload.js`,

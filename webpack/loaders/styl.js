@@ -12,9 +12,12 @@ module.exports = function (paths) {
                         {
                             loader:  'css-loader',
                             options: {
-                                modules:        true,
-                                importLoaders:  true,
-                                localIdentName: '[path][local]__[hash:base64:5]',
+                                modules: {
+                                    mode:           'local',
+                                    localIdentName: '[path][local]__[hash:base64:5]',
+                                },
+                                import:        true,
+                                importLoaders: true,
                             },
                         },
                         postcss,

@@ -4,6 +4,7 @@ const webpack = require('webpack');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+const ExtractCssChunksPlugin = require('extract-css-chunks-webpack-plugin');
 const CompressionPlugin = require('compression-webpack-plugin');
 const WebpackMd5Hash = require('webpack-md5-hash');
 const LodashModuleReplacementPlugin = require('lodash-webpack-plugin');
@@ -35,12 +36,13 @@ const common = merge([
 module.exports = function (env, argv) {
     common.mode = argv.mode;
     if (argv.mode === 'production') {
-        common.plugins.push(new MiniCssExtractPlugin({
+        common.plugins.push(new ExtractCssChunksPlugin());
+        /* common.plugins.push(new MiniCssExtractPlugin({
             // Options similar to the same options in webpackOptions.output
             // both options are optional
-            filename:      '[name].[hash].css',
             chunkFilename: '[id].[hash].css',
-        }));
+            filename: 'css/[name]-[hash:8].css',
+        }));*/
         common.plugins.push(new LodashModuleReplacementPlugin());
         common.plugins.push(new webpack.ContextReplacementPlugin(
             // The path to directory which should be handled by this plugin
@@ -111,7 +113,7 @@ module.exports = function (env, argv) {
     }
     if (argv.mode === 'development') {
         common.devtool = 'cheap-module-source-map';
-        common.plugins.push(new BundleAnalyzerPlugin());
+        // common.plugins.push(new BundleAnalyzerPlugin());
         return merge([
             common,
             devserver(),

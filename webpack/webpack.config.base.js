@@ -2,7 +2,8 @@ require('@babel/register');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const webpack = require('webpack');
 const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
-const CleanWebpackPlugin = require('clean-webpack-plugin');
+const WebpackBar = require('webpackbar');
+const {CleanWebpackPlugin} = require('clean-webpack-plugin');
 
 const path = require('path');
 const PATHS = require('./paths');
@@ -110,6 +111,7 @@ module.exports = {
         new webpack.NamedModulesPlugin(),
         new webpack.NoEmitOnErrorsPlugin(),
         new webpack.HotModuleReplacementPlugin(),
+        new WebpackBar(),
     ],
     optimization: {
         splitChunks: {

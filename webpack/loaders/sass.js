@@ -12,9 +12,12 @@ module.exports = function (paths) {
                         {
                             loader:  'css-loader',
                             options: {
-                                modules:        true,
-                                importLoaders:  true,
-                                localIdentName: 'rstcustom__[local]',
+                                modules: {
+                                    mode:           'local',
+                                    localIdentName: '[path][local]__[hash:base64:5]',
+                                },
+                                import:        true,
+                                importLoaders: true,
                             },
                         },
                         'sass-loader',
