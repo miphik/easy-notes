@@ -9,20 +9,20 @@ import styles from './styles.styl';
 
 const STYLES = memoizeOne((theme: ThemeType) => (
     {
-        confirmButton:   {display: 'flex', justifyContent: 'center'},
-        buttonGroup:     {
+        confirmButton: {display: 'flex', justifyContent: 'center'},
+        buttonGroup:   {
             flex: 1,
         },
         buttonContainer: {
-            margin: theme.scaleFactor * 8,
+            margin: '0.5em',
         },
-        removeButton:    {
+        removeButton: {
             color:    theme.color.button,
             ':hover': {
                 color: theme.color.dangerButton,
             },
         },
-        addButton:       {
+        addButton: {
             color:    theme.color.button,
             ':hover': {
                 color: theme.color.buttonActive,
@@ -96,7 +96,6 @@ export default class ColumnToolbar extends React.PureComponent<PropsType> {
                         onToggle={this.toggleOpenDeleteConfirm}
                         backgroundColor={theme.color.first}
                         textColor={theme.color.textMain}
-                        scaleFactor={theme.scaleFactor}
                         content={(
                             <div>
                                 {deleteConfirmText}

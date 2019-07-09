@@ -12,12 +12,13 @@ import styles from './styles.scss';
 const STYLES = memoizeOne((theme: ThemeType) => (
     {
         input:         {
-            background: 'transparent',
-            color:      'white',
-            border:     'none',
-            outline:    'none',
-            boxShadow:  'none',
-            marginLeft: -11 * theme.scaleFactor,
+            background:  'transparent',
+            color:       'white',
+            border:      'none',
+            outline:     'none',
+            boxShadow:   'none',
+            marginLeft:  '0',
+            paddingLeft: '0',
         },
         item:          {
             display:                'flex',
@@ -25,16 +26,16 @@ const STYLES = memoizeOne((theme: ThemeType) => (
             height:                 theme.measure.rowCategoryHeight,
             alignItems:             'center',
             border:                 '1px dashed transparent',
-            borderTopLeftRadius:    4 * theme.scaleFactor,
-            borderBottomLeftRadius: 4 * theme.scaleFactor,
+            borderTopLeftRadius:    '0.25em',
+            borderBottomLeftRadius: '0.25em',
             overflow:               'hidden',
             ':hover':               {
                 color: theme.color.white,
             },
         },
         toolbarButton: {
-            marginRight: 8 * theme.scaleFactor,
-            fontSize:    18 * theme.scaleFactor,
+            marginRight: '0.5em',
+            fontSize:    '1.1em',
         },
         overItem:      {
             border: '1px dashed white',

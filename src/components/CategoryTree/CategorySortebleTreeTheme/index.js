@@ -26,6 +26,6 @@ const theme = (theme: ThemeType) => ({
         console.log(113213, options);
         return 32;
     },*/
-    slideRegionSize:      theme.scaleFactor * 50,
+    slideRegionSize:      '3em',
 });
 export default theme;

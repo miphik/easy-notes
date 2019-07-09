@@ -71,7 +71,7 @@ class FileThemeNodeContentRenderer extends Component {
                     position:        'relative',
                     display:         'inline-block',
                     flex:            '0 0 auto',
-                    width:           3 * theme.scaleFactor,
+                    width:           '0.25em',
                     backgroundColor: isNodeSelected ? theme.color.marker : 'inherit',
                 }}
             />,
@@ -128,7 +128,7 @@ class FileThemeNodeContentRenderer extends Component {
                             left: (
                                 lowerSiblingCounts.length - 0.7
                             ) * scaffoldBlockPxWidth,
-                            fontSize: theme.scaleFactor * 12,
+                            fontSize: '0.9em',
                             ':hover': {
                                 filter: `drop-shadow(0 0 0px ${theme.color.white})
                                 drop-shadow(0 0 1px ${theme.color.white})

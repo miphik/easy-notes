@@ -12,7 +12,12 @@ html
 button
   overflow hidden !important;
 
-::-webkit-scrollbar-thumb {
+:global
+  .ant-btn
+  .ant-input
+    font-size: 1em !important
+
+    ::-webkit-scrollbar-thumb {
   background-color: hsla(0, 0%, 100%, .4);
   background-clip: padding-box;
   border: 5px solid transparent;

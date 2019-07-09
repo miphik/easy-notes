@@ -1,5 +1,4 @@
 // @flow
-import debounce from 'lodash/debounce';
 import {action, observable} from 'mobx';
 import moment from 'moment';
 import LocalStoreService from 'services/LocalStoreService';
@@ -151,11 +150,13 @@ class NoteStore {
         this.setNotes(notes);
         this.setSelectedNoteInner(note);
         localStorageService.saveNote(note, (err: Error) => console.error('localStorageService.saveNote', err));
-        remoteStorageService.saveNote(note, (err: Error) => console.error('remoteStorageService.saveNote', err));
         localStorageService.saveNotesList(notes, (err: Error) => console
             .error('localStorageService.saveNotesList', err));
-        remoteStorageService.saveNotesList(notes, (err: Error) => console
-            .error('remoteStorageService.saveNotesList', err));
+        if (RemoteStoreService.isClientInitialized()) {
+            remoteStorageService.saveNote(note, (err: Error) => console.error('remoteStorageService.saveNote', err));
+            remoteStorageService.saveNotesList(notes, (err: Error) => console
+                .error('remoteStorageService.saveNotesList', err));
+        }
     };
 
     @action

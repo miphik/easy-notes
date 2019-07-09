@@ -87,6 +87,7 @@ class CategoryStore {
 
     syncCategoriesError = (errors: Array<Error>) => {
         this.debounceChangeSyncingStatus(false);
+        this.categoriesIsLoading = false;
         this.syncError = errors;
     };
 

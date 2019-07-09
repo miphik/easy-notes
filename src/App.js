@@ -11,7 +11,6 @@ import 'react-sortable-tree/style.css';
 import {Slide, ToastContainer} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import SerializationService from 'services/SerializationService';
-import type {StoresType} from 'stores';
 // import {LocaleProvider} from 'antd';
 
 // import enUS from 'antd/lib/locale-provider/en_US';
@@ -53,7 +52,7 @@ class App extends Component {
                     newestOnTop
                     toastClassName="dark-toast"
                     progressClassName={{
-                        height: '2px',
+                        height: '1px',
                     }}
                 />
             </React.Fragment>

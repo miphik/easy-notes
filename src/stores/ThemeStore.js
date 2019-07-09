@@ -27,10 +27,10 @@ const DEFAULT_THEME = (scale: number) => (
     {
         isBlack:      true,
         scaleFactor:  scale,
-        mainFontSize: 14 * scale,
+        mainFontSize: scale,
         measure:      {
-            rowCategoryHeight:            32 * scale,
-            scaffoldCategoryBlockPxWidth: 16 * scale,
+            rowCategoryHeight:            '2em',
+            scaffoldCategoryBlockPxWidth: '1.3em',
         },
         color: {
             button:       '#8e8e8e',
@@ -53,13 +53,14 @@ const DEFAULT_THEME = (scale: number) => (
 );
 
 class ThemeStore {
-    @observable scaleFactor = 1;
+    @observable scaleFactor = 14;
 
     @observable theme = observable.map(DEFAULT_THEME(this.scaleFactor));
 
     @action
     changeScaleFactor = (scale: number) => {
         this.scaleFactor = scale;
+        document.body.style.fontSize = `${scale}px`;
         this.theme = observable.map(DEFAULT_THEME(scale));
     };
 

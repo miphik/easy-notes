@@ -68,7 +68,7 @@ const STYLES = memoizeOne((theme: ThemeType) => (
             flex: 1
         },
         buttonContainer: {
-            margin: theme.scaleFactor * 8,
+            margin: '0.5em',
         },
         removeButton:    {
             color:    theme.color.button,
@@ -103,7 +103,7 @@ const scaffoldCategory = memoizeOne((theme: ThemeType, isSelected: boolean) => [
             position:        'relative',
             display:         'inline-block',
             flex:            '0 0 auto',
-            width:           3 * theme.scaleFactor,
+            width:           '0.2em',
             backgroundColor: isSelected ? theme.color.marker : 'inherit',
         }}
     />,
@@ -213,7 +213,7 @@ export default class CategoryTree extends React.Component<PropsType> {
 
     render() {
         const {
-            categoriesAsTree, selectedCategory, categoriesIsLoading, theme,
+            categoriesAsTree, selectedCategory, categoriesIsLoading, theme, remoteStoreIsError,
         } = this.props;
         const {categoryIsEdit} = this.state;
         let formInitialValues = {};
@@ -235,7 +235,6 @@ export default class CategoryTree extends React.Component<PropsType> {
                 autoHideScrollbar
                 shadowColor={theme.color.first}
                 scrollColor={theme.color.second}
-                scaleFactor={theme.scaleFactor}
                 width="inherit"
                 toolbar={
                     <ColumnToolbar

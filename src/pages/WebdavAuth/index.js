@@ -23,9 +23,10 @@ const MESSAGES = {
 
 @inject(stores => (
     {
-        remoteStoreLogOut: stores.remoteAuthStore.setAuthFalse,
-        remoteStoreLogIn:  stores.remoteAuthStore.setAuthTrue,
-        remoteStoreIsAuth: stores.remoteAuthStore.isAuth,
+        remoteStoreLogOut:  stores.remoteAuthStore.setAuthFalse,
+        remoteStoreLogIn:   stores.remoteAuthStore.setAuthTrue,
+        remoteStoreIsAuth:  stores.remoteAuthStore.isAuth,
+        remoteStoreIsLogin: stores.remoteAuthStore.isLogin,
     }
 ))
 @withRouter
@@ -57,19 +58,28 @@ class WebdavAuth extends React.PureComponent {
     };
 
     onLogOut = () => {
-        const {remoteStoreLogOut} = this.props;
+        const {remoteStoreLogOut, history} = this.props;
         RemoteStoreService.logOut(() => remoteStoreLogOut());
+        history.replace(HOME_PATH);
+    };
+
+    onBackHome = () => {
+        const {history} = this.props;
+        history.replace(HOME_PATH);
     };
 
     render() {
-        const {remoteStoreIsAuth} = this.props;
+        const {remoteStoreIsLogin} = this.props;
         return (
             <div>
-                {remoteStoreIsAuth ? (
+                {remoteStoreIsLogin ? (
                     <Button className="WebdavAuthForm__submit" type="primary" onClick={this.onLogOut}>
                         Log out
                     </Button>
-                ) : <WebdavAuthForm onSubmit={this.onFormSubmit}/>}
+                    ) : <WebdavAuthForm onSubmit={this.onFormSubmit}/>}
+                <Button className="WebdavAuthForm__submit" type="primary" onClick={this.onBackHome}>
+                        Back
+                </Button>
             </div>
         );
     }

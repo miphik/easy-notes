@@ -4,6 +4,7 @@ import type {
 } from 'types/NoteType';
 
 export type StoreType = {
+    isClientInitialized: () => boolean,
     saveNotesList: (data: Array<NoteType>, error: (err: Error) => void, success: () => void) => void,
     saveCategoriesList: (data: Array<CategoryType>, error: (err: Error) => void, success: () => void) => void,
     getNotesList: (error: (err: Error) => void, success: (notes: NotesType) => void) => Array<NoteType>,
