@@ -9,7 +9,7 @@
   top: 50%;
   width: 1.8em;
   height: 2em;
-  transform: translate3d(10%, -47%, 0);
+  transform: translate3d(0, -47%, 0);
   cursor: pointer;
   display: flex;
   justify-content: center;
@@ -140,7 +140,6 @@ $highlight-line-size: 3px; // Make it an even number for clean rendering
 .highlightBottomLeftCorner {
   $arrow-size: 5px;
   z-index: 3;
-  // left: 1px !important;
 
   &::before {
     content: '';

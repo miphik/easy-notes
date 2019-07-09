@@ -237,6 +237,7 @@ export default class NoteList extends React.Component<PropsType> {
                         >
                             <NoteItem
                                 note={note}
+                                theme={theme}
                                 noteIsEditing={noteIsEdit}
                                 updateNoteTitle={this.updateNoteTitle}
                                 noteIsDragging={noteIsDragging === note.uuid}

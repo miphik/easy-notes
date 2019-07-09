@@ -20,10 +20,6 @@
   cursor: move;
   display: flex;
 
-  &:hover {
-    // opacity: 0.7;
-  }
-
   &:active {
     opacity: 1;
   }
@@ -66,7 +62,6 @@
 
   &::before {
     border-top: 3px solid #e6a8ad;
-    // background-color: #e6a8ad;
   }
 }
 
@@ -97,7 +92,6 @@
   flex: 1 0 auto;
   display: flex;
   align-items: center;
-  // justify-content: space-between;
 }
 
 .rowLabel {

@@ -1,7 +1,12 @@
 // @flow
-import {Input} from 'antd';
+import {Input, Tooltip} from 'antd';
 import * as React from 'react';
 import type {NoteType} from 'types/NoteType';
+import memoizeOne from 'memoize-one';
+import type {ThemeType} from 'stores/ThemeStore';
+import Color from 'color';
+import moment from 'moment';
+import styles from './styles.styl';
 
 type PropsType = {
     note: NoteType,
@@ -11,6 +16,49 @@ type PropsType = {
     onSelectNode: (note: NoteType) => void,
     updateNoteTitle: (noteTitle: string) => void,
 };
+
+const STYLES = memoizeOne((theme: ThemeType, noteIsDragging: boolean, noteIsSelected: boolean) => (
+    {
+        container: {
+            cursor:       'pointer',
+            background:   'transparent',
+            border:       noteIsDragging ? '1px dashed gray' : '1px solid transparent',
+            outline:      'none',
+            boxShadow:    'none',
+            marginLeft:   '0',
+            borderBottom: `1px solid ${theme.isBlack
+                ? Color(theme.color.second).lighten(0.4)
+                : Color(theme.color.second).darken(0.4)}`,
+        },
+        date: {
+            color: theme.color.button,
+        },
+        item: {
+            display:                'flex',
+            cursor:                 'pointer',
+            height:                 theme.measure.rowCategoryHeight,
+            alignItems:             'center',
+            border:                 '1px dashed transparent',
+            borderTopLeftRadius:    '0.25em',
+            borderBottomLeftRadius: '0.25em',
+            overflow:               'hidden',
+            ':hover':               {
+                color: theme.color.white,
+            },
+        },
+        toolbarButton: {
+            marginRight: '0.5em',
+            marginLeft:  '0.4em',
+            fontSize:    '1.1em',
+        },
+        overItem: {
+            border: '1px dashed white',
+        },
+        selectedItem: {
+            backgroundColor: noteIsSelected ? Color(theme.color.textMain).alpha(0.2) : 'transparent',
+        },
+    }
+));
 
 export default class NoteItem extends React.PureComponent<PropsType> {
     state = {
@@ -46,23 +94,20 @@ export default class NoteItem extends React.PureComponent<PropsType> {
 
     render() {
         const {
-            note, onSelectNode, noteIsDragging, noteIsEditing, noteIsSelected,
+            note, onSelectNode, noteIsDragging, noteIsEditing, noteIsSelected, theme,
         } = this.props;
+
         const {noteTitle} = this.state;
-        const style = {
-            display:    'flex',
-            alignItems: 'center',
-        };
-        if (noteIsDragging) {
-            style.border = '1px dashed gray';
-        }
-        if (noteIsSelected) {
-            style.color = 'red';
-        }
+        const style = STYLES(theme, noteIsDragging, noteIsSelected);
+        const selectedAndEdit = noteIsEditing && noteIsSelected;
 
         return (
-            <React.Fragment>
-                {noteIsEditing && noteIsSelected ? (
+            <div
+                className={styles.container}
+                style={{...style.container, ...style.selectedItem}}
+                onClick={onSelectNode(note)}
+            >
+                {selectedAndEdit ? (
                     <div>
                         <Input
                             style={{
@@ -82,14 +127,14 @@ export default class NoteItem extends React.PureComponent<PropsType> {
                         />
                     </div>
                 ) : (
-                    <div
-                        onClick={onSelectNode(note)}
-                        style={style}
-                    >
+                    <div>
                         {note.title}
                     </div>
                 )}
-            </React.Fragment>
+                <Tooltip mouseEnterDelay={0.4} title={moment(note.updatedAt).format()}>
+                    <div style={style.date} className={styles.date}>{moment(note.updatedAt).format('lll')}</div>
+                </Tooltip>
+            </div>
         );
     }
 }

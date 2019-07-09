@@ -10,6 +10,7 @@ export type ThemeType = {
         scaffoldCategoryBlockPxWidth: number,
     },
     color: {
+        gray: string,
         button: string,
         buttonActive: string,
         dangerButton: string,
@@ -30,9 +31,11 @@ const DEFAULT_THEME = (scale: number) => (
         mainFontSize: scale,
         measure:      {
             rowCategoryHeight:            '2em',
-            scaffoldCategoryBlockPxWidth: '1.3em',
+            scaffoldCategoryBlockPxWidth: 1.1,
         },
         color: {
+            gray: '#747474',
+
             button:       '#8e8e8e',
             buttonActive: '#d3d3d3',
 

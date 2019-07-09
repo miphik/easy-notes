@@ -35,6 +35,7 @@ const STYLES = memoizeOne((theme: ThemeType) => (
         },
         toolbarButton: {
             marginRight: '0.5em',
+            marginLeft:  '0.4em',
             fontSize:    '1.1em',
         },
         overItem:      {

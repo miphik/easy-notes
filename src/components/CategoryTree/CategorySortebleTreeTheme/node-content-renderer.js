@@ -80,7 +80,7 @@ class FileThemeNodeContentRenderer extends Component {
             scaffold.push(
                 <div
                     key={`pre_${1 + i}`}
-                    style={{width: scaffoldBlockPxWidth}}
+                    style={{width: `${i ? (scaffoldBlockPxWidth - (scaffoldBlockPxWidth / 4)) : (scaffoldBlockPxWidth + (scaffoldBlockPxWidth / 5.5))}em`}}
                     className={styles.lineBlock}
                 />,
             );
@@ -107,7 +107,7 @@ class FileThemeNodeContentRenderer extends Component {
                         key={`highlight_${1 + i}`}
                         style={{
                             width: '0.6em',
-                            left:  scaffoldBlockPxWidth * i,
+                            left:  `${scaffoldBlockPxWidth * i}em`,
                         }}
                         className={`${styles.absoluteLineBlock} ${highlightLineClass}`}
                     />,
@@ -125,10 +125,10 @@ class FileThemeNodeContentRenderer extends Component {
                             node.expanded ? styles.collapseButton : styles.expandButton
                         }
                         style={{
-                            left: (
+                            left: `${(
                                 lowerSiblingCounts.length - 0.7
-                            ) * scaffoldBlockPxWidth,
-                            fontSize: '0.9em',
+                            ) * (scaffoldBlockPxWidth - (scaffoldBlockPxWidth / 20))}em`,
+                            fontSize: '0.8em',
                             ':hover': {
                                 filter: `drop-shadow(0 0 0px ${theme.color.white})
                                 drop-shadow(0 0 1px ${theme.color.white})
@@ -138,7 +138,7 @@ class FileThemeNodeContentRenderer extends Component {
                     >
 
                         <Icon
-                            onClick={(event) => {
+                            onClick={event => {
                                 event.stopPropagation();
                                 toggleChildrenVisibility({
                                     node,
@@ -238,7 +238,7 @@ FileThemeNodeContentRenderer.propTypes = {
     path:               PropTypes.arrayOf(
         PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     ).isRequired,
-    scaffoldBlockPxWidth:     PropTypes.number.isRequired,
+    scaffoldBlockPxWidth:     PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
     style:                    PropTypes.shape({}),
     swapDepth:                PropTypes.number,
     swapFrom:                 PropTypes.number,
