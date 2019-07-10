@@ -1,5 +1,5 @@
 // @flow
-import {Input, Tooltip} from 'antd';
+import {Input} from 'antd';
 import * as React from 'react';
 import type {NoteType} from 'types/NoteType';
 import memoizeOne from 'memoize-one';
@@ -17,12 +17,17 @@ type PropsType = {
     updateNoteTitle: (noteTitle: string) => void,
 };
 
-const STYLES = memoizeOne((theme: ThemeType, noteIsDragging: boolean, noteIsSelected: boolean) => (
+const STYLES = memoizeOne((theme: ThemeType, noteIsDragging: boolean, noteIsSelected: boolean, isOver: boolean) => (
     {
+        containerWrapper: {
+            display:         'flex',
+            cursor:          noteIsDragging ? (isOver ? 'copy' : 'grabbing') : 'pointer',
+            flex:            1,
+            backgroundColor: noteIsDragging ? Color(theme.color.second).alpha(0.1) : theme.color.second,
+            border:          noteIsDragging ? '1px dashed gray' : '1px solid transparent',
+        },
         container: {
-            cursor:       'pointer',
             background:   'transparent',
-            border:       noteIsDragging ? '1px dashed gray' : '1px solid transparent',
             outline:      'none',
             boxShadow:    'none',
             marginLeft:   '0',
@@ -33,26 +38,12 @@ const STYLES = memoizeOne((theme: ThemeType, noteIsDragging: boolean, noteIsSele
         date: {
             color: theme.color.button,
         },
-        item: {
-            display:                'flex',
-            cursor:                 'pointer',
-            height:                 theme.measure.rowCategoryHeight,
-            alignItems:             'center',
-            border:                 '1px dashed transparent',
-            borderTopLeftRadius:    '0.25em',
-            borderBottomLeftRadius: '0.25em',
-            overflow:               'hidden',
-            ':hover':               {
-                color: theme.color.white,
-            },
-        },
-        toolbarButton: {
-            marginRight: '0.5em',
-            marginLeft:  '0.4em',
-            fontSize:    '1.1em',
-        },
-        overItem: {
-            border: '1px dashed white',
+        selectionMark: {
+            position:        'relative',
+            display:         'inline-block',
+            flex:            '0 0 auto',
+            width:           '0.25em',
+            backgroundColor: noteIsSelected ? theme.color.marker : 'transparent',
         },
         selectedItem: {
             backgroundColor: noteIsSelected ? Color(theme.color.textMain).alpha(0.2) : 'transparent',
@@ -94,46 +85,47 @@ export default class NoteItem extends React.PureComponent<PropsType> {
 
     render() {
         const {
-            note, onSelectNode, noteIsDragging, noteIsEditing, noteIsSelected, theme,
+            note, onSelectNode, noteIsDragging, noteIsEditing, noteIsSelected, theme, isOver,
         } = this.props;
 
         const {noteTitle} = this.state;
-        const style = STYLES(theme, noteIsDragging, noteIsSelected);
+        const style = STYLES(theme, noteIsDragging, noteIsSelected, isOver);
         const selectedAndEdit = noteIsEditing && noteIsSelected;
 
         return (
-            <div
-                className={styles.container}
-                style={{...style.container, ...style.selectedItem}}
-                onClick={onSelectNode(note)}
-            >
-                {selectedAndEdit ? (
-                    <div>
-                        <Input
-                            style={{
-                                background: 'transparent',
-                                color:      'white',
-                                border:     'none',
-                                outline:    'none',
-                                boxShadow:  'none',
-                                marginLeft: -11,
-                            }}
-                            autoFocus
-                            onBlur={this.editCancel}
-                            onKeyDown={this.handleKeyPress}
-                            onChange={this.onChangeNoteTitle}
-                            value={noteTitle || note.title}
-                            defaultValue={note.title}
-                        />
-                    </div>
-                ) : (
-                    <div>
-                        {note.title}
-                    </div>
-                )}
-                <Tooltip mouseEnterDelay={0.4} title={moment(note.updatedAt).format()}>
+            <div style={style.containerWrapper}>
+                <div style={style.selectionMark}/>
+                <div
+                    className={styles.container}
+                    style={{...style.container, ...style.selectedItem}}
+                    onClick={onSelectNode(note)}
+                >
+                    {selectedAndEdit ? (
+                        <div>
+                            <Input
+                                style={{
+                                    background: 'transparent',
+                                    color:      'white',
+                                    border:     'none',
+                                    outline:    'none',
+                                    boxShadow:  'none',
+                                    marginLeft: -11,
+                                }}
+                                autoFocus
+                                onBlur={this.editCancel}
+                                onKeyDown={this.handleKeyPress}
+                                onChange={this.onChangeNoteTitle}
+                                value={noteTitle || note.title}
+                                defaultValue={note.title}
+                            />
+                        </div>
+                    ) : (
+                        <div>
+                            {note.title}
+                        </div>
+                    )}
                     <div style={style.date} className={styles.date}>{moment(note.updatedAt).format('lll')}</div>
-                </Tooltip>
+                </div>
             </div>
         );
     }

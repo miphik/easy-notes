@@ -10,6 +10,7 @@ import {showNotification} from 'services/NotificationService';
 import {REMOVED_CATEGORY, WITHOUT_CATEGORY} from 'stores/NoteStore';
 import type {CategoryType, NoteType} from 'types/NoteType';
 import {emptyFunc} from 'utils/General';
+import Color from "color";
 
 type PropsType = {
     notes: Array<NoteType>,
@@ -21,47 +22,47 @@ type PropsType = {
 
 const MESSAGES = {
     removedCategoryExplanation: <Fm
-                                    id="NoteList.render.removed_category_explanation"
-                                    defaultMessage="Notes are available here for 30 days.
+        id="NoteList.render.removed_category_explanation"
+        defaultMessage="Notes are available here for 30 days.
                                     After that time, notes will be permanently deleted"
-                                />,
-    newNoteTitle:               <Fm id="NoteList.render.new_note_title" defaultMessage="Untitled"/>,
-    addNewNote:                 <Fm id="NoteList.render.add_new_note" defaultMessage="Add new note"/>,
-    removeNoteFromCategory:     <Fm
-                                    id="NoteList.render.remove_note_from_category"
-                                    defaultMessage="Remove the note from this category"
-                                />,
-    updateNote:                 <Fm id="NoteList.render.button_update_note" defaultMessage="Update note"/>,
-    removeNote:                 <Fm id="NoteList.render.button_remove_note" defaultMessage="Remove note"/>,
-    deleteNoteSuccess:          <Fm
-                                    id="NoteList.onRemoveNote.delete_note_success"
-                                    defaultMessage="Note was successfully removed"
-                                />,
-    noteUpdatedSuccessfully:    <Fm
-                                    id="NoteList.onSubmitNoteForm.note_updated_successfully"
-                                    defaultMessage="Note successfully updated"
-                                />,
-    noteCreatedSuccessfully:    <Fm
-                                    id="NoteList.onSubmitNoteForm.note_created_successfully"
-                                    defaultMessage="New note successfully created"
-                                />,
-    deleteNoteConfirm:          <Fm
-                                    id="NoteList.render.delete_note_confirm"
-                                    defaultMessage="Are you sure about deleting this note?"
-                                />,
+    />,
+    newNoteTitle: <Fm id="NoteList.render.new_note_title" defaultMessage="Untitled"/>,
+    addNewNote: <Fm id="NoteList.render.add_new_note" defaultMessage="Add new note"/>,
+    removeNoteFromCategory: <Fm
+        id="NoteList.render.remove_note_from_category"
+        defaultMessage="Remove the note from this category"
+    />,
+    updateNote: <Fm id="NoteList.render.button_update_note" defaultMessage="Update note"/>,
+    removeNote: <Fm id="NoteList.render.button_remove_note" defaultMessage="Remove note"/>,
+    deleteNoteSuccess: <Fm
+        id="NoteList.onRemoveNote.delete_note_success"
+        defaultMessage="Note was successfully removed"
+    />,
+    noteUpdatedSuccessfully: <Fm
+        id="NoteList.onSubmitNoteForm.note_updated_successfully"
+        defaultMessage="Note successfully updated"
+    />,
+    noteCreatedSuccessfully: <Fm
+        id="NoteList.onSubmitNoteForm.note_created_successfully"
+        defaultMessage="New note successfully created"
+    />,
+    deleteNoteConfirm: <Fm
+        id="NoteList.render.delete_note_confirm"
+        defaultMessage="Are you sure about deleting this note?"
+    />,
 };
 
 @inject(stores => (
     {
-        notes:            stores.noteStore.getNoteItemsByCategory,
+        notes: stores.noteStore.getNoteItemsByCategory,
         selectedCategory: stores.categoryStore.getSelectedCategory,
-        selectedNote:     stores.noteStore.getSelectedNote,
-        setSelectedNote:  stores.noteStore.setSelectedNote,
+        selectedNote: stores.noteStore.getSelectedNote,
+        setSelectedNote: stores.noteStore.setSelectedNote,
         createUpdateNote: stores.noteStore.createUpdateNote,
-        syncNotes:        stores.noteStore.syncNotes,
-        removeNote:       stores.noteStore.removeNote,
-        setNoteCategory:  stores.noteStore.setNoteCategory,
-        theme:            stores.themeStore.getTheme,
+        syncNotes: stores.noteStore.syncNotes,
+        removeNote: stores.noteStore.removeNote,
+        setNoteCategory: stores.noteStore.setNoteCategory,
+        theme: stores.themeStore.getTheme,
     }
 ))
 @observer
@@ -72,9 +73,9 @@ export default class NoteList extends React.Component<PropsType> {
     };
 
     state = {
-        noteIsEdit:           false,
+        noteIsEdit: false,
         removeCategoryIsOver: false,
-        noteIsDragging:       false,
+        noteIsDragging: false,
     };
 
     componentDidUpdate(prevProps, prevState) {
@@ -135,7 +136,7 @@ export default class NoteList extends React.Component<PropsType> {
                 formatMessageIntl(MESSAGES.deleteNoteSuccess),
                 '',
                 {
-                    type:     'success',
+                    type: 'success',
                     duration: 7,
                 },
             );
@@ -194,6 +195,7 @@ export default class NoteList extends React.Component<PropsType> {
             || selectedCategory.uuid === WITHOUT_CATEGORY
             || selectedCategory.uuid === REMOVED_CATEGORY;
         const notesIsEmpty = !notes.length;
+        const isDragging = noteIsDragging && selectedCategory.uuid !== WITHOUT_CATEGORY;
 
         return (
             <div>
@@ -211,12 +213,18 @@ export default class NoteList extends React.Component<PropsType> {
                 />
                 <div
                     style={{
-                        backgroundColor: removeCategoryIsOver ? 'lightblue' : 'transparent',
-                        height:          50,
-                        position:        'relative',
-                        top:             noteIsDragging && selectedCategory.uuid !== WITHOUT_CATEGORY ? 0 : -11000,
-                        border: '1px dashed white',
-                        borderRadius: 4,
+                        backgroundColor: removeCategoryIsOver
+                            ? Color(theme.color.dangerButton).alpha(0.3)
+                            : Color(theme.color.marker).alpha(0.3),
+                        height: '3em',
+                        position: 'absolute',
+                        border: '1px solid ' + Color(theme.color.buttonActive).alpha(0.2),
+                        top: isDragging ? 1 : -11000,
+                        display: isDragging ? 'flex' : 'none',
+                        width: '100%',
+                        padding: '0.5em',
+                        justifyContent: 'center',
+                        alignItems: 'center',
                     }}
                     onDragLeave={this.onDragLeave}
                     onDragOver={this.onDragOver}
@@ -224,10 +232,7 @@ export default class NoteList extends React.Component<PropsType> {
                 >
                     {formatMessageIntl(MESSAGES.removeNoteFromCategory)}
                 </div>
-                {/*<div>{selectedCategory ? notes.length : <Nodata showImage={false} text="select any"/>}</div>*/}
-                {/*<div>{selectedCategory && notesIsEmpty ? <Nodata/> : null}</div>*/}
                 <div onClick={this.onClearSelectNode}>
-                    <br/>
                     {notes.map((note: NoteType) => (
                         <div
                             key={note.uuid}
@@ -240,6 +245,7 @@ export default class NoteList extends React.Component<PropsType> {
                                 theme={theme}
                                 noteIsEditing={noteIsEdit}
                                 updateNoteTitle={this.updateNoteTitle}
+                                isOver={removeCategoryIsOver}
                                 noteIsDragging={noteIsDragging === note.uuid}
                                 noteIsSelected={selectedNote && note.uuid === selectedNote.uuid}
                                 onSelectNode={this.onSelectNode}
