@@ -104,12 +104,15 @@ export default class NoteItem extends React.PureComponent<PropsType> {
                         <div>
                             <Input
                                 style={{
-                                    background: 'transparent',
-                                    color:      'white',
-                                    border:     'none',
-                                    outline:    'none',
-                                    boxShadow:  'none',
-                                    marginLeft: -11,
+                                    background:    'transparent',
+                                    color:         'white',
+                                    border:        'none',
+                                    outline:       'none',
+                                    boxShadow:     'none',
+                                    marginLeft:    -11,
+                                    paddingTop:    0,
+                                    paddingBottom: 0,
+                                    height:        '1.572em',
                                 }}
                                 autoFocus
                                 onBlur={this.editCancel}
