@@ -1,5 +1,6 @@
 // @flow
 import {Input} from 'antd';
+import Inlinese from 'react-inlinese';
 import * as React from 'react';
 import type {NoteType} from 'types/NoteType';
 import memoizeOne from 'memoize-one';
@@ -100,19 +101,41 @@ export default class NoteItem extends React.PureComponent<PropsType> {
                     style={{...style.container, ...style.selectedItem}}
                     onClick={onSelectNode(note)}
                 >
+                    {/* <Inlinese
+                        onSubmit={value => alert(value)}
+                        value={note.title}
+                        // primaryColor="orange"
+                        style={{color: 'transparent'}}
+                        secondaryColor="transparent"
+                        hoverStyleString="border:none;"
+                        roundness="0px"
+                        submitText=""
+                        showEditIcon={false}
+                        showButtons={false}
+                        cancelText="No Taco"
+                    >
+                        {note.title}
+                    </Inlinese>*/}
                     {selectedAndEdit ? (
-                        <div>
-                            <Input
+                        <div style={{position: 'relative'}}>
+                            <div style={{opacity: 0}}>
+                                {note.title}
+                            </div>
+                            <Input.TextArea
                                 style={{
-                                    background:    'transparent',
-                                    color:         'white',
-                                    border:        'none',
-                                    outline:       'none',
-                                    boxShadow:     'none',
-                                    marginLeft:    -11,
-                                    paddingTop:    0,
-                                    paddingBottom: 0,
-                                    height:        '1.572em',
+                                    background: 'transparent',
+                                    color:      'white',
+                                    border:     'none',
+                                    outline:    'none',
+                                    boxShadow:  'none',
+                                    padding:    0,
+                                    display:    'flex',
+                                    // lineHeight: 'calc(100% + 2px)',
+                                    flex:       1,
+                                    position:   'absolute',
+                                    top:        0,
+                                    height:     '100%',
+                                    // height:        '1.572em',
                                 }}
                                 autoFocus
                                 onBlur={this.editCancel}
@@ -123,7 +146,7 @@ export default class NoteItem extends React.PureComponent<PropsType> {
                             />
                         </div>
                     ) : (
-                        <div>
+                        <div style={{overflow: 'hidden'}}>
                             {note.title}
                         </div>
                     )}
