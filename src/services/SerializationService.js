@@ -42,6 +42,7 @@ class SerializationService {
     };
 
     static convertNoteToString = (note: NoteType): string => {
+        if (note.text) note.text = JSON.stringify(note.text);
         note['.easy_note.NoteFull.text'] = note.text;
         const buffer = NoteMessage.encode(NoteMessage.create(note)).finish();
         return buffer.toString('latin1');
@@ -50,6 +51,11 @@ class SerializationService {
     static convertStringToNote = (data: string): NoteType => {
         if (data === '' || data.length < 5) return {};
         const note = NoteMessage.decode(Buffer.from(data, 'latin1'));
+        try {
+            note['.easy_note.NoteFull.text'] = JSON.parse(note['.easy_note.NoteFull.text']);
+        } catch (ignore) {
+            /* NOP */
+        }
         note.text = note['.easy_note.NoteFull.text'];
         return note;
     };

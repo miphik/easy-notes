@@ -2,14 +2,17 @@ import {Input} from 'antd';
 import debounce from 'lodash/debounce';
 import {inject, observer} from 'mobx-react';
 import PropTypes from 'prop-types';
+import Editor from '@stfy/react-editor.js'
 import * as React from 'react';
+import ScrollableColumn from "components/ScrollableColumn";
 
 const {TextArea} = Input;
 
 @inject(stores => (
     {
-        noteText:            stores.noteStore.getNoteText,
-        selectedNote:        stores.noteStore.getSelectedNote,
+        theme: stores.themeStore.getTheme,
+        noteText: stores.noteStore.getNoteText,
+        selectedNote: stores.noteStore.getSelectedNote,
         setSelectedNoteText: stores.noteStore.setSelectedNoteText,
     }
 ))
@@ -38,23 +41,37 @@ export default class NoteEditor extends React.Component {
 
     debounceChangeNoteText = debounce(this.props.setSelectedNoteText, 1000);
 
-    onChangeNote = (event) => {
-        const {value} = event.currentTarget;
-        this.setState({currentNoteText: value, currentNote: this.props.selectedNote}, () => this.debounceChangeNoteText(value));
+    onChangeNote = (data) => {
+        this.setState({
+            currentNoteText: data,
+            currentNote: this.props.selectedNote
+        }, () => this.debounceChangeNoteText(data));
     };
 
     render() {
-        const {noteText} = this.props;
+        const {noteText, theme} = this.props;
         const {currentNoteText} = this.state;
         if (noteText === null) return null;
         return (
-            <div>
-                <div>{noteText}</div>
-                <TextArea
-                    value={currentNoteText !== null ? currentNoteText : noteText} type="textarea"
+            <ScrollableColumn
+                showScrollShadow
+                autoHideScrollbar
+                shadowColor={theme.color.second}
+                scrollColor={theme.color.second}
+                width="inherit"
+            >
+                <Editor
+                    // autofocus
+                    holderId="editorjs-container"
+                    // excludeDefaultTools={['header']}
                     onChange={this.onChangeNote}
+                    customTools={{
+                        // header: CustomHeader
+                    }}
+                    onReady={() => console.log('Start!')}
+                    data={currentNoteText !== null ? currentNoteText : noteText}
                 />
-            </div>
+            </ScrollableColumn>
         );
     }
 }

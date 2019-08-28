@@ -11,6 +11,8 @@ import {REMOVED_CATEGORY, WITHOUT_CATEGORY} from 'stores/NoteStore';
 import type {CategoryType, NoteType} from 'types/NoteType';
 import {emptyFunc} from 'utils/General';
 import Color from "color";
+import StatusIcon from "components/CategoryTree/StatusIcon";
+import ScrollableColumn from "components/ScrollableColumn";
 
 type PropsType = {
     notes: Array<NoteType>,
@@ -198,70 +200,83 @@ export default class NoteList extends React.Component<PropsType> {
         const isDragging = noteIsDragging && selectedCategory.uuid !== WITHOUT_CATEGORY;
 
         return (
-            <div>
+            <div className="full_height">
                 {selectedCategory && selectedCategory.uuid === REMOVED_CATEGORY ? (
                     <div>{MESSAGES.removedCategoryExplanation}</div>
                 ) : null}
-                <ColumnToolbar
-                    theme={theme}
-                    addButtonIsDisabled={isAddButtonDisabled}
-                    selectedItem={selectedNote}
-                    deleteConfirmText={MESSAGES.deleteNoteConfirm}
-                    createNewItem={this.onAddNewNote}
-                    updateItem={this.onEditNote}
-                    deleteItem={this.onRemoveNote}
-                />
-                <div
-                    style={{
-                        backgroundColor: removeCategoryIsOver
-                            ? Color(theme.color.dangerButton).alpha(0.3)
-                            : Color(theme.color.marker).alpha(0.3),
-                        height: '3em',
-                        position: 'absolute',
-                        border: '1px solid ' + Color(theme.color.buttonActive).alpha(0.2),
-                        top: isDragging ? 1 : -11000,
-                        display: isDragging ? 'flex' : 'none',
-                        width: '100%',
-                        padding: '0.5em',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                    }}
-                    onDragLeave={this.onDragLeave}
-                    onDragOver={this.onDragOver}
-                    onDrop={this.onDrop}
-                >
-                    {formatMessageIntl(MESSAGES.removeNoteFromCategory)}
-                </div>
-                <div onClick={this.onClearSelectNode}>
-                    {notes.map((note: NoteType) => (
-                        <div
-                            key={note.uuid}
-                            onDragStart={this.onNoteDragStart(note)}
-                            onDragEnd={this.onNoteDragEnd}
-                            draggable
-                        >
-                            <NoteItem
-                                note={note}
+                <ScrollableColumn
+                    showScrollShadow
+                    autoHideScrollbar
+                    shadowColor={theme.color.second}
+                    scrollColor={theme.color.second}
+                    width="inherit"
+                    toolbar={
+                        <>
+                            <ColumnToolbar
                                 theme={theme}
-                                noteIsEditing={noteIsEdit}
-                                updateNoteTitle={this.updateNoteTitle}
-                                isOver={removeCategoryIsOver}
-                                noteIsDragging={noteIsDragging === note.uuid}
-                                noteIsSelected={selectedNote && note.uuid === selectedNote.uuid}
-                                onSelectNode={this.onSelectNode}
+                                addButtonIsDisabled={isAddButtonDisabled}
+                                selectedItem={selectedNote}
+                                deleteConfirmText={MESSAGES.deleteNoteConfirm}
+                                createNewItem={this.onAddNewNote}
+                                updateItem={this.onEditNote}
+                                deleteItem={this.onRemoveNote}
                             />
-                        </div>
-                    ))}
-                    <br/>
-                </div>
+                            <div
+                                style={{
+                                    backgroundColor: removeCategoryIsOver
+                                        ? Color(theme.color.dangerButton).alpha(0.3)
+                                        : Color(theme.color.marker).alpha(0.3),
+                                    height: '3em',
+                                    position: 'absolute',
+                                    border: '1px solid ' + Color(theme.color.buttonActive).alpha(0.2),
+                                    top: isDragging ? 1 : -11000,
+                                    display: isDragging ? 'flex' : 'none',
+                                    width: '100%',
+                                    padding: '0.5em',
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                }}
+                                onDragLeave={this.onDragLeave}
+                                onDragOver={this.onDragOver}
+                                onDrop={this.onDrop}
+                            >
+                                {formatMessageIntl(MESSAGES.removeNoteFromCategory)}
+                            </div>
+                        </>
+                    }
+                    // footer={<StatusIcon/>}
+                >
+                    <div onClick={this.onClearSelectNode}>
+                        {notes.map((note: NoteType) => (
+                            <div
+                                key={note.uuid}
+                                onDragStart={this.onNoteDragStart(note)}
+                                onDragEnd={this.onNoteDragEnd}
+                                draggable
+                            >
+                                <NoteItem
+                                    note={note}
+                                    theme={theme}
+                                    noteIsEditing={noteIsEdit}
+                                    updateNoteTitle={this.updateNoteTitle}
+                                    isOver={removeCategoryIsOver}
+                                    noteIsDragging={noteIsDragging === note.uuid}
+                                    noteIsSelected={selectedNote && note.uuid === selectedNote.uuid}
+                                    onSelectNode={this.onSelectNode}
+                                />
+                            </div>
+                        ))}
+                        <br/>
+                    </div>
 
-                {/*<NoteForm
+                    {/*<NoteForm
                     isNew={noteModalIsForNew}
                     onSubmit={this.onSubmitNoteForm}
                     isVisible={noteIsEdit}
                     onClose={this.closeNoteModal}
                     initialValues={{}}
                 />*/}
+                </ScrollableColumn>
             </div>
         );
     }
