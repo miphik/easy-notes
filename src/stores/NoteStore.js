@@ -125,13 +125,6 @@ class NoteStore {
         });
         if (changedNoteExists) {
             this.setNotes(notes);
-            if (note) {
-                localStorageService.saveNote(note, (err: Error) => console.error('localStorageService.saveNote', err));
-                remoteStorageService.saveNote(
-                    note,
-                    (err: Error) => console.error('remoteStorageService.saveNote', err),
-                );
-            }
             localStorageService.saveNotesList(notes, (err: Error) => console
                 .error('localStorageService.saveNotesList', err));
             remoteStorageService.saveNotesList(notes, (err: Error) => console
@@ -144,9 +137,13 @@ class NoteStore {
         const note = {...this.selectedNote};
         note.text = text;
         note.updatedAt = moment().format();
-        const notes = this.noteItems.map((noteItem: NoteType) => (
-            note.uuid === noteItem.uuid ? note : noteItem
-        ));
+        const notes = this.noteItems.map((noteItem: NoteType) => {
+            if (note.uuid === noteItem.uuid) {
+                note.categoryUUIDs = noteItem.categoryUUIDs;
+                return note;
+            }
+            return noteItem;
+        });
         this.setNotes(notes);
         this.setSelectedNoteInner(note);
         localStorageService.saveNote(note, (err: Error) => console.error('localStorageService.saveNote', err));

@@ -3,6 +3,7 @@ import CategoryItem from 'components/CategoryTree/CategoryItem';
 import PropTypes from 'prop-types';
 import Radium from 'radium';
 import React, {Component} from 'react';
+import { getEmptyImage } from 'react-dnd-html5-backend'
 import styles from './node-content-renderer.scss';
 
 function isDescendant(older, younger) {
@@ -18,6 +19,15 @@ function isDescendant(older, younger) {
 // eslint-disable-next-line react/prefer-stateless-function
 @Radium
 class FileThemeNodeContentRenderer extends Component {
+    componentDidMount() {
+        // Use empty image as a drag preview so browsers don't draw it
+        // and we can draw whatever we want on the custom drag layer instead.
+        this.props.connectDragPreview(getEmptyImage(), {
+            // IE fallback: specify that we'd rather screenshot the node
+            // when it already knows it's being dragged so we can hide it with CSS.
+            captureDraggingState: true,
+        })
+    }
     render() {
         const {
             scaffoldBlockPxWidth,
@@ -173,6 +183,7 @@ class FileThemeNodeContentRenderer extends Component {
                     buttons={buttons}
                     canDrag={canDrag}
                     canDrop={canDrop}
+                    isDragging={isDragging}
                     theme={theme}
                     connectDragPreview={connectDragPreview}
                     icons={icons}

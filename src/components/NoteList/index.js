@@ -185,6 +185,10 @@ export default class NoteList extends React.Component<PropsType> {
             'Text', JSON.stringify({noteUUID: note.uuid, categoryUUIDs: note.categoryUUIDs}),
         );
         event.dataTransfer.items.add('Text', 'category');
+        const fakeGhost = event.currentTarget.cloneNode(true);
+        document.getElementById('second_pane').appendChild(fakeGhost);
+        fakeGhost.style.opacity = 0.1;
+        event.dataTransfer.setDragImage(fakeGhost, 0, 0);
         // event.dataTransfer.setDragImage(event.target, 100, 100);
         this.setState({noteIsDragging: note.uuid});
         return true;
@@ -200,7 +204,7 @@ export default class NoteList extends React.Component<PropsType> {
         const isDragging = noteIsDragging && selectedCategory.uuid !== WITHOUT_CATEGORY;
 
         return (
-            <div className="full_height">
+            <div className="full_height" id="second_pane">
                 {selectedCategory && selectedCategory.uuid === REMOVED_CATEGORY ? (
                     <div>{MESSAGES.removedCategoryExplanation}</div>
                 ) : null}

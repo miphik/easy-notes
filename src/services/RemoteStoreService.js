@@ -234,6 +234,7 @@ export default class RemoteStoreService {
         success: () => {} = () => {},
         createNoteDir: boolean = true,
     ) => {
+        console.info('remoteStoreService.saveNote', note);
         if (!RemoteStoreService.isClientInitialized(error)) return;
         if (createNoteDir) {
             RemoteStoreService.createNoteDir(note, error, () => RemoteStoreService
@@ -304,6 +305,7 @@ export default class RemoteStoreService {
     };
 
     static saveNotesList = (data: Array<NoteType>, error: () => {} = () => {}, success: () => {} = () => {}) => {
+        console.info('remoteStoreService.saveNotesList', data);
         if (!RemoteStoreService.isClientInitialized(error)) return;
         const notesAsString = serializationService.convertNotesListToString(data);
         webdavClient.putFileContents(WEBDAV_PROJECT_MAIN_FILE, notesAsString, {overwrite: true})
@@ -316,6 +318,7 @@ export default class RemoteStoreService {
         error: () => {} = () => {},
         success: () => {} = () => {},
     ) => {
+        console.info('remoteStoreService.saveCategoriesList', data);
         if (!RemoteStoreService.isClientInitialized(error)) return;
         const categoriesAsString = serializationService.convertCategoriesListToString(
             data.map((item: CategoryType, index: number) => (

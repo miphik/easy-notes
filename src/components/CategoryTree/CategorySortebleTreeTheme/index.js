@@ -14,6 +14,7 @@
 import type {ThemeType} from 'stores/ThemeStore';
 import nodeContentRenderer from './node-content-renderer';
 import treeNodeRenderer from './tree-node-renderer';
+import React from "react";
 
 type RowHeightType = { treeIndex: number, node: Object, path: Array<number> | Array<string> };
 
@@ -27,5 +28,6 @@ const theme = (theme: ThemeType) => ({
         return 32;
     },*/
     slideRegionSize:      '3em',
+    placeholderRenderer: () => <div>11111</div>
 });
 export default theme;

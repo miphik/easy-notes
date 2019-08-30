@@ -185,7 +185,6 @@ export default class CategoryItem extends React.Component<PropsType> {
                 }
             >
                 {/* Set the row preview to be used during drag and drop */}
-                {connectDragPreview(
                     <div style={{display: 'flex', flex: 1, height: '100%'}}>
                         {scaffold}
                         <div
@@ -262,8 +261,7 @@ export default class CategoryItem extends React.Component<PropsType> {
                                 </div>
                             </div>
                         </div>
-                    </div>,
-                )}
+                    </div>
             </div>
         );
     }

@@ -2,7 +2,7 @@ import {Input} from 'antd';
 import debounce from 'lodash/debounce';
 import {inject, observer} from 'mobx-react';
 import PropTypes from 'prop-types';
-import Editor from '@stfy/react-editor.js'
+import EditorJs from 'react-editor-js';
 import * as React from 'react';
 import ScrollableColumn from "components/ScrollableColumn";
 
@@ -32,8 +32,9 @@ export default class NoteEditor extends React.Component {
     };
 
     static getDerivedStateFromProps(nextProps, prevState) {
-        if (!nextProps.selectedNote || !prevState.currentNote) return null;
-        if (nextProps.selectedNote.uuid !== prevState.currentNote.uuid) {
+        console.log(nextProps, prevState);
+        if (!nextProps.selectedNote) return {currentNote: null, currentNoteText: null};
+        if (!prevState.currentNote || nextProps.selectedNote.uuid !== prevState.currentNote.uuid) {
             return {currentNote: nextProps.selectedNote, currentNoteText: nextProps.noteText};
         }
         return null;
@@ -50,8 +51,9 @@ export default class NoteEditor extends React.Component {
 
     render() {
         const {noteText, theme} = this.props;
-        const {currentNoteText} = this.state;
+        const {currentNoteText, currentNote} = this.state;
         if (noteText === null) return null;
+        console.log(111, currentNoteText !== null ? currentNoteText : noteText);
         return (
             <ScrollableColumn
                 showScrollShadow
@@ -60,9 +62,11 @@ export default class NoteEditor extends React.Component {
                 scrollColor={theme.color.second}
                 width="inherit"
             >
-                <Editor
+                <EditorJs
+                    enableReInitialize
+                    // key={currentNote.uuid}
                     // autofocus
-                    holderId="editorjs-container"
+                    // holderId={currentNote.uuid}
                     // excludeDefaultTools={['header']}
                     onChange={this.onChangeNote}
                     customTools={{

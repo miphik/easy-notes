@@ -37,19 +37,16 @@
   box-shadow: none;
   outline: none;
 
-  * {
-    opacity: 0 !important;
-  }
 
   &::before {
     //background-color: rgba(128, 222, 234, 0.28);
-    border-top: 3px solid #0080ff;
+    border: 1px dashed #0080ff;
     content: '';
     position: absolute;
     top: 0;
     right: 0;
     bottom: 0;
-    left: 0;
+    left: -20px;
     //z-index: -1;
   }
 }
