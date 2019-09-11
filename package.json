@@ -201,7 +201,7 @@
     "react-inlinese": "^0.9.3",
     "react-intl": "^3.1.12",
     "react-router-dom": "^5.0.1",
-    "react-sortable-tree": "https://github.com/rexpan/react-sortable-tree#react-dnd-9",
+    "react-sortable-tree": "^2.6.2",
     "react-sortable-tree-theme-file-explorer": "^2.0.0",
     "react-split-pane": "^0.1.87",
     "react-tiny-popover": "^3.4.2",

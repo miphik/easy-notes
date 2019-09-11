@@ -53,7 +53,6 @@ export default class NoteEditor extends React.Component {
         const {noteText, theme} = this.props;
         const {currentNoteText, currentNote} = this.state;
         if (noteText === null) return null;
-        console.log(111, currentNoteText !== null ? currentNoteText : noteText);
         return (
             <ScrollableColumn
                 showScrollShadow
@@ -62,18 +61,9 @@ export default class NoteEditor extends React.Component {
                 scrollColor={theme.color.second}
                 width="inherit"
             >
-                <EditorJs
-                    enableReInitialize
-                    // key={currentNote.uuid}
-                    // autofocus
-                    // holderId={currentNote.uuid}
-                    // excludeDefaultTools={['header']}
+                <TextArea
+                    value={currentNoteText !== null ? currentNoteText : noteText} type="textarea"
                     onChange={this.onChangeNote}
-                    customTools={{
-                        // header: CustomHeader
-                    }}
-                    onReady={() => console.log('Start!')}
-                    data={currentNoteText !== null ? currentNoteText : noteText}
                 />
             </ScrollableColumn>
         );

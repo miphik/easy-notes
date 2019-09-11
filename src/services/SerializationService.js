@@ -42,13 +42,11 @@ class SerializationService {
     };
 
     static convertNoteToString = (note: NoteType): string => {
-        console.log(2222, note);
         if (note.text && typeof note.text !== 'string') note.text = JSON.stringify(note.text);
         if (!note.text) {
 
         }
         note['.easy_note.NoteFull.text'] = note.text;
-        console.log(1111, note);
         const buffer = NoteMessage.encode(NoteMessage.create(note)).finish();
         return buffer.toString('latin1');
     };
