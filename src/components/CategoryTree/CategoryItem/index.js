@@ -38,6 +38,9 @@ const STYLES = memoizeOne((theme: ThemeType) => (
             marginLeft:  '0.4em',
             fontSize:    '1.1em',
         },
+        draggingItem : {
+          cursor: 'copy',
+        },
         overItem:      {
             border: '1px dashed white',
         },
@@ -55,6 +58,7 @@ type PropsType = {
     categoryIsEditing: boolean,
     isLandingPadActive?: boolean,
     isDraggedDescendant?: boolean,
+    isDragging?: boolean,
     canDrop?: boolean,
     canDrag?: boolean,
     isSearchMatch?: boolean,
@@ -155,12 +159,13 @@ export default class CategoryItem extends React.Component<PropsType> {
             rowLabelClassName, rowTitleClassName, title, categoryIsEditing, isSearchFocus,
             isNodeSelected, category, theme, isNodeSelectable, canDrop, isSearchMatch,
             onSelectCategory, canDrag, connectDragPreview, scaffold, isLandingPadActive,
-            isDraggedDescendant, icons, buttons,
+            isDraggedDescendant, icons, buttons, isDragging,
         } = this.props;
         const style = STYLES(theme);
         let styleItem = style.item;
         if (isNodeSelected && isNodeSelectable) styleItem = {...styleItem, ...style.selectedItem};
         if (isOver) styleItem = {...styleItem, ...style.overItem};
+        if (isDragging) styleItem = {...styleItem, ...style.draggingItem};
 
         return (
             <div
@@ -181,7 +186,6 @@ export default class CategoryItem extends React.Component<PropsType> {
                     + (
                         !canDrag ? ` ${styles.rowWrapperDragDisabled}` : ''
                     )
-
                 }
             >
                 {/* Set the row preview to be used during drag and drop */}
@@ -215,7 +219,7 @@ export default class CategoryItem extends React.Component<PropsType> {
                                 className={
                                     styles.rowContents
                                     + (
-                                        !canDrag ? ` ${styles.rowContentsDragDisabled}` : ''
+                                        !canDrag ? ` ${styles.rowWrapperDragDisabled}` : ''
                                     )
                                 }
                             >

@@ -31,7 +31,7 @@ const DEFAULT_THEME = (scale: number) => (
         mainFontSize: scale,
         measure:      {
             rowCategoryHeight:            '2em',
-            scaffoldCategoryBlockPxWidth: 1.1,
+            scaffoldCategoryBlockPxWidth: scale + (scale / 3),
         },
         color: {
             gray: '#747474',

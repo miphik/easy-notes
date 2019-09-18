@@ -17,7 +17,6 @@
 .rowWrapper {
   height: 100%;
   box-sizing: border-box;
-  cursor: move;
   display: flex;
 
   &:active {
@@ -26,7 +25,7 @@
 }
 
 .rowWrapperDragDisabled {
-  cursor: default;
+  cursor: no-drop;
 }
 
 /**
@@ -37,10 +36,10 @@
   box-shadow: none;
   outline: none;
 
-
   &::before {
     //background-color: rgba(128, 222, 234, 0.28);
     border: 1px dashed #0080ff;
+    border-radius: 0.25em;
     content: '';
     position: absolute;
     top: 0;
@@ -56,6 +55,7 @@
  */
 .rowCancelPad {
   @extend .rowLandingPad;
+  cursor: no-drop;
 
   &::before {
     border-top: 3px solid #e6a8ad;

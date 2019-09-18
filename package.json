@@ -19,7 +19,8 @@
     "mac": "build --mac",
     "test": "jest",
     "test:watch": "npm run test --watch",
-    "test:cover": "npm run test --coverage"
+    "test:cover": "npm run test --coverage",
+    "postinstall": "cp -R ./src/components/ReactScrollableTree/* ./node_modules/react-sortable-tree"
   },
   "build": {
     "productName": "Easy-Note",

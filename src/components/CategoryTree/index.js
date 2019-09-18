@@ -23,38 +23,38 @@ import {emptyFunc} from 'utils/General';
 import styles from './styles.styl';
 
 const MESSAGES = {
-    newCategoryName:             <Fm id="CategoryItem.render.new_category_name" defaultMessage="New category"/>,
-    withoutCategory:             <Fm id="CategoryTree.render.without_category" defaultMessage="Uncategorized"/>,
-    removedCategory:             <Fm id="CategoryTree.render.removed_category" defaultMessage="Removed"/>,
-    rootCategoryWhenEdit:        <Fm id="CategoryTree.render.root_category_when_edit" defaultMessage="ROOT"/>,
-    addNewCategory:              <Fm id="CategoryTree.render.button_add_new_category" defaultMessage="Add category"/>,
-    updateCategory:              <Fm id="CategoryTree.render.button_update_category" defaultMessage="Update category"/>,
-    removeCategory:              <Fm id="CategoryTree.render.button_remove_category" defaultMessage="Remove category"/>,
+    newCategoryName: <Fm id="CategoryItem.render.new_category_name" defaultMessage="New category"/>,
+    withoutCategory: <Fm id="CategoryTree.render.without_category" defaultMessage="Uncategorized"/>,
+    removedCategory: <Fm id="CategoryTree.render.removed_category" defaultMessage="Removed"/>,
+    rootCategoryWhenEdit: <Fm id="CategoryTree.render.root_category_when_edit" defaultMessage="ROOT"/>,
+    addNewCategory: <Fm id="CategoryTree.render.button_add_new_category" defaultMessage="Add category"/>,
+    updateCategory: <Fm id="CategoryTree.render.button_update_category" defaultMessage="Update category"/>,
+    removeCategory: <Fm id="CategoryTree.render.button_remove_category" defaultMessage="Remove category"/>,
     categoryCreatedSuccessfully: <Fm
-                                     id="CategoryTree.render.category_created_successfully"
-                                     defaultMessage="New category successfully created"
-                                 />,
+        id="CategoryTree.render.category_created_successfully"
+        defaultMessage="New category successfully created"
+    />,
     categoryUpdatedSuccessfully: <Fm
-                                     id="CategoryTree.render.category_updated_successfully"
-                                     defaultMessage="Category successfully updated"
-                                 />,
-    deleteCategoryConfirm:       <Fm
-                                     id="CategoryTree.render.delete_category_confirm"
-                                     defaultMessage="Are you sure about deleting this category?"
-                                 />,
-    deleteCategorySuccess:       <Fm
-                                     id="CategoryTree.render.delete_category_success"
-                                     defaultMessage="Category was successfully removed"
-                                 />,
+        id="CategoryTree.render.category_updated_successfully"
+        defaultMessage="Category successfully updated"
+    />,
+    deleteCategoryConfirm: <Fm
+        id="CategoryTree.render.delete_category_confirm"
+        defaultMessage="Are you sure about deleting this category?"
+    />,
+    deleteCategorySuccess: <Fm
+        id="CategoryTree.render.delete_category_success"
+        defaultMessage="Category was successfully removed"
+    />,
 };
 export const EMPTY_CATEGORY = {
-    title:      MESSAGES.withoutCategory,
-    uuid:       WITHOUT_CATEGORY,
+    title: MESSAGES.withoutCategory,
+    uuid: WITHOUT_CATEGORY,
     parentUUID: [ROOT_CATEGORY_NAME]
 };
 export const DELETED_CATEGORY = {
-    title:      MESSAGES.removedCategory,
-    uuid:       REMOVED_CATEGORY,
+    title: MESSAGES.removedCategory,
+    uuid: REMOVED_CATEGORY,
     parentUUID: [ROOT_CATEGORY_NAME]
 };
 
@@ -63,28 +63,28 @@ const STYLES = memoizeOne((theme: ThemeType) => (
         categoryOutTree: {
             paddingLeft: theme.measure.scaffoldCategoryBlockPxWidth,
         },
-        confirmButton:   {display: 'flex', justifyContent: 'center'},
-        buttonGroup:     {
+        confirmButton: {display: 'flex', justifyContent: 'center'},
+        buttonGroup: {
             flex: 1
         },
         buttonContainer: {
             margin: '0.5em',
         },
-        removeButton:    {
-            color:    theme.color.button,
+        removeButton: {
+            color: theme.color.button,
             ':hover': {
                 color: theme.color.dangerButton,
             }
         },
-        addButton:       {
-            color:    theme.color.button,
+        addButton: {
+            color: theme.color.button,
             ':hover': {
                 color: theme.color.buttonActive,
             }
         },
-        resizerStyle:    {
+        resizerStyle: {
             backgroundColor: theme.color.black,
-            opacity:         0.4
+            opacity: 0.4
         },
     }
 ));
@@ -99,22 +99,22 @@ const scaffoldCategory = memoizeOne((theme: ThemeType, isSelected: boolean) => [
     <div
         key="left_marker"
         style={{
-            height:          '100%',
-            position:        'relative',
-            display:         'inline-block',
-            flex:            '0 0 auto',
-            width:           '0.2em',
+            height: '100%',
+            position: 'relative',
+            display: 'inline-block',
+            flex: '0 0 auto',
+            width: '0.2em',
             backgroundColor: isSelected ? theme.color.marker : 'inherit',
         }}
     />,
     <div
         key="left_space"
         style={{
-            height:   '100%',
+            height: '100%',
             position: 'relative',
-            display:  'inline-block',
-            flex:     '0 0 auto',
-            width:    theme.measure.scaffoldCategoryBlockPxWidth
+            display: 'inline-block',
+            flex: '0 0 auto',
+            width: theme.measure.scaffoldCategoryBlockPxWidth
         }}
     />,
 ]);
@@ -122,17 +122,17 @@ const scaffoldCategory = memoizeOne((theme: ThemeType, isSelected: boolean) => [
 @inject(stores => (
     {
         createUpdateCategory: stores.categoryStore.createUpdateCategory,
-        syncCategories:       stores.categoryStore.syncCategories,
-        categoriesAsTree:     stores.categoryStore.categoryItemsAsTree,
-        categories:           stores.categoryStore.categoryItems,
-        changeExpandedNodes:  stores.categoryStore.changeExpandedNodes,
-        changeCategoryTree:   stores.categoryStore.changeCategoryTree,
-        removeCategory:       stores.categoryStore.removeCategory,
-        setSelectedCategory:  stores.categoryStore.setSelectedCategory,
-        selectedCategory:     stores.categoryStore.getSelectedCategory,
-        categoriesIsLoading:  stores.categoryStore.getCategoriesIsLoading,
-        setNoteCategory:      stores.noteStore.setNoteCategory,
-        theme:                stores.themeStore.getTheme,
+        syncCategories: stores.categoryStore.syncCategories,
+        categoriesAsTree: stores.categoryStore.categoryItemsAsTree,
+        categories: stores.categoryStore.categoryItems,
+        changeExpandedNodes: stores.categoryStore.changeExpandedNodes,
+        changeCategoryTree: stores.categoryStore.changeCategoryTree,
+        removeCategory: stores.categoryStore.removeCategory,
+        setSelectedCategory: stores.categoryStore.setSelectedCategory,
+        selectedCategory: stores.categoryStore.getSelectedCategory,
+        categoriesIsLoading: stores.categoryStore.getCategoriesIsLoading,
+        setNoteCategory: stores.noteStore.setNoteCategory,
+        theme: stores.themeStore.getTheme,
     }
 ))
 @observer
@@ -140,6 +140,7 @@ const scaffoldCategory = memoizeOne((theme: ThemeType, isSelected: boolean) => [
 export default class CategoryTree extends React.Component<PropsType> {
     state = {
         categoryIsEdit: false,
+        isDragging: false,
     };
 
     onAddNewCategory = () => {
@@ -182,7 +183,7 @@ export default class CategoryTree extends React.Component<PropsType> {
                 formatMessageIntl(MESSAGES.deleteCategorySuccess),
                 '',
                 {
-                    type:     'success',
+                    type: 'success',
                     duration: 7,
                 },
             );
@@ -198,6 +199,7 @@ export default class CategoryTree extends React.Component<PropsType> {
     onSelectRemovedCategory = () => {
         this.props.setSelectedCategory(DELETED_CATEGORY);
     };
+    onDragStateChanged = ({isDragging, draggedNode}) => this.setState({isDragging});
     onVisibilityToggle = ({expanded, node}) => this.props.changeExpandedNodes(expanded, node.uuid);
     onMoveNode = ({treeData, nextParentNode, node, treeIndex, prevTreeIndex, path, nextTreeIndex, ...rest}) => {
         const {changeCategoryTree, changeExpandedNodes, syncCategories} = this.props;
@@ -215,7 +217,7 @@ export default class CategoryTree extends React.Component<PropsType> {
         const {
             categoriesAsTree, selectedCategory, categoriesIsLoading, theme, remoteStoreIsError,
         } = this.props;
-        const {categoryIsEdit} = this.state;
+        const {categoryIsEdit, isDragging} = this.state;
         let formInitialValues = {};
         if (selectedCategory) {
             formInitialValues.parent = selectedCategory.uuid;
@@ -251,8 +253,8 @@ export default class CategoryTree extends React.Component<PropsType> {
 
                 <div
                     style={{
-                        display:       'flex',
-                        flex:          1,
+                        display: 'flex',
+                        flex: 1,
                         flexDirection: 'column',
                     }} onClick={categoryIsEdit ? emptyFunc : this.onClearSelectNode}
                 >
@@ -287,6 +289,7 @@ export default class CategoryTree extends React.Component<PropsType> {
                             treeData={categoriesAsTree}
                             onVisibilityToggle={this.onVisibilityToggle}
                             onMoveNode={this.onMoveNode}
+                            onDragStateChanged={this.onDragStateChanged}
                             onChange={emptyFunc}
                             /* onChange={treeData => {
                                 console.log(2112213, treeData);
@@ -296,11 +299,12 @@ export default class CategoryTree extends React.Component<PropsType> {
                             getNodeKey={({node}) => node.uuid}
                             generateNodeProps={({node, path}) => (
                                 {
-                                    categoryIsEditing:  categoryIsEdit,
-                                    onSelectNode:       this.onSelectCategory,
+                                    categoryIsEditing: categoryIsEdit,
+                                    onSelectNode: this.onSelectCategory,
                                     updateCategoryName: this.updateCategoryName,
-                                    selectedNode:       selectedCategory,
+                                    selectedNode: selectedCategory,
                                     changeNoteCategory: this.props.setNoteCategory,
+                                    isDraggingAny: isDragging,
                                     theme,
                                 }
                             )}
