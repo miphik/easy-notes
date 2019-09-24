@@ -137,7 +137,7 @@ $highlight-line-size: 3px; // Make it an even number for clean rendering
  * +-----+
  */
 .highlightBottomLeftCorner {
-  $arrow-size: 5px;
+  $arrow-size: 6px;
   z-index: 3;
 
   &::before {

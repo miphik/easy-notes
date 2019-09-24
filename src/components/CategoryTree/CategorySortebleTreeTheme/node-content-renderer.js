@@ -118,7 +118,7 @@ class FileThemeNodeContentRenderer extends Component {
                     <div
                         key={`highlight_${1 + i}`}
                         style={{
-                            width: '0.6em',
+                            width: scaffoldBlockPxWidth / 2,
                             left: scaffoldBlockPxWidth * i,
                         }}
                         className={`${styles.absoluteLineBlock} ${highlightLineClass}`}
@@ -137,7 +137,7 @@ class FileThemeNodeContentRenderer extends Component {
                             node.expanded ? styles.collapseButton : styles.expandButton
                         }
                         style={{
-                            left: (lowerSiblingCounts.length - 0.75) * scaffoldBlockPxWidth,
+                            left: (lowerSiblingCounts.length - 0.7) * scaffoldBlockPxWidth,
                             fontSize: '0.8em',
                             ':hover': {
                                 filter: `drop-shadow(0 0 0px ${theme.color.white})
