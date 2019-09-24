@@ -2,8 +2,8 @@ import {Input} from 'antd';
 import debounce from 'lodash/debounce';
 import {inject, observer} from 'mobx-react';
 import PropTypes from 'prop-types';
-import EditorJs from 'react-editor-js';
 import * as React from 'react';
+import { Editor, EditorState } from "draft-js";
 import ScrollableColumn from "components/ScrollableColumn";
 
 const {TextArea} = Input;
@@ -21,6 +21,7 @@ export default class NoteEditor extends React.Component {
     state = {
         currentNoteText: null,
         currentNote: null,
+        editorState: EditorState.createEmpty(),
     };
 
     static propTypes = {
@@ -48,7 +49,7 @@ export default class NoteEditor extends React.Component {
             currentNote: this.props.selectedNote
         }, () => this.debounceChangeNoteText(data));
     };
-
+    onChange = editorState => this.setState({ editorState });
     render() {
         const {noteText, theme} = this.props;
         const {currentNoteText, currentNote} = this.state;
@@ -61,9 +62,9 @@ export default class NoteEditor extends React.Component {
                 scrollColor={theme.color.second}
                 width="inherit"
             >
-                <TextArea
-                    value={currentNoteText !== null ? currentNoteText : noteText} type="textarea"
-                    onChange={this.onChangeNote}
+                <Editor
+                    editorState={this.state.editorState}
+                    onChange={this.onChange}
                 />
             </ScrollableColumn>
         );
