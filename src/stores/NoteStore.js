@@ -5,7 +5,7 @@ import LocalStoreService from 'services/LocalStoreService';
 import RemoteStoreService from 'services/RemoteStoreService';
 import {loadLocalNotes, syncRemoteAndLocalNotes} from 'services/SyncService';
 import categoryStore from 'stores/CategoryStore';
-import type {NoteType} from 'types/NoteType';
+import type {CategoryType, NoteType} from 'types/NoteType';
 import type {StoreType} from 'types/StoreType';
 import uuidv4 from 'uuid/v4';
 
@@ -133,8 +133,8 @@ class NoteStore {
     };
 
     @action
-    setSelectedNoteText = (text: string) => {
-        const note = {...this.selectedNote};
+    setSelectedNoteText = (savingNote: NoteType, category: CategoryType, text: string) => {
+        const note = {...savingNote};
         note.text = text;
         note.updatedAt = moment().format();
         const notes = this.noteItems.map((noteItem: NoteType) => {
@@ -144,6 +144,7 @@ class NoteStore {
             }
             return noteItem;
         });
+        categoryStore.setSelectedCategory(category);
         this.setNotes(notes);
         this.setSelectedNoteInner(note);
         localStorageService.saveNote(note, (err: Error) => console.error('localStorageService.saveNote', err));
