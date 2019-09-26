@@ -249,7 +249,6 @@ export default class NoteList extends React.Component<PropsType> {
                             </div>
                         </>
                     }
-                    // footer={<StatusIcon/>}
                 >
                     <div onClick={this.onClearSelectNode}>
                         {notes.map((note: NoteType) => (

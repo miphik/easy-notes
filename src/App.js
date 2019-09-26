@@ -12,6 +12,8 @@ import {Slide, ToastContainer} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import SerializationService from 'services/SerializationService';
 import 'utils/momentUtils';
+import 'draft-js-inline-toolbar-plugin/lib/plugin.css';
+
 // import {LocaleProvider} from 'antd';
 
 // import enUS from 'antd/lib/locale-provider/en_US';
