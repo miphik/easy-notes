@@ -10,9 +10,33 @@ import moment from "moment";
 import memoizeOne from "memoize-one";
 import type {ThemeType} from "stores/ThemeStore";
 import Editor from "draft-js-plugins-editor";
-import createInlineToolbarPlugin from "draft-js-inline-toolbar-plugin";
+import createStore from "components/Plug/utils/createStore";
+import {defaultTheme} from "components/Plug/theme";
+import Toolbar from "components/Plug/components/Toolbar";
 
-const inlineToolbarPlugin = createInlineToolbarPlugin();
+const ccc = (config = {}) => {
+    const store = createStore({
+        isVisible: false,
+    });
+
+    const {theme = defaultTheme} = config;
+
+    return {
+        initialize: ({getEditorState, setEditorState, getEditorRef}) => {
+            store.updateItem('getEditorState', getEditorState);
+            store.updateItem('setEditorState', setEditorState);
+            store.updateItem('getEditorRef', getEditorRef);
+        },
+        // Re-Render the text-toolbar on selection change
+        onChange: editorState => {
+            store.updateItem('selection', editorState.getSelection());
+            return editorState;
+        },
+        InlineToolbar: props => <Toolbar {...props} store={store} theme={theme}/>,
+    };
+};
+
+const inlineToolbarPlugin = ccc();
 const {InlineToolbar} = inlineToolbarPlugin;
 const STYLES = memoizeOne((theme: ThemeType) => (
     {
