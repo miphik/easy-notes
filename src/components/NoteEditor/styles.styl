@@ -11,3 +11,40 @@
   display: flex;
   font-size: 0.9em;
 }
+
+:global
+  .DraftJs__buttons_buttonWrapper {
+    display: inline-block
+  }
+
+  .DraftJs__buttons_active {
+    background: #efefef;
+    color: #444;
+    svg {
+      fill: #444;
+    }
+  }
+  .DraftJs__buttons_button {
+    background: #fbfbfb
+    color: #888
+    fontSize: 18px
+    border: 0
+    paddingTop: 5px
+    verticalAlign: bottom
+    height: 34px
+    width: 36px
+
+    &:hover {
+      background: #f3f3f3
+      outline: 0
+    }
+
+    &:focus {
+      background: #f3f3f3
+      outline: 0
+    }
+
+    svg {
+      fill: #888
+    }
+  }

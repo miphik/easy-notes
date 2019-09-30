@@ -23,7 +23,7 @@ export default class Toolbar extends React.Component {
 
     state = {
         isVisible: false,
-        position: undefined,
+        position:  undefined,
 
         /**
          * If this is set, the toolbar will render this instead of the children
@@ -125,23 +125,29 @@ export default class Toolbar extends React.Component {
         const {theme, store} = this.props;
         const {overrideContent: OverrideContent} = this.state;
         const childrenProps = {
-            theme: theme.buttonStyles,
-            getEditorState: store.getItem('getEditorState'),
-            setEditorState: store.getItem('setEditorState'),
+            theme:             {
+                active: 'DraftJs__buttons_active',
+                button: 'DraftJs__buttons_button',
+                buttonWrapper: 'DraftJs__buttons_buttonWrapper',
+            },
+            getEditorState:    store.getItem('getEditorState'),
+            setEditorState:    store.getItem('setEditorState'),
             onOverrideContent: this.onOverrideContent,
         };
 
         return (
             <div
-                className={theme.toolbarStyles.toolbar}
-                style={this.getStyle()}
+                className={theme.STYLES().toolbar}
+                style={{...theme.STYLES().toolbar, ...this.getStyle()}}
                 ref={this.handleToolbarRef}
             >
+                <div style={theme.STYLES().toolbar[':before']}/>
                 {OverrideContent ? (
                     <OverrideContent {...childrenProps} />
-                ) : (
-                    this.props.children(childrenProps)
-                )}
+                    ) : (
+                        this.props.children(childrenProps)
+                    )}
+                <div style={theme.STYLES().toolbar[':after']}/>
             </div>
         );
     }

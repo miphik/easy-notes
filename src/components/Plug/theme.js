@@ -1,4 +1,74 @@
 import {css} from 'linaria';
+import memoizeOne from 'memoize-one';
+import type {ThemeType} from 'stores/ThemeStore';
+
+const STYLES = memoizeOne((theme: ThemeType) => (
+    {
+        buttonWrapper: {
+            display: 'inline-block',
+        },
+        button: {
+            background:    '#fbfbfb',
+            color:         '#888',
+            fontSize:      18,
+            border:        0,
+            paddingTop:    5,
+            verticalAlign: 'bottom',
+            height:        34,
+            width:         36,
+            ':hover':     {
+                background: '#f3f3f3',
+                outline:    0,
+            },
+            ':focus': {
+                background: '#f3f3f3',
+                outline:    0,
+            },
+            svg: {
+                fill: '#888',
+            },
+        },
+        toolbar: {
+            left:         '50%',
+            transform:    'translate(-50%) scale(0)',
+            position:     'absolute',
+            border:       '1px solid #ddd',
+            background:   '#fff',
+            borderRadius: 2,
+            boxShadow:    '0px 1px 3px 0px rgba(220, 220, 220, 1)',
+            zIndex:       2,
+            boxSizing:    'border-box',
+            ':after':    {
+                top:            '100%',
+                left:           '50%',
+                border:         'solid transparent',
+                content:        ' ',
+                height:         0,
+                width:          0,
+                position:       'absolute',
+                pointerEvents:  'none',
+                borderColor:    'rgba(255, 255, 255, 0)',
+                borderTopColor: '#fff',
+                borderWidth:    4,
+                marginLeft:     -4,
+            },
+            ':before': {
+                top:            '100%',
+                left:           '50%',
+                border:         'solid transparent',
+                content:        ' ',
+                height:         0,
+                width:          0,
+                position:       'absolute',
+                pointerEvents:  'none',
+                borderColor:    'rgba(221, 221, 221, 0)',
+                borderTopColor: '#ddd',
+                borderWidth:    6,
+                marginLeft:     -6,
+            },
+        },
+    }
+));
 
 const buttonStyles = {
     buttonWrapper: css`
@@ -73,4 +143,5 @@ const toolbarStyles = {
 export const defaultTheme = {
     buttonStyles,
     toolbarStyles,
+    STYLES,
 };
