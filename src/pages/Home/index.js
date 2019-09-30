@@ -221,7 +221,7 @@ export default class Home extends React.Component<PropsType> {
                                     {notesCount === 1 ? MESSAGES.oneNote : null}
                                     {notesCount > 1 ? MESSAGES.notes(notesCount) : null}
                                 </div> : null}
-                                <NoteEditor/>
+                                <NoteEditor offset={columnsWidth.first.size + columnsWidth.second.size}/>
                             </div>
                         </SplitPane>
                     </div>

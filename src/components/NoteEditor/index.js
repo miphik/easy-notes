@@ -13,6 +13,7 @@ import Editor from "draft-js-plugins-editor";
 import createStore from "components/Plug/utils/createStore";
 import {defaultTheme} from "components/Plug/theme";
 import Toolbar from "components/Plug/components/Toolbar";
+import createInlineToolbarPlugin from 'draft-js-inline-toolbar-plugin';
 
 const ccc = (config = {}) => {
     const store = createStore({
@@ -109,7 +110,7 @@ export default class NoteEditor extends React.Component {
     onChange = editorState => this.setState({editorState});
 
     render() {
-        const {selectedNote, theme} = this.props;
+        const {selectedNote, offset, theme} = this.props;
         const {currentNoteText} = this.state;
         if (currentNoteText === null || !selectedNote) return null;
         const style = STYLES(theme);
@@ -133,7 +134,7 @@ export default class NoteEditor extends React.Component {
                     editorState={currentNoteText}
                     onChange={this.onChangeNote}
                 />
-                <InlineToolbar/>
+                <InlineToolbar offset={offset}/>
             </ScrollableColumn>
         );
     }

@@ -73,28 +73,30 @@ export default class Toolbar extends React.Component {
             const editorRootRect = editorRoot.getBoundingClientRect();
 
             const selectionRect = getVisibleSelectionRect(window);
-            if (!selectionRect) return;
-
+            if (!selectionRect || !window.getSelection().toString().trim()) {
+                return;
+            }
             // The toolbar shouldn't be positioned directly on top of the selected text,
             // but rather with a small offset so the caret doesn't overlap with the text.
-            const extraTopOffset = -5;
-            const fff =  this.toolbar;
-            console.log(2333333, fff.getBoundingClientRect(), fff.scrollLeft, fff.offsetLeft, fff.offsetWidth);
-            const offsetLeft = selectionRect.left < 580 ? 50 : 0;
+            const extraTopOffset = -84;
+            const optionalParams = this.props.offset + this.toolbar.offsetWidth / 2 + 12;
 
+            let optionalParams1 = selectionRect.left + selectionRect.width / 2 - this.toolbar.offsetWidth / 2 - this.props.offset;
+            let optionalParams2 = optionalParams1 + this.props.offset + this.toolbar.offsetWidth + 16;
+            console.log(1111, optionalParams2, document.body.clientWidth);
+            let left = optionalParams > (selectionRect.left + selectionRect.width / 2) ? 12 : optionalParams1;
             const position = {
-                top:
-                    editorRoot.offsetTop
-                    - this.toolbar.offsetHeight
-                    + (selectionRect.top - editorRootRect.top)
-                    + extraTopOffset,
-                left:
-                    selectionRect.left < 580 ? 75 : (editorRoot.offsetLeft
-                    + (selectionRect.left - editorRootRect.left)
-                    + selectionRect.width / 2),
+                top: selectionRect.top < selectionRect.top * 2 ? (selectionRect.top
+                    + extraTopOffset)
+                    : (selectionRect.top + extraTopOffset),
             };
+            if (optionalParams2 > document.body.clientWidth) {
+                position.right = 0;
+            } else {
+                position.left = left;
+            }
             this.setState({position});
-        }, 100);
+        });
     };
 
     getStyle() {
@@ -103,6 +105,7 @@ export default class Toolbar extends React.Component {
         const selection = store
             .getItem('getEditorState')()
             .getSelection();
+        console.log(2232323, selection);
         // overrideContent could for example contain a text input, hence we always show overrideContent
         // TODO: Test readonly mode and possibly set isVisible to false if the editor is readonly
         const isVisible = (!selection.isCollapsed() && selection.getHasFocus()) || overrideContent;
@@ -110,11 +113,11 @@ export default class Toolbar extends React.Component {
 
         if (isVisible) {
             style.visibility = 'visible';
-            style.transform = 'translate(-50%) scale(1)';
+            style.transform = 'translate(0%) scale(1)';
             style.transition = 'transform 0.15s cubic-bezier(.3,1.2,.2,1)';
         } else {
-            style.transform = 'translate(-50%) scale(0)';
-            style.visibility = 'hidden';
+            style.transform = 'translate(0%) scale(1)';
+            style.visibility = 'visible';
         }
 
         return style;
