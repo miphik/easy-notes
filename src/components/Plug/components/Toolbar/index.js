@@ -78,6 +78,9 @@ export default class Toolbar extends React.Component {
             // The toolbar shouldn't be positioned directly on top of the selected text,
             // but rather with a small offset so the caret doesn't overlap with the text.
             const extraTopOffset = -5;
+            const fff =  this.toolbar;
+            console.log(2333333, fff.getBoundingClientRect(), fff.scrollLeft, fff.offsetLeft, fff.offsetWidth);
+            const offsetLeft = selectionRect.left < 580 ? 50 : 0;
 
             const position = {
                 top:
@@ -86,12 +89,12 @@ export default class Toolbar extends React.Component {
                     + (selectionRect.top - editorRootRect.top)
                     + extraTopOffset,
                 left:
-                    editorRoot.offsetLeft
+                    selectionRect.left < 580 ? 75 : (editorRoot.offsetLeft
                     + (selectionRect.left - editorRootRect.left)
-                    + selectionRect.width / 2,
+                    + selectionRect.width / 2),
             };
             this.setState({position});
-        });
+        }, 100);
     };
 
     getStyle() {
