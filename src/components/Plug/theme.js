@@ -8,6 +8,9 @@ const STYLES = memoizeOne((theme: ThemeType) => (
             display: 'inline-block',
         },
         button: {
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
             background:    '#fbfbfb',
             color:         '#888',
             fontSize:      18,
@@ -31,15 +34,16 @@ const STYLES = memoizeOne((theme: ThemeType) => (
         toolbar: {
             // left:         '50%',
             transform:    'translate(-50%) scale(0)',
+            visibility:   'hidden',
             position:     'absolute',
-            border:       '1px solid #ddd',
-            background:   '#fff',
-            borderRadius: 2,
-            boxShadow:    '0px 1px 3px 0px rgba(220, 220, 220, 1)',
+            border:       '1px solid #00000054',
+            backgroundColor:   'rgb(36, 46, 50)',
+            borderRadius: 3,
+            boxShadow:    'rgba(15, 15, 15, 0.1) 0px 0px 0px 1px, rgba(15, 15, 15, 0.2) 0px 3px 6px, rgba(15, 15, 15, 0.4) 0px 9px 24px',
             zIndex:       2,
             boxSizing:    'border-box',
             ':after':    {
-                top:            '100%',
+                /* top:            '100%',
                 left:           '50%',
                 border:         'solid transparent',
                 content:        ' ',
@@ -50,10 +54,10 @@ const STYLES = memoizeOne((theme: ThemeType) => (
                 borderColor:    'rgba(255, 255, 255, 0)',
                 borderTopColor: '#fff',
                 borderWidth:    4,
-                marginLeft:     -4,
+                marginLeft:     -4,*/
             },
             ':before': {
-                top:            '100%',
+                /* top:            '100%',
                 left:           '50%',
                 border:         'solid transparent',
                 content:        ' ',
@@ -64,7 +68,7 @@ const STYLES = memoizeOne((theme: ThemeType) => (
                 borderColor:    'rgba(221, 221, 221, 0)',
                 borderTopColor: '#ddd',
                 borderWidth:    6,
-                marginLeft:     -6,
+                marginLeft:     -6,*/
             },
         },
     }

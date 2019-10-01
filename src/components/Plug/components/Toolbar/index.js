@@ -12,7 +12,11 @@ export default class Toolbar extends React.Component {
     static defaultProps = {
         children: externalProps => (
             // may be use React.Fragment instead of div to improve perfomance after React 16
-            <div>
+            <div style={{
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+            }}>
                 <ItalicButton {...externalProps} />
                 <BoldButton {...externalProps} />
                 <UnderlineButton {...externalProps} />
@@ -83,15 +87,14 @@ export default class Toolbar extends React.Component {
 
             let optionalParams1 = selectionRect.left + selectionRect.width / 2 - this.toolbar.offsetWidth / 2 - this.props.offset;
             let optionalParams2 = optionalParams1 + this.props.offset + this.toolbar.offsetWidth + 16;
-            console.log(1111, optionalParams2, document.body.clientWidth);
             let left = optionalParams > (selectionRect.left + selectionRect.width / 2) ? 12 : optionalParams1;
             const position = {
-                top: selectionRect.top < selectionRect.top * 2 ? (selectionRect.top
-                    + extraTopOffset)
+                top: selectionRect.top < this.toolbar.offsetHeight * 2 ? (selectionRect.bottom
+                    - 28)
                     : (selectionRect.top + extraTopOffset),
             };
             if (optionalParams2 > document.body.clientWidth) {
-                position.right = 0;
+                position.right = 12;
             } else {
                 position.left = left;
             }
@@ -105,7 +108,6 @@ export default class Toolbar extends React.Component {
         const selection = store
             .getItem('getEditorState')()
             .getSelection();
-        console.log(2232323, selection);
         // overrideContent could for example contain a text input, hence we always show overrideContent
         // TODO: Test readonly mode and possibly set isVisible to false if the editor is readonly
         const isVisible = (!selection.isCollapsed() && selection.getHasFocus()) || overrideContent;
@@ -118,6 +120,8 @@ export default class Toolbar extends React.Component {
         } else {
             style.transform = 'translate(0%) scale(1)';
             style.visibility = 'visible';
+            // style.transform = 'translate(0%) scale(0)';
+            // style.visibility = 'hidden';
         }
 
         return style;
