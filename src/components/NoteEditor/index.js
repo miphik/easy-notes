@@ -39,6 +39,7 @@ const ccc = (config = {}) => {
 
 const inlineToolbarPlugin = ccc();
 const {InlineToolbar} = inlineToolbarPlugin;
+const toolbarClassName = 'NoteText__toolbar';
 const STYLES = memoizeOne((theme: ThemeType) => (
     {
         toolbar: {
@@ -123,7 +124,7 @@ export default class NoteEditor extends React.Component {
                 scrollColor={theme.color.second}
                 width="inherit"
                 toolbar={
-                    <div style={style.toolbar} className={styles.toolbar}>
+                    <div style={style.toolbar} className={`${styles.toolbar} ${toolbarClassName}`}>
                         {moment(selectedNote.updatedAt).format('DD MMMM YYYY, HH:mm')}
                     </div>
                 }
@@ -134,7 +135,7 @@ export default class NoteEditor extends React.Component {
                     editorState={currentNoteText}
                     onChange={this.onChangeNote}
                 />
-                <InlineToolbar offset={offset}/>
+                <InlineToolbar offset={offset} scaleFactor={theme.scaleFactor} toolbarClassName={toolbarClassName}/>
             </ScrollableColumn>
         );
     }

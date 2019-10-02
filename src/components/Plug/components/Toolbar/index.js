@@ -13,10 +13,11 @@ export default class Toolbar extends React.Component {
         children: externalProps => (
             // may be use React.Fragment instead of div to improve perfomance after React 16
             <div style={{
-                display: 'flex',
+                display:        'flex',
                 justifyContent: 'center',
-                alignItems: 'center',
-            }}>
+                alignItems:     'center',
+            }}
+            >
                 <ItalicButton {...externalProps} />
                 <BoldButton {...externalProps} />
                 <UnderlineButton {...externalProps} />
@@ -56,6 +57,7 @@ export default class Toolbar extends React.Component {
     };
 
     onSelectionChanged = () => {
+        const {scaleFactor, toolbarClassName} = this.props;
         // need to wait a tick for window.getSelection() to be accurate
         // when focusing editor with already present selection
         setTimeout(() => {
@@ -82,19 +84,22 @@ export default class Toolbar extends React.Component {
             }
             // The toolbar shouldn't be positioned directly on top of the selected text,
             // but rather with a small offset so the caret doesn't overlap with the text.
-            const extraTopOffset = -84;
+            const extraTopOffset = -scaleFactor * 5.5;
             const optionalParams = this.props.offset + this.toolbar.offsetWidth / 2 + 12;
 
-            let optionalParams1 = selectionRect.left + selectionRect.width / 2 - this.toolbar.offsetWidth / 2 - this.props.offset;
-            let optionalParams2 = optionalParams1 + this.props.offset + this.toolbar.offsetWidth + 16;
-            let left = optionalParams > (selectionRect.left + selectionRect.width / 2) ? 12 : optionalParams1;
+            const optionalParams1 = selectionRect.left + selectionRect.width / 2 - this.toolbar.offsetWidth / 2 - this.props.offset;
+            const optionalParams2 = optionalParams1 + this.props.offset + this.toolbar.offsetWidth + 16;
+            const left = optionalParams > (selectionRect.left + selectionRect.width / 2) ? 12 : optionalParams1;
+            const isTopPosition = selectionRect.top < this.toolbar.offsetHeight + toolbarHeight;
+            const toolbarHeight = document.getElementsByClassName(toolbarClassName)[0].offsetHeight;
+            console.log(22222, document.getElementsByClassName(toolbarClassName)[0].offsetHeight, selectionRect.top, selectionRect.bottom, this.toolbar.offsetHeight);
             const position = {
-                top: selectionRect.top < this.toolbar.offsetHeight * 2 ? (selectionRect.bottom
-                    - 28)
-                    : (selectionRect.top + extraTopOffset),
+                top: isTopPosition
+                    ? `calc(${selectionRect.bottom}px + 8px - ${toolbarHeight}px)`
+                    : `calc(${selectionRect.top}px - 3em - 8px - ${this.toolbar.offsetHeight}px)`,
             };
             if (optionalParams2 > document.body.clientWidth) {
-                position.right = 12;
+                position.right = scaleFactor;
             } else {
                 position.left = left;
             }
@@ -135,9 +140,9 @@ export default class Toolbar extends React.Component {
         const {theme, store} = this.props;
         const {overrideContent: OverrideContent} = this.state;
         const childrenProps = {
-            theme:             {
-                active: 'DraftJs__buttons_active',
-                button: 'DraftJs__buttons_button',
+            theme: {
+                active:        'DraftJs__buttons_active',
+                button:        'DraftJs__buttons_button',
                 buttonWrapper: 'DraftJs__buttons_buttonWrapper',
             },
             getEditorState:    store.getItem('getEditorState'),
