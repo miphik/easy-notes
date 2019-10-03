@@ -13,9 +13,9 @@ export default class Toolbar extends React.Component {
         children: externalProps => (
             // may be use React.Fragment instead of div to improve perfomance after React 16
             <div style={{
-                display:        'flex',
+                display: 'flex',
                 justifyContent: 'center',
-                alignItems:     'center',
+                alignItems: 'center',
             }}
             >
                 <ItalicButton {...externalProps} />
@@ -28,7 +28,7 @@ export default class Toolbar extends React.Component {
 
     state = {
         isVisible: false,
-        position:  undefined,
+        position: undefined,
 
         /**
          * If this is set, the toolbar will render this instead of the children
@@ -57,11 +57,12 @@ export default class Toolbar extends React.Component {
     };
 
     onSelectionChanged = () => {
-        const {scaleFactor, toolbarClassName} = this.props;
+        const {scaleFactor, toolbarClassName, offset: offsetGlobal} = this.props;
         // need to wait a tick for window.getSelection() to be accurate
         // when focusing editor with already present selection
         setTimeout(() => {
             if (!this.toolbar) return;
+            const {offsetWidth, offsetHeight} = this.toolbar;
 
             // The editor root should be two levels above the node from
             // `getEditorRef`. In case this changes in the future, we
@@ -76,7 +77,6 @@ export default class Toolbar extends React.Component {
             while (editorRoot.className.indexOf('DraftEditor-root') === -1) {
                 editorRoot = editorRoot.parentNode;
             }
-            const editorRootRect = editorRoot.getBoundingClientRect();
 
             const selectionRect = getVisibleSelectionRect(window);
             if (!selectionRect || !window.getSelection().toString().trim()) {
@@ -84,21 +84,22 @@ export default class Toolbar extends React.Component {
             }
             // The toolbar shouldn't be positioned directly on top of the selected text,
             // but rather with a small offset so the caret doesn't overlap with the text.
-            const extraTopOffset = -scaleFactor * 5.5;
-            const optionalParams = this.props.offset + this.toolbar.offsetWidth / 2 + 12;
+            const extraTopOffset = 8;
+            const optionalParams = offsetGlobal + this.toolbar.offsetWidth / 2 + 12;
 
-            const optionalParams1 = selectionRect.left + selectionRect.width / 2 - this.toolbar.offsetWidth / 2 - this.props.offset;
-            const optionalParams2 = optionalParams1 + this.props.offset + this.toolbar.offsetWidth + 16;
-            const left = optionalParams > (selectionRect.left + selectionRect.width / 2) ? 12 : optionalParams1;
-            const isTopPosition = selectionRect.top < this.toolbar.offsetHeight + toolbarHeight;
+            const toolbarOffset = selectionRect.left + selectionRect.width / 2 - offsetWidth / 2 - offsetGlobal;
+            const toolbarRightOffset = toolbarOffset + offsetGlobal + offsetWidth + 16;
+
+            const left = optionalParams > (selectionRect.left + selectionRect.width / 2) ? 12 : toolbarOffset;
             const toolbarHeight = document.getElementsByClassName(toolbarClassName)[0].offsetHeight;
-            console.log(22222, document.getElementsByClassName(toolbarClassName)[0].offsetHeight, selectionRect.top, selectionRect.bottom, this.toolbar.offsetHeight);
-            const position = {
-                top: isTopPosition
-                    ? `calc(${selectionRect.bottom}px + 8px - ${toolbarHeight}px)`
-                    : `calc(${selectionRect.top}px - 3em - 8px - ${this.toolbar.offsetHeight}px)`,
-            };
-            if (optionalParams2 > document.body.clientWidth) {
+            const scrollOffset = document.getElementsByClassName('DraftEditor-root')[0].parentNode.scrollTop;
+            const isTopPosition = selectionRect.top < offsetHeight + toolbarHeight + 16;
+            const positionTop = isTopPosition
+                ? (selectionRect.bottom + extraTopOffset - toolbarHeight + scrollOffset)
+                : (selectionRect.top - extraTopOffset - offsetHeight - toolbarHeight + scrollOffset);
+
+            const position = {top: positionTop};
+            if (toolbarRightOffset > document.body.clientWidth) {
                 position.right = scaleFactor;
             } else {
                 position.left = left;
@@ -141,12 +142,12 @@ export default class Toolbar extends React.Component {
         const {overrideContent: OverrideContent} = this.state;
         const childrenProps = {
             theme: {
-                active:        'DraftJs__buttons_active',
-                button:        'DraftJs__buttons_button',
+                active: 'DraftJs__buttons_active',
+                button: 'DraftJs__buttons_button',
                 buttonWrapper: 'DraftJs__buttons_buttonWrapper',
             },
-            getEditorState:    store.getItem('getEditorState'),
-            setEditorState:    store.getItem('setEditorState'),
+            getEditorState: store.getItem('getEditorState'),
+            setEditorState: store.getItem('setEditorState'),
             onOverrideContent: this.onOverrideContent,
         };
 
@@ -159,9 +160,9 @@ export default class Toolbar extends React.Component {
                 <div style={theme.STYLES().toolbar[':before']}/>
                 {OverrideContent ? (
                     <OverrideContent {...childrenProps} />
-                    ) : (
-                        this.props.children(childrenProps)
-                    )}
+                ) : (
+                    this.props.children(childrenProps)
+                )}
                 <div style={theme.STYLES().toolbar[':after']}/>
             </div>
         );
