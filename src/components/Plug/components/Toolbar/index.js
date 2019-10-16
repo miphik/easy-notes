@@ -13,9 +13,9 @@ export default class Toolbar extends React.Component {
         children: externalProps => (
             // may be use React.Fragment instead of div to improve perfomance after React 16
             <div style={{
-                display: 'flex',
+                display:        'flex',
                 justifyContent: 'center',
-                alignItems: 'center',
+                alignItems:     'center',
             }}
             >
                 <ItalicButton {...externalProps} />
@@ -28,7 +28,7 @@ export default class Toolbar extends React.Component {
 
     state = {
         isVisible: false,
-        position: undefined,
+        position:  undefined,
 
         /**
          * If this is set, the toolbar will render this instead of the children
@@ -124,10 +124,8 @@ export default class Toolbar extends React.Component {
             style.transform = 'translate(0%) scale(1)';
             style.transition = 'transform 0.15s cubic-bezier(.3,1.2,.2,1)';
         } else {
-            style.transform = 'translate(0%) scale(1)';
-            style.visibility = 'visible';
-            // style.transform = 'translate(0%) scale(0)';
-            // style.visibility = 'hidden';
+            style.transform = 'translate(0%) scale(0)';
+            style.visibility = 'hidden';
         }
 
         return style;
@@ -142,12 +140,12 @@ export default class Toolbar extends React.Component {
         const {overrideContent: OverrideContent} = this.state;
         const childrenProps = {
             theme: {
-                active: 'DraftJs__buttons_active',
-                button: 'DraftJs__buttons_button',
+                active:        'DraftJs__buttons_active',
+                button:        'DraftJs__buttons_button',
                 buttonWrapper: 'DraftJs__buttons_buttonWrapper',
             },
-            getEditorState: store.getItem('getEditorState'),
-            setEditorState: store.getItem('setEditorState'),
+            getEditorState:    store.getItem('getEditorState'),
+            setEditorState:    store.getItem('setEditorState'),
             onOverrideContent: this.onOverrideContent,
         };
 

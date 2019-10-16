@@ -9,11 +9,32 @@ import styles from './styles.styl';
 import moment from "moment";
 import memoizeOne from "memoize-one";
 import type {ThemeType} from "stores/ThemeStore";
-import Editor from "draft-js-plugins-editor";
+import Editor, { composeDecorators } from "draft-js-plugins-editor";
 import createStore from "components/Plug/utils/createStore";
 import {defaultTheme} from "components/Plug/theme";
 import Toolbar from "components/Plug/components/Toolbar";
-import createInlineToolbarPlugin from 'draft-js-inline-toolbar-plugin';
+import createImagePlugin from 'draft-js-image-plugin';
+import createAlignmentPlugin from 'draft-js-alignment-plugin';
+import createFocusPlugin from 'draft-js-focus-plugin';
+import createResizeablePlugin from 'draft-js-resizeable-plugin';
+import createBlockDndPlugin from 'draft-js-drag-n-drop-plugin';
+import createSideToolbarPlugin from 'draft-js-side-toolbar-plugin';
+
+const focusPlugin = createFocusPlugin();
+const resizeablePlugin = createResizeablePlugin();
+const blockDndPlugin = createBlockDndPlugin();
+const alignmentPlugin = createAlignmentPlugin();
+const { AlignmentTool } = alignmentPlugin;
+const sideToolbarPlugin = createSideToolbarPlugin();
+const { SideToolbar } = sideToolbarPlugin;
+
+const decorator = composeDecorators(
+    resizeablePlugin.decorator,
+    alignmentPlugin.decorator,
+    focusPlugin.decorator,
+    blockDndPlugin.decorator
+);
+const imagePlugin = createImagePlugin({ decorator });
 
 const ccc = (config = {}) => {
     const store = createStore({
@@ -39,6 +60,16 @@ const ccc = (config = {}) => {
 
 const inlineToolbarPlugin = ccc();
 const {InlineToolbar} = inlineToolbarPlugin;
+const plugins = [
+    blockDndPlugin,
+    focusPlugin,
+    alignmentPlugin,
+    resizeablePlugin,
+    imagePlugin,
+    inlineToolbarPlugin,
+    sideToolbarPlugin
+];
+
 const toolbarClassName = 'NoteText__toolbar';
 const STYLES = memoizeOne((theme: ThemeType) => (
     {
@@ -131,11 +162,12 @@ export default class NoteEditor extends React.Component {
                 footer={<div className={styles.footer}/>}
             >
                 <Editor
-                    plugins={[inlineToolbarPlugin]}
+                    plugins={plugins}
                     editorState={currentNoteText}
                     onChange={this.onChangeNote}
                 />
                 <InlineToolbar offset={offset} scaleFactor={theme.scaleFactor} toolbarClassName={toolbarClassName}/>
+                <SideToolbar />
             </ScrollableColumn>
         );
     }
