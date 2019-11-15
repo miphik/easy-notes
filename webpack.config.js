@@ -101,7 +101,7 @@ module.exports = function (env, argv) {
                 },
             },
         }));*/
-        common.plugins.push(new BundleAnalyzerPlugin());
+        // common.plugins.push(new BundleAnalyzerPlugin());
         common.plugins.push(new CompressionPlugin({
             algorithm: 'gzip',
         }));
