@@ -45,8 +45,7 @@
     },
     "asar": false,
     "files": [
-      "build/**/*",
-      "node_modules/",
+      "build_code/**/*",
       "main.js",
       "package.json"
     ],

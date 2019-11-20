@@ -1,5 +1,5 @@
 const {
-    app, BrowserWindow, Menu, shell, ipcMain, Tray, session,
+    app, BrowserWindow, Menu, shell, ipcMain, Tray, session, protocol,
 } = require('electron');
 // const {setContentSecurityPolicy} = require('electron-util');
 const path = require('path');
@@ -9,9 +9,11 @@ const storage = require('electron-json-storage');
 const BOUNDS_KEY = 'WINDOW_POSITION';
 const PORT = process.env.PORT || 8080;
 const IP = process.env.IP || '127.0.0.1';
-const isDevelopment = process.env.NODE_ENV !== undefined || process.env.NODE_ENV !== 'production';
-const logger = () => {};
-const is = () => {};
+const isDevelopment = false;
+const logger = () => {
+};
+const is = () => {
+};
 
 console.log(`START develop mode is: ${isDevelopment}, NODE_ENV is: ${process.env.NODE_ENV}`);
 
@@ -42,13 +44,13 @@ app.on('web-contents-created', (event, contents) => {
 
 function createMainWindow(data = {}) {
     mainWindow = new BrowserWindow({
-        width:                       data.bounds && data.bounds.width ? data.bounds.width : 1280,
-        x:                           data.bounds && data.bounds.x ? data.bounds.x : null,
+        width:          data.bounds && data.bounds.width ? data.bounds.width : 1280,
+        x:              data.bounds && data.bounds.x ? data.bounds.x : null,
         // fullscreen:   true,
-        height:                      data.bounds && data.bounds.height ? data.bounds.height : 880,
-        y:                           data.bounds && data.bounds.y ? data.bounds.y : null,
+        height:         data.bounds && data.bounds.height ? data.bounds.height : 880,
+        y:              data.bounds && data.bounds.y ? data.bounds.y : null,
         webPreferences: {
-            webSecurity: false,
+            webSecurity:     false,
             nodeIntegration: true,
         },
         /* webPreferences: {
@@ -83,7 +85,7 @@ function createMainWindow(data = {}) {
         mainWindow.loadURL(`http://${IP}:${PORT}`);
     } else {
         mainWindow.loadURL(url.format({
-            pathname: path.resolve(__dirname, 'build', 'index.html'),
+            pathname: path.resolve('index.html'),
             protocol: 'file',
             slashes:  false,
         }));
@@ -130,6 +132,13 @@ app.on('activate', () => {
 
 // create main BrowserWindow when electron is ready
 app.on('ready', () => {
+    protocol.interceptFileProtocol('file', (request, callback) => {
+        const url = request.url.substr(7); /* all urls start with 'file://' */
+        callback({path: path.normalize(`${__dirname}/build_code/${url}`)});
+    }, err => {
+        if (err) console.error('Failed to register protocol');
+    });
+
     storage.get(BOUNDS_KEY, (error, data) => {
         if (error) throw error;
 

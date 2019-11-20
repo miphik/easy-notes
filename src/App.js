@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
 import React, {Component} from 'react';
 import {hot} from 'react-hot-loader/root';
 import {IntlProvider} from 'react-intl';
-import {BrowserRouter as Router, Route} from 'react-router-dom';
+import {HashRouter as Router, Route} from 'react-router-dom';
 import 'react-sortable-tree/style.css';
 import {Slide, ToastContainer} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';

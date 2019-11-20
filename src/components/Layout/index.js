@@ -86,10 +86,10 @@ class AppLayout extends Component<PropsType> {
             <div style={STYLES(theme).wrapper} className={theme.isBlack ? 'AppLayout_is_black' : 'AppLayout_is_white'}>
                 <section className="msp-content-inner">
                     <Switch>
+                        <Route exact component={Home}/>
                         <Route exact path={ABOUT_PATH} component={About}/>
-                        <Route exact path={HOME_PATH} component={Home}/>
                         <Route exact path={WEBDAV_AUTH_PATH} component={WebdavAuth}/>
-                        <Route exact component={() => <div>NOT FOUND</div>}/>
+                        {/* <Route exact component={() => <div>NOT FOUND</div>}/>*/}
                         {/* routes.map(route => <Route key={route.path} {...route} />)*/}
                     </Switch>
                 </section>

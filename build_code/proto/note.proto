@@ -1,0 +1,55 @@
+package easy_note;
+
+syntax = "proto3";
+
+message Category {
+    required string uuid = 1;
+    repeated string parentUUID = 2;
+    required string title = 3;
+    optional string description = 4;
+    required string updated_at = 5;
+    required string created_at = 6;
+    required bool is_deleted = 7;
+    optional int32 order_number = 8;
+}
+
+message NoteHistory {
+    required string created_at = 1;
+    required string device = 2;
+}
+
+message Note {
+     required string uuid = 1;
+     repeated string categoryUUIDs = 2;
+     required string title = 3;
+     repeated string tags = 4;
+     enum NoteType {
+         TEXT = 0;
+         HTML = 1;
+         MARKDOWN = 2;
+         CODE = 3;
+     }
+     required NoteType note_type = 5 [default=TEXT];
+     required string updated_at = 6;
+     required string created_at = 7;
+     required bool is_deleted = 8;
+
+     optional bool is_favorite = 10;
+     optional string link = 11;
+     optional string icon = 12;
+     optional NoteHistory history = 13;
+}
+
+message NoteFull {
+    extend Note {
+        required string text = 9;
+    }
+}
+
+message NotesList {
+     repeated Note notes = 1;
+}
+
+message CategoriesList {
+    repeated Category categories = 1;
+}

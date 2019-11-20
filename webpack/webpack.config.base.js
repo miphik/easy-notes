@@ -111,7 +111,7 @@ module.exports = {
         new webpack.NamedModulesPlugin(),
         new webpack.NoEmitOnErrorsPlugin(),
         new webpack.HotModuleReplacementPlugin(),
-        new WebpackBar(),
+        //new WebpackBar(),
     ],
     optimization: {
         splitChunks: {
