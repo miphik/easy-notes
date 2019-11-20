@@ -13,6 +13,7 @@
     "start": "cross-env NODE_ENV=dev webpack-dev-server --mode development",
     "serve": "run-electron .",
     "start-e": "cross-env START_HOT=1 yarn start",
+    "build-e": "cross-env NODE_ENV=production webpack --progress --colors --profile -p",
     "win": "cross-env NODE_ENV=production build --win --x64",
     "linux": "build --linux",
     "mac": "cross-env NODE_ENV=production build --mac",
@@ -20,6 +21,7 @@
     "test:watch": "npm run test --watch",
     "test:cover": "npm run test --coverage",
     "pack": "electron-builder --dir",
+    "build:macos": "electron-builder --mac",
     "dist": "electron-builder",
     "postinstall": "install-app-deps"
   },
@@ -41,6 +43,7 @@
         }
       ]
     },
+    "asar": false,
     "files": [
       "build/**/*",
       "node_modules/",
@@ -105,7 +108,7 @@
     "cross-spawn": "^7.0.1",
     "css-loader": "^3.0.0",
     "debug": "^4.1.1",
-    "electron": "^7.1.1",
+    "electron": "^7.1.2",
     "electron-builder": "^22.1.0",
     "electron-reload": "^1.4.0",
     "electron-timber": "^0.5.1",
@@ -143,14 +146,14 @@
     "pug": "^2.0.4",
     "pug-loader": "^2.4.0",
     "react-dev-utils": "^9.1.0",
-    "react-hot-loader": "^4.12.17",
+    "react-hot-loader": "^4.12.18",
     "react-test-renderer": "^16.12.0",
     "react-testing-library": "^8.0.1",
     "run-electron": "^1.0.0",
     "sass-loader": "^8.0.0",
     "style-loader": "^1.0.0",
-    "stylelint": "^11.1.1",
-    "stylelint-webpack-plugin": "^1.0.4",
+    "stylelint": "^12.0.0",
+    "stylelint-webpack-plugin": "^1.1.0",
     "stylus": "^0.54.5",
     "stylus-loader": "^3.0.2",
     "terser-webpack-plugin": "^2.2.1",
@@ -164,7 +167,7 @@
     "webpackbar": "^4.0.0"
   },
   "dependencies": {
-    "antd": "3.25.1",
+    "antd": "3.25.2",
     "axios": "^0.19.0",
     "color": "^3.1.2",
     "draft-js": "^0.11.2",
@@ -192,7 +195,7 @@
     "react-custom-scrollbars": "^4.2.1",
     "react-dom": "^16.12.0",
     "react-inlinese": "^0.9.3",
-    "react-intl": "^3.6.0",
+    "react-intl": "^3.6.1",
     "react-router-dom": "^5.1.2",
     "react-sortable-tree": "^2.7.1",
     "react-split-pane": "^0.1.89",
