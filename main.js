@@ -9,7 +9,7 @@ const storage = require('electron-json-storage');
 const BOUNDS_KEY = 'WINDOW_POSITION';
 const PORT = process.env.PORT || 8080;
 const IP = process.env.IP || '127.0.0.1';
-const isDevelopment = false;
+const isDevelopment = (process.env.WEBPACK_MODE === 'development');
 const logger = () => {
 };
 const is = () => {

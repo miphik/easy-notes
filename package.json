@@ -21,7 +21,7 @@
     "test:watch": "npm run test --watch",
     "test:cover": "npm run test --coverage",
     "pack": "electron-builder --dir",
-    "build:macos": "electron-builder --mac",
+    "build:macos": "yarn build-e && cross-env NODE_ENV=production electron-builder --mac",
     "dist": "electron-builder",
     "postinstall": "install-app-deps"
   },
@@ -103,6 +103,7 @@
     "case-sensitive-paths-webpack-plugin": "^2.2.0",
     "clean-webpack-plugin": "^3.0.0",
     "compression-webpack-plugin": "^3.0.0",
+    "copy-webpack-plugin": "^5.0.5",
     "cross-env": "^6.0.3",
     "cross-spawn": "^7.0.1",
     "css-loader": "^3.0.0",

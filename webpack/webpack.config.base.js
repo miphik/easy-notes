@@ -2,13 +2,13 @@ require('@babel/register');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const webpack = require('webpack');
 const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
-const WebpackBar = require('webpackbar');
 const {CleanWebpackPlugin} = require('clean-webpack-plugin');
 
 const path = require('path');
 const PATHS = require('./paths');
 
-const NODE_ENV = process.env.NODE_ENV || 'prod';
+const NODE_ENV = process.env.NODE_ENV;
+console.log(`START NODE_ENV is: ${NODE_ENV}`);
 
 const HTML_PLUGIN_MINIFY_OPTIONS = {
     removeComments:                true,
@@ -32,13 +32,11 @@ module.exports = {
     devtool: 'source-map',
     entry:   {
         index: (
-                   NODE_ENV === 'dev' ? [
-                       'react-dev-utils/webpackHotDevClient',
-                   ] : []
+            NODE_ENV === 'dev' ? ['react-dev-utils/webpackHotDevClient'] : []
         ).concat([`${PATHS.source}/index.js`]),
     },
     output: {
-        path:          PATHS.build,
+        path:          PATHS.buildCode,
         filename:      './js/[name].js',
         pathinfo:      true,
         chunkFilename: 'static/js/[id].js',
@@ -81,13 +79,12 @@ module.exports = {
         ),
     },
     plugins: [
-        new webpack.ProgressPlugin(),
         new CleanWebpackPlugin({
-            root:    PATHS.root,
-            verbose: true,
-            dry:     false,
-            exclude: [],
+            cleanOnceBeforeBuildPatterns: [PATHS.buildCode, PATHS.build],
+            verbose:                      true,
+            dry:                          false,
         }),
+        new webpack.ProgressPlugin(),
         new webpack.DefinePlugin({
             NODE_ENV: JSON.stringify(NODE_ENV),
             __DEV__:  NODE_ENV === 'dev',
@@ -97,7 +94,7 @@ module.exports = {
         new HtmlWebpackPlugin({
             inject:         true,
             chunks:         ['index', 'common'],
-            filename:       `${PATHS.build}/index.html`,
+            filename:       `${PATHS.buildCode}/index.html`,
             template:       `${PATHS.public}/index.html`,
             chunksSortMode: 'none',
             minify:         HTML_PLUGIN_MINIFY_OPTIONS,
@@ -111,7 +108,6 @@ module.exports = {
         new webpack.NamedModulesPlugin(),
         new webpack.NoEmitOnErrorsPlugin(),
         new webpack.HotModuleReplacementPlugin(),
-        //new WebpackBar(),
     ],
     optimization: {
         splitChunks: {
