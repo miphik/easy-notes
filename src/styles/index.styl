@@ -1,23 +1,26 @@
-@import "./variables";
+:global {
+  body,
+  html,
+  #app-mount {
+    padding: 0;
+    margin: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+  }
 
-body
-html
-#app-mount
-  padding: 0;
-  margin: 0;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
+  button {
+    overflow: hidden !important;
+  }
 
-button
-  overflow hidden !important;
+  .full_height {
+    height: 100%;
+  }
 
-:global
-  .full_height
-    height 100%
-  .ant-btn
-  .ant-input
-    font-size: 1em !important
+  .ant-btn,
+  .ant-input {
+    font-size: 1em !important;
+  }
 
   ::-webkit-scrollbar-thumb {
     background-color: hsla(0, 0%, 100%, .4);
@@ -39,4 +42,5 @@ button
   .public-DraftEditor-content {
     height: 100%;
   }
+}
 

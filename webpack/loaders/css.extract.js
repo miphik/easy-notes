@@ -53,6 +53,17 @@ module.exports = function (paths) {
                     }),
                 },
                 {
+                    test:    /\.css$/,
+                    include: paths,
+                    use:     ExtractTextPlugin.extract({
+                        fallback: 'style-loader',
+                        use:      [
+                            'css-loader',
+                            postcss,
+                        ],
+                    }),
+                },
+                {
                     test:    /\.less$/,
                     include: paths,
                     use:     ExtractTextPlugin.extract({
@@ -69,17 +80,6 @@ module.exports = function (paths) {
                                 },
                             },
                             // postcss,
-                        ],
-                    }),
-                },
-                {
-                    test:    /\.css$/,
-                    include: paths,
-                    use:     ExtractTextPlugin.extract({
-                        fallback: 'style-loader',
-                        use:      [
-                            'css-loader',
-                            postcss,
                         ],
                     }),
                 },

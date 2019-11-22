@@ -6,14 +6,256 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Easy Notes</title>
     <style>
-        html, body, #app-mount {
-            margin: 0;
+        body,
+        html,
+        #app-mount {
             padding: 0;
+            margin: 0;
             width: 100%;
             height: 100%;
+            overflow: hidden;
         }
+
+        button {
+            overflow: hidden !important;
+        }
+
+        .full_height {
+            height: 100%;
+        }
+
+        .ant-btn,
+        .ant-input {
+            font-size: 1em !important;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background-color: hsla(0, 0%, 100%, .4);
+            background-clip: padding-box;
+            border: 5px solid transparent;
+            border-radius: 7px;
+        }
+
+        ::-webkit-scrollbar {
+            size: 13px;
+        }
+
+        .DraftEditor-root {
+            margin: 0 1em;
+        }
+
+        .DraftEditor-root,
+        .DraftEditor-editorContainer,
+        .public-DraftEditor-content {
+            height: 100%;
+        }
+
         .react-tiny-popover-container {
             z-index: 100;
+        }
+
+        .Resizer {
+            background: #000;
+            opacity: .2;
+            z-index: 1;
+            -moz-box-sizing: border-box;
+            -webkit-box-sizing: border-box;
+            box-sizing: border-box;
+            -moz-background-clip: padding;
+            -webkit-background-clip: padding;
+            background-clip: padding-box;
+        }
+
+        .Resizer:hover {
+            -webkit-transition: all 2s ease;
+            transition: all 2s ease;
+        }
+
+        .Resizer.horizontal {
+            height: 5px;
+            margin: -2px 0;
+            border-top: 2px solid rgba(255, 255, 255, 0);
+            border-bottom: 2px solid rgba(255, 255, 255, 0);
+            cursor: row-resize;
+            width: 100%;
+        }
+
+        .Resizer.horizontal:hover {
+            border-top: 2px solid rgba(0, 0, 0, 0.5);
+            border-bottom: 2px solid rgba(0, 0, 0, 0.5);
+        }
+
+        .Resizer.vertical {
+            width: 5px;
+            margin: 0 -2px;
+            border-left: 2px solid rgba(255, 255, 255, 0);
+            border-right: 2px solid rgba(255, 255, 255, 0);
+            cursor: col-resize;
+        }
+
+        .Resizer.vertical:hover {
+            border-left: 2px solid rgba(0, 0, 0, 0.5);
+            border-right: 2px solid rgba(0, 0, 0, 0.5);
+        }
+
+        .AppLayout_is_black .Resizer.vertical:hover {
+            border-left: 2px solid rgba(255, 255, 255, 0.2);
+            border-right: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .Resizer.disabled {
+            cursor: not-allowed;
+        }
+
+        .Resizer.disabled:hover {
+            border-color: transparent;
+        }
+
+        #rap-overlay {
+            position: fixed;
+            display: block;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: transparent;
+            z-index: 2;
+            cursor: pointer;
+        }
+
+        .rap-manager,
+        .rap-target-container {
+            display: inline-block;
+            position: relative;
+        }
+
+        .rap-left {
+            left: -20px !important;
+        }
+
+        .rap-bottom {
+            top: 15px !important;
+        }
+
+        .rap-top {
+            top: -15px !important;
+        }
+
+        .rap-right {
+            left: 20px !important;
+        }
+
+        .ar {
+            transform: rotate(-180deg);
+        }
+
+        .at {
+            transform: rotate(90deg);
+        }
+
+        .ab {
+            transform: rotate(-90deg);
+        }
+
+        .empty {
+            font-size: inherit !important;
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+        }
+
+        .empty .ant-empty-image {
+            height: 10em;
+            opacity: 0.8;
+        }
+
+        .hide_image .ant-empty-image {
+            display: none;
+        }
+
+        .DraftJs__buttons_buttonWrapper {
+            display: inline-block;
+        }
+
+        .DraftJs__buttons_active {
+            background: rgb(28, 38, 42);
+            color: #444;
+        }
+
+        .DraftJs__buttons_active svg {
+            fill: #444;
+        }
+
+        .DraftJs__buttons_button {
+            background: rgb(36, 46, 50);
+            color: #888;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 18px;
+            border: 0;
+            padding-top: 5px;
+            vertical-align: bottom;
+            width: 36px;
+        }
+
+        .DraftJs__buttons_button:hover {
+            background: rgb(28, 38, 42);
+            outline: 0;
+        }
+
+        .DraftJs__buttons_button:focus {
+            background: #f3f3f3;
+            outline: 0;
+        }
+
+        svg {
+            fill: #888
+        }
+
+        @keyframes hide-spinner {
+            0% {
+                opacity: 1;
+                bottom: 0;
+            }
+            99% {
+                opacity: 0;
+                bottom: 0;
+            }
+            100% {
+                opacity: 0;
+                bottom: 10000px;
+            }
+        }
+
+        @keyframes show-spinner {
+            0% {
+                opacity: 0;
+                bottom: 10000px;
+            }
+            99% {
+                opacity: 1;
+                bottom: 10000px;
+            }
+            100% {
+                opacity: 1;
+                bottom: 0;
+            }
+        }
+
+        @keyframes spin {
+            0% {
+                -webkit-transform: rotate(0deg); /* Chrome, Opera 15+, Safari 3.1+ */
+                -ms-transform: rotate(0deg); /* IE 9 */
+                transform: rotate(0deg); /* Firefox 16+, IE 10+, Opera */
+            }
+            100% {
+                -webkit-transform: rotate(360deg); /* Chrome, Opera 15+, Safari 3.1+ */
+                -ms-transform: rotate(360deg); /* IE 9 */
+                transform: rotate(360deg); /* Firefox 16+, IE 10+, Opera */
+            }
         }
     </style>
 </head>
