@@ -37,3 +37,7 @@ jobs:
           key: 1
           # An ordered list of keys to use for restoring the cache if no cache hit occurred for key
           # restore-keys: # optional
+      - uses: actions/upload-artifact@v1
+        with:
+          name: easy-notes
+          path: build/Easy-Note-0.1.0.dmg
