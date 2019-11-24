@@ -9,7 +9,7 @@ on:
 jobs:
   build:
 
-    runs-on: ubuntu-latest
+    runs-on: macOS-latest
 
     strategy:
       matrix:
@@ -28,3 +28,12 @@ jobs:
           npm run build:macos
         env:
           CI: true
+      - name: Cache
+        uses: actions/cache@v1.0.3
+        with:
+          # A directory to store and save the cache
+          path: node_modules
+          # An explicit key for restoring and saving the cache
+          key: 1
+          # An ordered list of keys to use for restoring the cache if no cache hit occurred for key
+          # restore-keys: # optional
