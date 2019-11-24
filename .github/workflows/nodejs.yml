@@ -1,7 +1,7 @@
 name: Node CI
 
 on: [push]
-
+cache: yarn
 jobs:
   build:
 
@@ -19,9 +19,7 @@ jobs:
         node-version: ${{ matrix.node-version }}
     - name: npm install, build, and test
       run: |
-        npm ci
-        npm install
-        npm run build:macos
-        npm test
+        yarn install
+        yarn build:macos
       env:
         CI: true
