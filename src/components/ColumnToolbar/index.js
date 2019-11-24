@@ -107,7 +107,7 @@ export default class ColumnToolbar extends React.PureComponent<PropsType> {
                                         onClick={this.toggleOpenDeleteConfirm}
                                         style={style.addButton}
                                     >
-                                        {CANCEL_CONFIRM_BUTTON_TEXT}
+                                        &nbsp;{CANCEL_CONFIRM_BUTTON_TEXT}
                                     </CButton>
                                     <CButton
                                         className={styles.add_button}
@@ -117,7 +117,7 @@ export default class ColumnToolbar extends React.PureComponent<PropsType> {
                                         onClick={this.onClickConfirm}
                                         style={style.removeButton}
                                     >
-                                        {CONFIRM_BUTTON_TEXT}
+                                        &nbsp;{CONFIRM_BUTTON_TEXT}
                                     </CButton>
                                 </div>
                             </div>

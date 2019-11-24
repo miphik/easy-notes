@@ -105,9 +105,10 @@ export default class NoteEditor extends React.Component {
             || nextProps.selectedNote.uuid !== prevState.currentNote.uuid) {
 
             const state = {currentNote: nextProps.selectedNote};
-            if (nextProps.noteText && nextProps.noteText.entityMap) {
+            if ((!prevState.currentNoteText || nextProps.selectedNote.uuid !== prevState.currentNote.uuid)
+                && nextProps.noteText && nextProps.noteText.entityMap) {
                 state.currentNoteText = EditorState.createWithContent(convertFromRaw(nextProps.noteText))
-            } else if (!prevState.currentNoteText || !nextProps.selectedNote.text) {
+            } else if (!prevState.currentNoteText) {
                 state.currentNoteText = EditorState.createEmpty();
             }
             return state;
@@ -126,7 +127,7 @@ export default class NoteEditor extends React.Component {
         };
     }
 
-    debounceChangeNoteText = debounce(this.props.setSelectedNoteText, 1000);
+    debounceChangeNoteText = debounce(this.props.setSelectedNoteText, 700);
 
     onChangeNote = data => {
         const {selectedNote, selectedCategory} = this.props;
@@ -134,7 +135,8 @@ export default class NoteEditor extends React.Component {
             currentNoteText: data,
             currentNote: selectedNote
         }, () => {
-            if (!isEqual(this.props.selectedNote.text.blocks, convertToRaw(data.getCurrentContent()).blocks)) {
+            if (!this.props.selectedNote.text
+                || !isEqual(this.props.selectedNote.text.blocks, convertToRaw(data.getCurrentContent()).blocks)) {
                 this.debounceChangeNoteText(selectedNote, selectedCategory, convertToRaw(data.getCurrentContent()));
             }
         });
@@ -146,7 +148,6 @@ export default class NoteEditor extends React.Component {
         const {currentNoteText} = this.state;
         if (currentNoteText === null || !selectedNote) return null;
         const style = STYLES(theme);
-
         return (
             <ScrollableColumn
                 showScrollShadow

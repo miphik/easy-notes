@@ -60,7 +60,7 @@ class SerializationService {
             console.warn('convertStringToNote', note['.easy_note.NoteFull.text'], ignore);
             /* NOP */
         }
-        note.text = note['.easy_note.NoteFull.text'];
+        note.text = note['.easy_note.NoteFull.text'] || '';
         return note;
     };
 

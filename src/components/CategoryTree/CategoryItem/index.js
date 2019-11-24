@@ -184,7 +184,7 @@ export default class CategoryItem extends React.Component<PropsType> {
                 className={
                     styles.rowWrapper
                     + (
-                        !canDrag ? ` ${styles.rowWrapperDragDisabled}` : ''
+                        !canDrag && isDragging ? ` ${styles.rowWrapperDragDisabled}` : ''
                     )
                 }
             >
@@ -219,7 +219,7 @@ export default class CategoryItem extends React.Component<PropsType> {
                                 className={
                                     styles.rowContents
                                     + (
-                                        !canDrag ? ` ${styles.rowWrapperDragDisabled}` : ''
+                                        !canDrag && isDragging ? ` ${styles.rowWrapperDragDisabled}` : ''
                                     )
                                 }
                             >

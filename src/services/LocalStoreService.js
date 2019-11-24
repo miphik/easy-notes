@@ -68,9 +68,14 @@ export default class LocalStoreService {
             if (err) {
                 success(note);
             } else {
-                const noteFull = serializationService.convertStringToNote(contents);
-                console.info('READ NOTE FROM LOCAL STORAGE', noteFull);
-                success(noteFull);
+                try {
+                    const noteFull = serializationService.convertStringToNote(contents);
+                    console.info('READ NOTE FROM LOCAL STORAGE', noteFull);
+                    success(noteFull);
+                } catch (e) {
+                    console.error('READ NOTE FROM LOCAL STORAGE', e);
+                    success(note);
+                }
             }
         });
     };
