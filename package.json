@@ -21,7 +21,7 @@
     "test:watch": "npm run test --watch",
     "test:cover": "npm run test --coverage",
     "pack": "electron-builder --dir",
-    "build:macos": "yarn build-e && cross-env NODE_ENV=production electron-builder --mac",
+    "build:macos": "yarn build-e && cross-env NODE_ENV=production electron-builder --mac --publish=never.",
     "dist": "electron-builder",
     "postinstall": "install-app-deps"
   },
