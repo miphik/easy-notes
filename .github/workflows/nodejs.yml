@@ -1,10 +1,9 @@
 name: Node CI
 
 on: [push]
-cache: yarn
 jobs:
   build:
-
+  
     runs-on: ubuntu-latest
 
     strategy:
