@@ -68,9 +68,14 @@ export default class LocalStoreService {
             if (err) {
                 success(note);
             } else {
-                const noteFull = serializationService.convertStringToNote(contents);
-                console.info('READ NOTE FROM LOCAL STORAGE', noteFull);
-                success(noteFull);
+                try {
+                    const noteFull = serializationService.convertStringToNote(contents);
+                    console.info('READ NOTE FROM LOCAL STORAGE', noteFull);
+                    success(noteFull);
+                } catch (e) {
+                    console.error('READ NOTE FROM LOCAL STORAGE', e);
+                    success(note);
+                }
             }
         });
     };
@@ -107,6 +112,7 @@ export default class LocalStoreService {
         success: () => {} = () => {},
         createNoteDir: boolean = true,
     ) => {
+        console.info('localeStoreService.saveNote', note);
         if (createNoteDir) LocalStoreService.createNoteDir(note);
         const noteAsString = serializationService.convertNoteToString(note);
         fs.writeFile(LOCAL_PROJECT_NOTE_FILE(note), noteAsString, (errW: Error) => {
@@ -131,6 +137,7 @@ export default class LocalStoreService {
     };
 
     static saveNotesList = (data: Array<NoteType>, error: () => {} = () => {}, success: () => {} = () => {}) => {
+        console.info('localeStoreService.saveNotesList', data);
         const notes = serializationService.convertNotesListToString(data);
         fs.writeFile(LOCAL_PROJECT_MAIN_FILE, notes, (errW: Error) => {
             if (errW) error(errW);
@@ -161,6 +168,7 @@ export default class LocalStoreService {
         error: () => {} = () => {},
         success: () => {} = () => {},
     ) => {
+        console.info('localeStoreService.saveCategoriesList', data);
         const categories = serializationService.convertCategoriesListToString(
             data.map((item: CategoryType, index: number) => ({...item, orderNumber: index})),
         );

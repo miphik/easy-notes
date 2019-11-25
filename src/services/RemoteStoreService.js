@@ -1,5 +1,6 @@
 // @flow
 import moment from 'moment';
+import React from 'react';
 import LocalStorageService from 'services/LocalStorageService';
 import type {SerializationServiceType} from 'services/SerializationService';
 import SerializationService from 'services/SerializationService';
@@ -9,8 +10,10 @@ import {
     NOTE_MONTH_DATE_FORMAT,
     NOTE_YAER_DATE_FORMAT,
 } from 'src/constants/general';
-import type {CategoryType, NoteType} from 'src/types/NoteType';
-import type {CategoriesType, NotesType} from 'types/NoteType';
+import type {
+    CategoryType, NoteType, CategoriesType, NotesType,
+} from 'src/types/NoteType';
+import {FormattedMessage as Fm} from 'react-intl';
 import {createClient} from 'webdav';
 
 const WEBDAV_CREDENTIALS = 'WEBDAV_CREDENTIALS';
@@ -56,16 +59,20 @@ const createDirs = async (dirsForCreating, existingDirs) => {
         .map(async (dirDateYear: string) => webdavClient.createDirectory(dirDateYear)));
 };
 
-export default class RemoteStoreService {
-    static isClientInitialized = (error: () => {} = () => {}) => {
-        if (!webdavClient) {
-            error('WEBDAV client isn\'t initialized');
-            return false;
-        }
-        return true;
-    };
+const getErrorByStatusCode = (status: number) => {
+    if (!status) return null;
+    if (status === 401) return <Fm id="RemoteStoreService.getErrorByStatusCode" defaultMessage="Authorisation error" />;
+};
 
-    static auth = (success: () => {}, error: () => {}) => {
+export default class RemoteStoreService {
+    static isClientInitialized = () => !!webdavClient;
+
+    static auth = (success: () => {}, loginError: () => {}, error: () => {}) => {
+        const errorHandler = err => {
+            const status = err && err.response && err.response.status;
+            const responseText = err && err.response && err.response.responseText;
+            return loginError(responseText || getErrorByStatusCode(status) || err.message);
+        };
         LocalStorageService.hasAsync(WEBDAV_CREDENTIALS, (hasError, hasKey) => {
             if (!hasError && hasKey) {
                 LocalStorageService.getAsync(WEBDAV_CREDENTIALS, (getError, data) => {
@@ -77,8 +84,8 @@ export default class RemoteStoreService {
                                 password: data.pass,
                             },
                         );
-                        RemoteStoreService.getDirectoryContent('/', error, () => {
-                            RemoteStoreService.createMainDirectory(error, success);
+                        RemoteStoreService.getDirectoryContent('/', errorHandler, () => {
+                            RemoteStoreService.createMainDirectory(errorHandler, success);
                         });
                     } else if (error) error(getError);
                 });
@@ -91,22 +98,22 @@ export default class RemoteStoreService {
         LocalStorageService.removeAsync(WEBDAV_CREDENTIALS, {}, callback);
     };
 
-    static isAuth = () => !!webdavClient;
-
     static logIn = (url, user, pass, error, success) => {
-        LocalStorageService.setAsync(WEBDAV_CREDENTIALS, {url, user, pass}, setError => {
-            if (!setError) {
-                webdavClient = createClient(
-                    url,
-                    {
-                        username: user,
-                        password: pass,
-                    },
-                );
-                RemoteStoreService.getDirectoryContent('/', error, () => {
-                    RemoteStoreService.createMainDirectory(error, success);
-                });
-            } else if (error) error(setError);
+        const successHandler = () => {
+            LocalStorageService.setAsync(WEBDAV_CREDENTIALS, {url, user, pass}, setError => {
+                if (!setError) success();
+                else if (error) error(setError);
+            });
+        };
+        webdavClient = createClient(
+            url,
+            {
+                username: user,
+                password: pass,
+            },
+        );
+        RemoteStoreService.getDirectoryContent('/', error, () => {
+            RemoteStoreService.createMainDirectory(error, successHandler);
         });
     };
 
@@ -227,6 +234,7 @@ export default class RemoteStoreService {
         success: () => {} = () => {},
         createNoteDir: boolean = true,
     ) => {
+        console.info('remoteStoreService.saveNote', note);
         if (!RemoteStoreService.isClientInitialized(error)) return;
         if (createNoteDir) {
             RemoteStoreService.createNoteDir(note, error, () => RemoteStoreService
@@ -297,6 +305,7 @@ export default class RemoteStoreService {
     };
 
     static saveNotesList = (data: Array<NoteType>, error: () => {} = () => {}, success: () => {} = () => {}) => {
+        console.info('remoteStoreService.saveNotesList', data);
         if (!RemoteStoreService.isClientInitialized(error)) return;
         const notesAsString = serializationService.convertNotesListToString(data);
         webdavClient.putFileContents(WEBDAV_PROJECT_MAIN_FILE, notesAsString, {overwrite: true})
@@ -309,6 +318,7 @@ export default class RemoteStoreService {
         error: () => {} = () => {},
         success: () => {} = () => {},
     ) => {
+        console.info('remoteStoreService.saveCategoriesList', data);
         if (!RemoteStoreService.isClientInitialized(error)) return;
         const categoriesAsString = serializationService.convertCategoriesListToString(
             data.map((item: CategoryType, index: number) => (

@@ -78,12 +78,14 @@ const STYLES = memoizeOne((theme: ThemeType, isCategorySelected: boolean, isNote
             backgroundColor: theme.color.second,
             width:           '100%',
             height:          '100%',
+            overflow: 'auto',
         },
         thirdColumn:          {
             backgroundColor: isNoteSelected ? theme.color.second : 'transparent',
             zIndex:          isNoteSelected ? 1 : 0,
             width:           '100%',
             height:          '100%',
+            overflow: 'auto',
         },
         backgroundImage:      {
             position:   'relative',
@@ -210,10 +212,8 @@ export default class Home extends React.Component<PropsType> {
                             pane2Style={style.thirdColumn}
                             resizerStyle={style.resizerStyle}
                         >
-                            <div>
-                                <NoteList/>
-                            </div>
-                            <div>
+                            <NoteList/>
+                            <div className="full_height">
                                 {!isNoteSelected ? <div style={style.notesCounter}>
                                     {isCategorySelected && notesCount === 0
                                         ? MESSAGES.noNotes
@@ -221,7 +221,7 @@ export default class Home extends React.Component<PropsType> {
                                     {notesCount === 1 ? MESSAGES.oneNote : null}
                                     {notesCount > 1 ? MESSAGES.notes(notesCount) : null}
                                 </div> : null}
-                                <NoteEditor/>
+                                <NoteEditor offset={columnsWidth.first.size + columnsWidth.second.size}/>
                             </div>
                         </SplitPane>
                     </div>

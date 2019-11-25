@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1440, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Easy Notes</title>
+    <style>
+        .Spinner .container {
+            display: block;
+            width: 8em;
+            height: 8em;
+            border-radius: 50%;
+            border: 1px solid transparent;
+            border-top-color: white;
+            animation: spin 2s linear infinite; /* Chrome, Firefox 16+, IE 10+, Opera */
+        }
+
+        .Spinner .container:before {
+            content: "";
+            position: absolute;
+            top: 0.2em;
+            left: 0.2em;
+            right: 0.2em;
+            bottom: 0.2em;
+            border-radius: 50%;
+            border: 1px solid transparent;
+            border-top-color: white;
+            animation: spin 3s linear infinite; /* Chrome, Firefox 16+, IE 10+, Opera */
+        }
+
+        .Spinner .container:after {
+            content: "";
+            position: absolute;
+            top: 0.5em;
+            left: 0.5em;
+            right: 0.5em;
+            bottom: 0.5em;
+            border-radius: 50%;
+            border: 1px solid transparent;
+            border-top-color: white;
+            animation: spin 1.5s linear infinite; /* Chrome, Firefox 16+, IE 10+, Opera */
+        }
+
+        .Spinner .small {
+            width: 4em;
+            height: 4em;
+        }
+
+        .Spinner .small:before {
+            top: 0.2em;
+            left: 0.2em;
+            right: 0.2em;
+            bottom: 0.2em;
+        }
+
+        .Spinner .small:after {
+            top: 0.5em;
+            left: 0.5em;
+            right: 0.5em;
+            bottom: 0.5em;
+        }
+
+        .Spinner .middle {
+            width: 6em;
+            height: 6em;
+        }
+
+        .Spinner .middle:before {
+            top: 0.2em;
+            left: 0.2em;
+            right: 0.2em;
+            bottom: 0.2em;
+        }
+
+        .Spinner .middle:after {
+            top: 0.5em;
+            left: 0.5em;
+            right: 0.5em;
+            bottom: 0.5em;
+        }
+
+        .Spinner.wrap {
+            position: absolute;
+            opacity: 0;
+            bottom: 10000px;
+            display: flex;
+            flex: 1;
+            justify-content: center;
+            align-items: center;
+            min-height: 8em;
+            width: 100%;
+            height: 100%;
+            z-index: 1000;
+        }
+
+        .Spinner.wrap_full {
+            display: flex;
+            flex: 1;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
+        }
+
+        .Spinner.wrap_hide {
+            animation: hide-spinner .5s forwards;
+        }
+
+        .Spinner.wrap_show {
+            animation: show-spinner .5s forwards;
+        }
+
+        .Spinner.wrap_small {
+            min-height: 4em;
+        }
+
+        .Spinner.wrap_middle {
+            min-height: 6em;
+        }
+
+        @keyframes hide-spinner {
+            0% {
+                opacity: 1;
+                bottom: 0;
+            }
+            99% {
+                opacity: 0;
+                bottom: 0;
+            }
+            100% {
+                opacity: 0;
+                bottom: 10000px;
+            }
+        }
+
+        @keyframes show-spinner {
+            0% {
+                opacity: 0;
+                bottom: 10000px;
+            }
+            99% {
+                opacity: 1;
+                bottom: 10000px;
+            }
+            100% {
+                opacity: 1;
+                bottom: 0;
+            }
+        }
+
+        @keyframes spin {
+            0% {
+                -webkit-transform: rotate(0deg); /* Chrome, Opera 15+, Safari 3.1+ */
+                -ms-transform: rotate(0deg); /* IE 9 */
+                transform: rotate(0deg); /* Firefox 16+, IE 10+, Opera */
+            }
+            100% {
+                -webkit-transform: rotate(360deg); /* Chrome, Opera 15+, Safari 3.1+ */
+                -ms-transform: rotate(360deg); /* IE 9 */
+                transform: rotate(360deg); /* Firefox 16+, IE 10+, Opera */
+            }
+        }
+    </style>
+</head>
+<body id="main-theme" style="background-color: #242E32;">
+<div class="Spinner wrap wrap_full wrap_show">
+    <div class="container"/>
+</div>
+</body>
+</html>

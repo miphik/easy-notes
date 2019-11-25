@@ -1,12 +1,11 @@
 // @flow
-import debounce from 'lodash/debounce';
 import {action, observable} from 'mobx';
 import moment from 'moment';
 import LocalStoreService from 'services/LocalStoreService';
 import RemoteStoreService from 'services/RemoteStoreService';
 import {loadLocalNotes, syncRemoteAndLocalNotes} from 'services/SyncService';
 import categoryStore from 'stores/CategoryStore';
-import type {NoteType} from 'types/NoteType';
+import type {CategoryType, NoteType} from 'types/NoteType';
 import type {StoreType} from 'types/StoreType';
 import uuidv4 from 'uuid/v4';
 
@@ -126,13 +125,6 @@ class NoteStore {
         });
         if (changedNoteExists) {
             this.setNotes(notes);
-            if (note) {
-                localStorageService.saveNote(note, (err: Error) => console.error('localStorageService.saveNote', err));
-                remoteStorageService.saveNote(
-                    note,
-                    (err: Error) => console.error('remoteStorageService.saveNote', err),
-                );
-            }
             localStorageService.saveNotesList(notes, (err: Error) => console
                 .error('localStorageService.saveNotesList', err));
             remoteStorageService.saveNotesList(notes, (err: Error) => console
@@ -141,21 +133,28 @@ class NoteStore {
     };
 
     @action
-    setSelectedNoteText = (text: string) => {
-        const note = {...this.selectedNote};
+    setSelectedNoteText = (savingNote: NoteType, category: CategoryType, text: string) => {
+        const note = {...savingNote};
         note.text = text;
         note.updatedAt = moment().format();
-        const notes = this.noteItems.map((noteItem: NoteType) => (
-            note.uuid === noteItem.uuid ? note : noteItem
-        ));
+        const notes = this.noteItems.map((noteItem: NoteType) => {
+            if (note.uuid === noteItem.uuid) {
+                note.categoryUUIDs = noteItem.categoryUUIDs;
+                return note;
+            }
+            return noteItem;
+        });
+        categoryStore.setSelectedCategory(category);
         this.setNotes(notes);
         this.setSelectedNoteInner(note);
         localStorageService.saveNote(note, (err: Error) => console.error('localStorageService.saveNote', err));
-        remoteStorageService.saveNote(note, (err: Error) => console.error('remoteStorageService.saveNote', err));
         localStorageService.saveNotesList(notes, (err: Error) => console
             .error('localStorageService.saveNotesList', err));
-        remoteStorageService.saveNotesList(notes, (err: Error) => console
-            .error('remoteStorageService.saveNotesList', err));
+        if (RemoteStoreService.isClientInitialized()) {
+            remoteStorageService.saveNote(note, (err: Error) => console.error('remoteStorageService.saveNote', err));
+            remoteStorageService.saveNotesList(notes, (err: Error) => console
+                .error('remoteStorageService.saveNotesList', err));
+        }
     };
 
     @action

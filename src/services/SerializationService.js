@@ -1,6 +1,6 @@
 // @flow
 import {load, Root} from 'protobufjs';
-import type {CategoryType, NoteType} from 'types/NoteType';
+import type {CategoriesType, CategoryType, NotesType, NoteType} from 'types/NoteType';
 
 let NoteMessage = null;
 let NoteFullMessage = null;
@@ -42,6 +42,10 @@ class SerializationService {
     };
 
     static convertNoteToString = (note: NoteType): string => {
+        if (note.text && typeof note.text !== 'string') note.text = JSON.stringify(note.text);
+        if (!note.text) {
+
+        }
         note['.easy_note.NoteFull.text'] = note.text;
         const buffer = NoteMessage.encode(NoteMessage.create(note)).finish();
         return buffer.toString('latin1');
@@ -50,11 +54,17 @@ class SerializationService {
     static convertStringToNote = (data: string): NoteType => {
         if (data === '' || data.length < 5) return {};
         const note = NoteMessage.decode(Buffer.from(data, 'latin1'));
-        note.text = note['.easy_note.NoteFull.text'];
+        try {
+            note['.easy_note.NoteFull.text'] = JSON.parse(note['.easy_note.NoteFull.text']);
+        } catch (ignore) {
+            console.warn('convertStringToNote', note['.easy_note.NoteFull.text'], ignore);
+            /* NOP */
+        }
+        note.text = note['.easy_note.NoteFull.text'] || '';
         return note;
     };
 
-    static convertNotesListToString = (notes: Array<NoteType>): string => {
+    static convertNotesListToString = (notes: NotesType): string => {
         const notesList = NotesListMessage.create({
             notes: notes.map((note: NoteType) => {
                 const newNote = {...note};
@@ -67,12 +77,12 @@ class SerializationService {
         return buffer.toString('latin1');
     };
 
-    static convertStringToNotesList = (data: string): Array<NoteType> => {
-        if (data === '' || data.length < 5) return [];
+    static convertStringToNotesList = (data: string): NotesType => {
+        if (data === '' || data.length < 5) return {notes: []};
         return NotesListMessage.decode(Buffer.from(data, 'latin1'));
     };
 
-    static convertCategoriesListToString = (categories: Array<CategoryType>) => {
+    static convertCategoriesListToString = (categories: CategoriesType) => {
         const categoriesList = CategoriesListMessage.create({
             categories: categories.map((category: CategoryType) => CategoryMessage.create(category)),
         });
@@ -80,8 +90,8 @@ class SerializationService {
         return buffer.toString('latin1');
     };
 
-    static convertStringToCategoriesList = (data: string): Array<CategoryType> => {
-        if (data === '' || data.length < 5) return [];
+    static convertStringToCategoriesList = (data: string): CategoriesType => {
+        if (data === '' || data.length < 5) return {categories: []};
         return CategoriesListMessage.decode(Buffer.from(data, 'latin1'));
     };
 }

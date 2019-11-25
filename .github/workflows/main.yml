@@ -1,0 +1,42 @@
+name: Easy Notes
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+
+    runs-on: macOS-latest
+
+    strategy:
+      matrix:
+        node-version: [10.x]
+
+    steps:
+      - uses: actions/checkout@v1
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: npm install, build, and test
+        run: |
+          npm ci
+          npm install
+          npm run build:macos
+        env:
+          CI: true
+      - name: Cache
+        uses: actions/cache@v1.0.3
+        with:
+          # A directory to store and save the cache
+          path: node_modules
+          # An explicit key for restoring and saving the cache
+          key: 1
+          # An ordered list of keys to use for restoring the cache if no cache hit occurred for key
+          # restore-keys: # optional
+      - uses: actions/upload-artifact@v1
+        with:
+          name: easy-notes
+          path: build/Easy-Note-0.1.0.dmg

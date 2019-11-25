@@ -17,12 +17,7 @@
 .rowWrapper {
   height: 100%;
   box-sizing: border-box;
-  cursor: move;
   display: flex;
-
-  &:hover {
-    // opacity: 0.7;
-  }
 
   &:active {
     opacity: 1;
@@ -30,7 +25,7 @@
 }
 
 .rowWrapperDragDisabled {
-  cursor: default;
+  cursor: no-drop;
 }
 
 /**
@@ -41,19 +36,16 @@
   box-shadow: none;
   outline: none;
 
-  * {
-    opacity: 0 !important;
-  }
-
   &::before {
     //background-color: rgba(128, 222, 234, 0.28);
-    border-top: 3px solid #0080ff;
+    border: 1px dashed #0080ff;
+    border-radius: 0.25em;
     content: '';
     position: absolute;
     top: 0;
     right: 0;
     bottom: 0;
-    left: 0;
+    left: -20px;
     //z-index: -1;
   }
 }
@@ -63,10 +55,10 @@
  */
 .rowCancelPad {
   @extend .rowLandingPad;
+  cursor: no-drop;
 
   &::before {
     border-top: 3px solid #e6a8ad;
-    // background-color: #e6a8ad;
   }
 }
 
@@ -97,7 +89,6 @@
   flex: 1 0 auto;
   display: flex;
   align-items: center;
-  // justify-content: space-between;
 }
 
 .rowLabel {

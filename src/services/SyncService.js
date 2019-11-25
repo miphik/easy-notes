@@ -8,8 +8,10 @@ import LocalStoreService from 'services/LocalStoreService';
 import {mergeIndex} from 'services/MergeService';
 import {showNotification} from 'services/NotificationService';
 import RemoteStoreService from 'services/RemoteStoreService';
-import type {CategoryType, NoteType} from 'src/types/NoteType';
-import type {CategoriesType, NotesType, NotificationServiceType} from 'types/NoteType';
+import type {
+    CategoryType, NoteType, CategoriesType, NotesType, NotificationServiceType,
+} from 'src/types/NoteType';
+
 import type {StoreType} from 'types/StoreType';
 import {emptyFunc} from 'utils/General';
 
@@ -130,7 +132,7 @@ const syncData = (
     successCallback: () => {} = () => {},
     errorCallback: (errors: Array<Error>) => {} = () => {},
 ) => {
-    if (!remoteNotes.length && localNotes.length) {
+    if (!remoteNotes.length && localNotes.length && remoteStorageService.isClientInitialized()) {
         const errors = [];
         const setError = (err: Error) => errors.push(err);
         remoteStorageService.createNotesDir(localNotes, setError, () => {
@@ -209,7 +211,7 @@ const syncCategoriesData = (
     localCategories: Array<CategoryType> = [],
     successCallback: () => {} = () => {},
 ) => {
-    if (!remoteCategories.length && localCategories.length) {
+    if (!remoteCategories.length && localCategories.length && remoteStorageService.isClientInitialized()) {
         remoteStorageService.saveCategoriesList(localCategories);
         successCallback(localCategories);
     } else if (remoteCategories.length && !localCategories.length) {
@@ -230,7 +232,7 @@ const syncCategoriesData = (
 };
 
 export const loadLocalCategories = (
-    successCallback: () => {} = () => {},
+    successCallback: () => Array<CategoryType> = () => [],
     errorCallback: (errors: Array<Error>) => {} = () => {},
 ) => {
     localStorageService.getCategoriesList(
@@ -240,7 +242,7 @@ export const loadLocalCategories = (
 };
 
 export const loadLocalNotes = (
-    successCallback: () => {} = () => {},
+    successCallback: () => Array<NoteType> = () => [],
     errorCallback: (errors: Array<Error>) => {} = () => {},
 ) => {
     localStorageService.getNotesList(
@@ -250,9 +252,16 @@ export const loadLocalNotes = (
 };
 
 export const syncRemoteAndLocalCategories = (
-    successCallback: () => {} = () => {},
+    successCallback: () => Array<CategoryType> = () => [],
     errorCallback: (errors: Array<Error>) => {} = () => {},
 ) => {
+    if (!remoteStorageService.isClientInitialized()) {
+        localStorageService.getCategoriesList(
+            (err: Error) => errorCallback([err]),
+            (localCategories: CategoriesType) => successCallback(localCategories.categories),
+        );
+        return;
+    }
     remoteStorageService.getCategoriesList(
         (err: Error) => errorCallback([err]),
         (remoteCategories: CategoriesType) => {
@@ -269,9 +278,16 @@ export const syncRemoteAndLocalCategories = (
 };
 
 export const syncRemoteAndLocalNotes = (
-    successCallback: () => {} = () => {},
+    successCallback: () => Array<NoteType> = () => [],
     errorCallback: (errors: Array<Error>) => {} = () => {},
 ) => {
+    if (!remoteStorageService.isClientInitialized()) {
+        localStorageService.getNotesList(
+            (err: Error) => errorCallback([err]),
+            (localNotes: NotesType) => successCallback(localNotes.notes),
+        );
+        return;
+    }
     remoteStorageService.getNotesList((err: Error) => errorCallback([err]), (remoteNotes: NotesType) => {
         localStorageService.getNotesList(
             (err: Error) => errorCallback([err]),

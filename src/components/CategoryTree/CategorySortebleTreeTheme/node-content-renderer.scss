@@ -7,10 +7,9 @@
   z-index: 2;
   position: absolute;
   top: 50%;
-  width: 24px;
-  height: 32px;
-  transform: translate3d(-22%, -50%, 0);
-  cursor: pointer;
+  width: 1.8em;
+  height: 2em;
+  transform: translate3d(0, -47%, 0);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -138,9 +137,8 @@ $highlight-line-size: 3px; // Make it an even number for clean rendering
  * +-----+
  */
 .highlightBottomLeftCorner {
-  $arrow-size: 5px;
+  $arrow-size: 6px;
   z-index: 3;
-  // left: 1px !important;
 
   &::before {
     content: '';

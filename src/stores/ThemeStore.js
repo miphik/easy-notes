@@ -1,5 +1,6 @@
 // @flow
 import {action, observable} from 'mobx';
+import store from 'store';
 
 export type ThemeType = {
     isBlack: boolean,
@@ -10,6 +11,7 @@ export type ThemeType = {
         scaffoldCategoryBlockPxWidth: number,
     },
     color: {
+        gray: string,
         button: string,
         buttonActive: string,
         dangerButton: string,
@@ -23,16 +25,20 @@ export type ThemeType = {
     },
 };
 
+export const COLORS_KEY = 'THEME:COLORS_KEY';
+
 const DEFAULT_THEME = (scale: number) => (
     {
         isBlack:      true,
         scaleFactor:  scale,
-        mainFontSize: 14 * scale,
+        mainFontSize: scale,
         measure:      {
-            rowCategoryHeight:            32 * scale,
-            scaffoldCategoryBlockPxWidth: 16 * scale,
+            rowCategoryHeight:            '2em',
+            scaffoldCategoryBlockPxWidth: scale + (scale / 3),
         },
         color: {
+            gray: '#747474',
+
             button:       '#8e8e8e',
             buttonActive: '#d3d3d3',
 
@@ -53,13 +59,14 @@ const DEFAULT_THEME = (scale: number) => (
 );
 
 class ThemeStore {
-    @observable scaleFactor = 1;
+    @observable scaleFactor = 14;
 
     @observable theme = observable.map(DEFAULT_THEME(this.scaleFactor));
 
     @action
     changeScaleFactor = (scale: number) => {
         this.scaleFactor = scale;
+        document.body.style.fontSize = `${scale}px`;
         this.theme = observable.map(DEFAULT_THEME(scale));
     };
 

@@ -72,8 +72,9 @@ class CategoryStore {
         this.categoriesIsLoading = false;
     };
 
-    @action
-    syncCategories = (successCallback: () => void = () => {}) => {
+
+    syncCategories = (successCallback: () => void = () => {
+    }) => {
         this.changeSyncingStatus(true);
         this.syncCategoriesError(null);
         syncRemoteAndLocalCategories(
@@ -85,8 +86,10 @@ class CategoryStore {
         );
     };
 
+    @action
     syncCategoriesError = (errors: Array<Error>) => {
         this.debounceChangeSyncingStatus(false);
+        this.categoriesIsLoading = false;
         this.syncError = errors;
     };
 
@@ -123,8 +126,8 @@ class CategoryStore {
         successCallback: () => void,
     ) => {
         const newCategories = getFlatDataFromTree({
-            treeData:        treeNodes,
-            getNodeKey:      getKey,
+            treeData: treeNodes,
+            getNodeKey: getKey,
             ignoreCollapsed: false,
         }).map((item, index) => {
             item.node.parentUUID = item.parentNode ? [item.parentNode.uuid] : [ROOT_CATEGORY_NAME];
@@ -140,7 +143,8 @@ class CategoryStore {
     };
 
     @action
-    loadLocalCategories = (successCallback: () => void = () => {}) => loadLocalCategories(
+    loadLocalCategories = (successCallback: () => void = () => {
+    }) => loadLocalCategories(
         (categories: Array<CategoryType>) => {
             this.setCategories(categories);
             successCallback();
@@ -262,7 +266,7 @@ class CategoryStore {
         // categories.unshift(DELETED_CATEGORY);
         return getTreeFromFlatData({
             flatData: categories,
-            rootKey:  ROOT_CATEGORY_NAME,
+            rootKey: ROOT_CATEGORY_NAME,
             getKey,
             getParentKey,
         });

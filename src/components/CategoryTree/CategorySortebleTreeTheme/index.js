@@ -12,6 +12,7 @@
 // placeholderRenderer: PropTypes.func,
 
 import type {ThemeType} from 'stores/ThemeStore';
+import React from 'react';
 import nodeContentRenderer from './node-content-renderer';
 import treeNodeRenderer from './tree-node-renderer';
 
@@ -26,6 +27,6 @@ const theme = (theme: ThemeType) => ({
         console.log(113213, options);
         return 32;
     },*/
-    slideRegionSize:      theme.scaleFactor * 50,
+    slideRegionSize:      '3em',
 });
 export default theme;

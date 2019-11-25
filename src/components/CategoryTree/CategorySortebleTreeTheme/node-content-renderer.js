@@ -3,6 +3,7 @@ import CategoryItem from 'components/CategoryTree/CategoryItem';
 import PropTypes from 'prop-types';
 import Radium from 'radium';
 import React, {Component} from 'react';
+import {getEmptyImage} from 'react-dnd-html5-backend';
 import styles from './node-content-renderer.scss';
 
 function isDescendant(older, younger) {
@@ -18,6 +19,16 @@ function isDescendant(older, younger) {
 // eslint-disable-next-line react/prefer-stateless-function
 @Radium
 class FileThemeNodeContentRenderer extends Component {
+    componentDidMount() {
+        // Use empty image as a drag preview so browsers don't draw it
+        // and we can draw whatever we want on the custom drag layer instead.
+        this.props.connectDragPreview(getEmptyImage(), {
+            // IE fallback: specify that we'd rather screenshot the node
+            // when it already knows it's being dragged so we can hide it with CSS.
+            captureDraggingState: true,
+        });
+    }
+
     render() {
         const {
             scaffoldBlockPxWidth,
@@ -38,6 +49,7 @@ class FileThemeNodeContentRenderer extends Component {
             buttons,
             className,
             style,
+            isDraggingAny,
             didDrop,
             lowerSiblingCounts,
             listIndex,
@@ -67,11 +79,11 @@ class FileThemeNodeContentRenderer extends Component {
             <div
                 key={0}
                 style={{
-                    height:          '100%',
-                    position:        'relative',
-                    display:         'inline-block',
-                    flex:            '0 0 auto',
-                    width:           3 * theme.scaleFactor,
+                    height: '100%',
+                    position: 'relative',
+                    display: 'inline-block',
+                    flex: '0 0 auto',
+                    width: '0.25em',
                     backgroundColor: isNodeSelected ? theme.color.marker : 'inherit',
                 }}
             />,
@@ -80,7 +92,7 @@ class FileThemeNodeContentRenderer extends Component {
             scaffold.push(
                 <div
                     key={`pre_${1 + i}`}
-                    style={{width: scaffoldBlockPxWidth}}
+                    style={{ width: scaffoldBlockPxWidth }}
                     className={styles.lineBlock}
                 />,
             );
@@ -106,8 +118,8 @@ class FileThemeNodeContentRenderer extends Component {
                     <div
                         key={`highlight_${1 + i}`}
                         style={{
-                            width: '0.6em',
-                            left:  scaffoldBlockPxWidth * i,
+                            width: scaffoldBlockPxWidth / 2,
+                            left: scaffoldBlockPxWidth * i,
                         }}
                         className={`${styles.absoluteLineBlock} ${highlightLineClass}`}
                     />,
@@ -125,10 +137,8 @@ class FileThemeNodeContentRenderer extends Component {
                             node.expanded ? styles.collapseButton : styles.expandButton
                         }
                         style={{
-                            left: (
-                                lowerSiblingCounts.length - 0.7
-                            ) * scaffoldBlockPxWidth,
-                            fontSize: theme.scaleFactor * 12,
+                            left: (lowerSiblingCounts.length - 0.7) * scaffoldBlockPxWidth,
+                            fontSize: '0.8em',
                             ':hover': {
                                 filter: `drop-shadow(0 0 0px ${theme.color.white})
                                 drop-shadow(0 0 1px ${theme.color.white})
@@ -138,7 +148,7 @@ class FileThemeNodeContentRenderer extends Component {
                     >
 
                         <Icon
-                            onClick={(event) => {
+                            onClick={event => {
                                 event.stopPropagation();
                                 toggleChildrenVisibility({
                                     node,
@@ -173,6 +183,7 @@ class FileThemeNodeContentRenderer extends Component {
                     buttons={buttons}
                     canDrag={canDrag}
                     canDrop={canDrop}
+                    isDragging={isDraggingAny}
                     theme={theme}
                     connectDragPreview={connectDragPreview}
                     icons={icons}
@@ -202,64 +213,64 @@ class FileThemeNodeContentRenderer extends Component {
         );
 
         return canDrag
-            ? connectDragSource(nodeContent, {dropEffect: 'copy'})
+            ? connectDragSource(nodeContent)
             : nodeContent;
     }
 }
 
 FileThemeNodeContentRenderer.defaultProps = {
-    buttons:                  [],
-    canDrag:                  false,
-    canDrop:                  false,
-    className:                '',
-    draggedNode:              null,
-    icons:                    [],
-    isSearchFocus:            false,
-    isSearchMatch:            false,
-    parentNode:               null,
-    style:                    {},
-    swapDepth:                null,
-    swapFrom:                 null,
-    swapLength:               null,
-    title:                    null,
+    buttons: [],
+    canDrag: false,
+    canDrop: false,
+    className: '',
+    draggedNode: null,
+    icons: [],
+    isSearchFocus: false,
+    isSearchMatch: false,
+    parentNode: null,
+    style: {},
+    swapDepth: null,
+    swapFrom: null,
+    swapLength: null,
+    title: null,
     toggleChildrenVisibility: null,
 };
 
 FileThemeNodeContentRenderer.propTypes = {
-    buttons:            PropTypes.arrayOf(PropTypes.node),
-    canDrag:            PropTypes.bool,
-    className:          PropTypes.string,
-    icons:              PropTypes.arrayOf(PropTypes.node),
-    isSearchFocus:      PropTypes.bool,
-    isSearchMatch:      PropTypes.bool,
-    listIndex:          PropTypes.number.isRequired,
+    buttons: PropTypes.arrayOf(PropTypes.node),
+    canDrag: PropTypes.bool,
+    className: PropTypes.string,
+    icons: PropTypes.arrayOf(PropTypes.node),
+    isSearchFocus: PropTypes.bool,
+    isSearchMatch: PropTypes.bool,
+    listIndex: PropTypes.number.isRequired,
     lowerSiblingCounts: PropTypes.arrayOf(PropTypes.number).isRequired,
-    node:               PropTypes.shape({}).isRequired,
-    path:               PropTypes.arrayOf(
+    node: PropTypes.shape({}).isRequired,
+    path: PropTypes.arrayOf(
         PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     ).isRequired,
-    scaffoldBlockPxWidth:     PropTypes.number.isRequired,
-    style:                    PropTypes.shape({}),
-    swapDepth:                PropTypes.number,
-    swapFrom:                 PropTypes.number,
-    swapLength:               PropTypes.number,
-    title:                    PropTypes.oneOfType([PropTypes.func, PropTypes.node]),
+    scaffoldBlockPxWidth: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+    style: PropTypes.shape({}),
+    swapDepth: PropTypes.number,
+    swapFrom: PropTypes.number,
+    swapLength: PropTypes.number,
+    title: PropTypes.oneOfType([PropTypes.func, PropTypes.node]),
     toggleChildrenVisibility: PropTypes.func,
-    treeIndex:                PropTypes.number.isRequired,
-    treeId:                   PropTypes.string.isRequired,
-    rowDirection:             PropTypes.string.isRequired,
+    treeIndex: PropTypes.number.isRequired,
+    treeId: PropTypes.string.isRequired,
+    rowDirection: PropTypes.string.isRequired,
 
     // Drag and drop API functions
     // Drag source
     connectDragPreview: PropTypes.func.isRequired,
-    connectDragSource:  PropTypes.func.isRequired,
-    didDrop:            PropTypes.bool.isRequired,
-    draggedNode:        PropTypes.shape({}),
-    isDragging:         PropTypes.bool.isRequired,
-    parentNode:         PropTypes.shape({}), // Needed for dndManager
+    connectDragSource: PropTypes.func.isRequired,
+    didDrop: PropTypes.bool.isRequired,
+    draggedNode: PropTypes.shape({}),
+    isDragging: PropTypes.bool.isRequired,
+    parentNode: PropTypes.shape({}), // Needed for dndManager
     // Drop target
-    canDrop:            PropTypes.bool,
-    isOver:             PropTypes.bool.isRequired,
+    canDrop: PropTypes.bool,
+    isOver: PropTypes.bool.isRequired,
 };
 
 export default FileThemeNodeContentRenderer;

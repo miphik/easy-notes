@@ -4,7 +4,7 @@ const postcss = require('./postcss');
 
 module.exports = function (paths) {
     return {
-        module:  {
+        module: {
             rules: [
                 {
                     test:    /\.scss$/,
@@ -12,7 +12,21 @@ module.exports = function (paths) {
                     use:     ExtractTextPlugin.extract({
                         publicPath: '../',
                         fallback:   'style-loader',
-                        use:        ['css-loader', 'sass-loader', postcss],
+                        use:        [
+                            {
+                                loader:  'css-loader',
+                                options: {
+                                    modules: {
+                                        mode:           'local',
+                                        localIdentName: '[path][local]__[hash:base64:5]',
+                                    },
+                                    import:        true,
+                                    importLoaders: true,
+                                },
+                            },
+                            'sass-loader',
+                            postcss,
+                        ],
                     }),
                 },
                 {
@@ -21,7 +35,32 @@ module.exports = function (paths) {
                     use:     ExtractTextPlugin.extract({
                         publicPath: '../',
                         fallback:   'style-loader',
-                        use:        ['css-loader', postcss, 'stylus-loader'],
+                        use:        [
+                            {
+                                loader:  'css-loader',
+                                options: {
+                                    modules: {
+                                        mode:           'local',
+                                        localIdentName: '[path][local]__[hash:base64:5]',
+                                    },
+                                    import:        true,
+                                    importLoaders: true,
+                                },
+                            },
+                            postcss,
+                            'stylus-loader',
+                        ],
+                    }),
+                },
+                {
+                    test:    /\.css$/,
+                    include: paths,
+                    use:     ExtractTextPlugin.extract({
+                        fallback: 'style-loader',
+                        use:      [
+                            'css-loader',
+                            postcss,
+                        ],
                     }),
                 },
                 {
@@ -42,14 +81,6 @@ module.exports = function (paths) {
                             },
                             // postcss,
                         ],
-                    }),
-                },
-                {
-                    test:    /\.css$/,
-                    include: paths,
-                    use:     ExtractTextPlugin.extract({
-                        fallback: 'style-loader',
-                        use:      ['css-loader', postcss],
                     }),
                 },
             ],

@@ -1,24 +1,46 @@
-@import "./variables";
+:global {
+  body,
+  html,
+  #app-mount {
+    padding: 0;
+    margin: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+  }
 
-body
-html
-#app-mount
-  padding: 0;
-  margin: 0;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
+  button {
+    overflow: hidden !important;
+  }
 
-button
-  overflow hidden !important;
+  .full_height {
+    height: 100%;
+  }
 
-::-webkit-scrollbar-thumb {
-  background-color: hsla(0, 0%, 100%, .4);
-  background-clip: padding-box;
-  border: 5px solid transparent;
-  border-radius: 7px;
+  .ant-btn,
+  .ant-input {
+    font-size: 1em !important;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background-color: hsla(0, 0%, 100%, .4);
+    background-clip: padding-box;
+    border: 5px solid transparent;
+    border-radius: 7px;
+  }
+
+  ::-webkit-scrollbar {
+    size: 13px;
+  }
+
+  .DraftEditor-root {
+    margin: 0 1em;
+  }
+
+  .DraftEditor-root,
+  .DraftEditor-editorContainer,
+  .public-DraftEditor-content {
+    height: 100%;
+  }
 }
 
-::-webkit-scrollbar {
-  size: 13px;
-}

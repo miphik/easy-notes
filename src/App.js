@@ -6,12 +6,14 @@ import PropTypes from 'prop-types';
 import React, {Component} from 'react';
 import {hot} from 'react-hot-loader/root';
 import {IntlProvider} from 'react-intl';
-import {BrowserRouter as Router, Route} from 'react-router-dom';
+import {HashRouter as Router, Route} from 'react-router-dom';
 import 'react-sortable-tree/style.css';
 import {Slide, ToastContainer} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import SerializationService from 'services/SerializationService';
-import type {StoresType} from 'stores';
+import 'utils/momentUtils';
+import 'draft-js-inline-toolbar-plugin/lib/plugin.css';
+
 // import {LocaleProvider} from 'antd';
 
 // import enUS from 'antd/lib/locale-provider/en_US';
@@ -47,13 +49,13 @@ class App extends Component {
                         {serializationInited ? <Route exact path="*" component={Layout}/> : null}
                     </Router>
                 </IntlProvider>
-                <Spinner size="big" show={!serializationInited && !remoteStoreIsInited} fullSize/>
+                <Spinner size="big" show={!remoteStoreIsInited && !serializationInited} fullSize/>
                 <ToastContainer
                     transition={Slide}
                     newestOnTop
                     toastClassName="dark-toast"
                     progressClassName={{
-                        height: '2px',
+                        height: '1px',
                     }}
                 />
             </React.Fragment>

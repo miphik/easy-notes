@@ -10,7 +10,6 @@ const COLUMN_PROPS = {
     renderScrollbar:   PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
     autoHideScrollbar: PropTypes.bool,
     showScrollShadow:  PropTypes.bool,
-    scaleFactor:       PropTypes.number,
     autoHideTimeout:   PropTypes.number,
     width:             PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
     shadowColor:       PropTypes.string,
@@ -27,7 +26,7 @@ const renderProps = prop => {
     return null;
 };
 
-const STYLES = memoizeOne((shadowColor, scrollColor, scaleFactor) => (
+const STYLES = memoizeOne((shadowColor, scrollColor) => (
     {
         scrollTop: {
             background: `linear-gradient(to bottom, ${shadowColor} 0%, ${Color(shadowColor).alpha(0.1)} 100%)`,
@@ -40,7 +39,7 @@ const STYLES = memoizeOne((shadowColor, scrollColor, scaleFactor) => (
         },
         scrollTrack: {
             position:     'absolute',
-            width:        4 * scaleFactor,
+            width:        '0.25em',
             transition:   'opacity 200ms ease 0s',
             right:        2,
             bottom:       2,
@@ -64,7 +63,6 @@ export default class ScrollableColumn extends React.Component {
 
     static defaultProps = {
         autoHideScrollbar: false,
-        scaleFactor:       1,
         autoHideTimeout:   500,
         width:             300,
         renderScrollbar:   null,
@@ -97,9 +95,9 @@ export default class ScrollableColumn extends React.Component {
 
     renderWithScrollbar = content => {
         const {
-            autoHideScrollbar, autoHideTimeout, showScrollShadow, shadowColor, scrollColor, scaleFactor,
+            autoHideScrollbar, autoHideTimeout, showScrollShadow, shadowColor, scrollColor,
         } = this.props;
-        const style = STYLES(shadowColor, scrollColor, scaleFactor);
+        const style = STYLES(shadowColor, scrollColor);
         return (
             <div className={styles.scroll_container}>
                 <Scrollbars

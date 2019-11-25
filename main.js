@@ -1,5 +1,5 @@
 const {
-    app, BrowserWindow, Menu, shell, ipcMain, Tray, session,
+    app, BrowserWindow, Menu, shell, ipcMain, Tray, session, protocol,
 } = require('electron');
 // const {setContentSecurityPolicy} = require('electron-util');
 const path = require('path');
@@ -9,9 +9,11 @@ const storage = require('electron-json-storage');
 const BOUNDS_KEY = 'WINDOW_POSITION';
 const PORT = process.env.PORT || 8080;
 const IP = process.env.IP || '127.0.0.1';
-const isDevelopment = process.env.NODE_ENV !== undefined || process.env.NODE_ENV !== 'production';
-const logger = () => {};
-const is = () => {};
+const isDevelopment = (process.env.WEBPACK_MODE === 'development' || process.env.NODE_ENV === 'dev');
+const logger = () => {
+};
+const is = () => {
+};
 
 console.log(`START develop mode is: ${isDevelopment}, NODE_ENV is: ${process.env.NODE_ENV}`);
 
@@ -42,13 +44,14 @@ app.on('web-contents-created', (event, contents) => {
 
 function createMainWindow(data = {}) {
     mainWindow = new BrowserWindow({
-        width:                       data.bounds && data.bounds.width ? data.bounds.width : 1280,
-        x:                           data.bounds && data.bounds.x ? data.bounds.x : null,
+        width:          data.bounds && data.bounds.width ? data.bounds.width : 1280,
+        x:              data.bounds && data.bounds.x ? data.bounds.x : null,
         // fullscreen:   true,
-        height:                      data.bounds && data.bounds.height ? data.bounds.height : 880,
-        y:                           data.bounds && data.bounds.y ? data.bounds.y : null,
+        height:         data.bounds && data.bounds.height ? data.bounds.height : 880,
+        y:              data.bounds && data.bounds.y ? data.bounds.y : null,
         webPreferences: {
-            webSecurity: false
+            webSecurity:     false,
+            nodeIntegration: true,
         },
         /* webPreferences: {
             //preload:                        `${__dirname}/preload.js`,
@@ -60,49 +63,68 @@ function createMainWindow(data = {}) {
         },*/
         allowRunningInsecureContent: false,
         minWidth:                    880,
-        show:                        true,
+        show:                        false,
         titleBarStyle:               'hidden',
         frame:                       true,
         backgroundColor:             '#fff',
     });
 
-    if (data.isMaximized) mainWindow.maximize();
+    const loading = new BrowserWindow({show: false, frame: false});
 
-    mainWindow.on('close', () => storage.set(BOUNDS_KEY, {
-        bounds:      mainWindow.getBounds(),
-        isMaximized: mainWindow.isMaximized(),
-    }, error => {
-        if (error) throw error;
-    }));
+    loading.once('show', () => {
+        mainWindow.webContents.once('dom-ready', () => {
+            console.log('main loaded');
+            mainWindow.show();
+            loading.hide();
+            loading.close();
+        });
+        // long loading html
+        if (data.isMaximized) mainWindow.maximize();
 
-    if (isDevelopment) {
-        mainWindow.webContents.openDevTools();
-    }
-    if (isDevelopment) {
-        mainWindow.loadURL(`http://${IP}:${PORT}`);
-    } else {
-        mainWindow.loadURL(url.format({
-            pathname: path.resolve(__dirname, 'build', 'index.html'),
+        mainWindow.on('close', () => storage.set(BOUNDS_KEY, {
+            bounds:      mainWindow.getBounds(),
+            isMaximized: mainWindow.isMaximized(),
+        }, error => {
+            if (error) throw error;
+        }));
+
+        if (isDevelopment) {
+            mainWindow.webContents.openDevTools();
+        }
+        if (isDevelopment) {
+            mainWindow.loadURL(`http://${IP}:${PORT}`);
+        } else {
+            mainWindow.loadURL(url.format({
+                pathname: path.resolve('index.html'),
+                protocol: 'file',
+                slashes:  false,
+            }));
+        }
+
+        mainWindow.webContents.on('did-finish-load', () => {
+            mainWindow.show();
+            mainWindow.focus();
+        });
+
+        mainWindow.on('closed', () => {
+            mainWindow = null;
+        });
+
+        mainWindow.webContents.on('devtools-opened', () => {
+            mainWindow.focus();
+            setImmediate(() => {
+                mainWindow.focus();
+            });
+        });
+    });
+    if (!isDevelopment) {
+        loading.loadURL(url.format({
+            pathname: path.resolve('loading.html'),
             protocol: 'file',
             slashes:  false,
         }));
     }
-
-    mainWindow.webContents.on('did-finish-load', () => {
-        mainWindow.show();
-        mainWindow.focus();
-    });
-
-    mainWindow.on('closed', () => {
-        mainWindow = null;
-    });
-
-    mainWindow.webContents.on('devtools-opened', () => {
-        mainWindow.focus();
-        setImmediate(() => {
-            mainWindow.focus();
-        });
-    });
+    loading.show();
 
     return mainWindow;
 }
@@ -129,6 +151,13 @@ app.on('activate', () => {
 
 // create main BrowserWindow when electron is ready
 app.on('ready', () => {
+    protocol.interceptFileProtocol('file', (request, callback) => {
+        const url = request.url.substr(7); /* all urls start with 'file://' */
+        callback({path: path.normalize(`${__dirname}/build_code/${url}`)});
+    }, err => {
+        if (err) console.error('Failed to register protocol');
+    });
+
     storage.get(BOUNDS_KEY, (error, data) => {
         if (error) throw error;
 

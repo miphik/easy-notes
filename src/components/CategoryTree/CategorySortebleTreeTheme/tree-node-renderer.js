@@ -57,7 +57,7 @@ FileThemeTreeNodeRenderer.propTypes = {
     swapFrom:             PropTypes.number,
     swapDepth:            PropTypes.number,
     swapLength:           PropTypes.number,
-    scaffoldBlockPxWidth: PropTypes.number.isRequired,
+    scaffoldBlockPxWidth: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
     lowerSiblingCounts:   PropTypes.arrayOf(PropTypes.number).isRequired,
 
     listIndex: PropTypes.number.isRequired,

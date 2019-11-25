@@ -22,11 +22,11 @@ import type {ThemeType} from 'stores/ThemeStore';
 const STYLES = memoizeOne((theme: ThemeType) => (
     {
         wrapper: {
-            backgroundColor: theme.color.first,
-            color:           theme.color.textMain,
-            width:           '100%',
-            height:          '100%',
-            fontSize:        theme.mainFontSize,
+            // backgroundColor: theme.color.first,
+            color:    theme.color.textMain,
+            width:    '100%',
+            height:   '100%',
+            fontSize: theme.mainFontSize,
         },
     }
 ));
@@ -83,11 +83,15 @@ class AppLayout extends Component<PropsType> {
         const {theme} = this.props;
 
         return (
-            <div style={STYLES(theme).wrapper} className={theme.isBlack ? 'AppLayout_is_black' : 'AppLayout_is_white'}>
+            <div
+                id="AppLayout"
+                style={STYLES(theme).wrapper}
+                className={theme.isBlack ? 'AppLayout_is_black' : 'AppLayout_is_white'}
+            >
                 <section className="msp-content-inner">
                     <Switch>
-                        <Route exact path={ABOUT_PATH} component={About}/>
                         <Route exact path={HOME_PATH} component={Home}/>
+                        <Route exact path={ABOUT_PATH} component={About}/>
                         <Route exact path={WEBDAV_AUTH_PATH} component={WebdavAuth}/>
                         <Route exact component={() => <div>NOT FOUND</div>}/>
                         {/* routes.map(route => <Route key={route.path} {...route} />)*/}

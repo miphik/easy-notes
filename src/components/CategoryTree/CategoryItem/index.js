@@ -12,12 +12,13 @@ import styles from './styles.scss';
 const STYLES = memoizeOne((theme: ThemeType) => (
     {
         input:         {
-            background: 'transparent',
-            color:      'white',
-            border:     'none',
-            outline:    'none',
-            boxShadow:  'none',
-            marginLeft: -11 * theme.scaleFactor,
+            background:  'transparent',
+            color:       'white',
+            border:      'none',
+            outline:     'none',
+            boxShadow:   'none',
+            marginLeft:  '0',
+            paddingLeft: '0',
         },
         item:          {
             display:                'flex',
@@ -25,16 +26,20 @@ const STYLES = memoizeOne((theme: ThemeType) => (
             height:                 theme.measure.rowCategoryHeight,
             alignItems:             'center',
             border:                 '1px dashed transparent',
-            borderTopLeftRadius:    4 * theme.scaleFactor,
-            borderBottomLeftRadius: 4 * theme.scaleFactor,
+            borderTopLeftRadius:    '0.25em',
+            borderBottomLeftRadius: '0.25em',
             overflow:               'hidden',
             ':hover':               {
                 color: theme.color.white,
             },
         },
         toolbarButton: {
-            marginRight: 8 * theme.scaleFactor,
-            fontSize:    18 * theme.scaleFactor,
+            marginRight: '0.5em',
+            marginLeft:  '0.4em',
+            fontSize:    '1.1em',
+        },
+        draggingItem : {
+          cursor: 'copy',
         },
         overItem:      {
             border: '1px dashed white',
@@ -53,6 +58,7 @@ type PropsType = {
     categoryIsEditing: boolean,
     isLandingPadActive?: boolean,
     isDraggedDescendant?: boolean,
+    isDragging?: boolean,
     canDrop?: boolean,
     canDrag?: boolean,
     isSearchMatch?: boolean,
@@ -153,12 +159,13 @@ export default class CategoryItem extends React.Component<PropsType> {
             rowLabelClassName, rowTitleClassName, title, categoryIsEditing, isSearchFocus,
             isNodeSelected, category, theme, isNodeSelectable, canDrop, isSearchMatch,
             onSelectCategory, canDrag, connectDragPreview, scaffold, isLandingPadActive,
-            isDraggedDescendant, icons, buttons,
+            isDraggedDescendant, icons, buttons, isDragging,
         } = this.props;
         const style = STYLES(theme);
         let styleItem = style.item;
         if (isNodeSelected && isNodeSelectable) styleItem = {...styleItem, ...style.selectedItem};
         if (isOver) styleItem = {...styleItem, ...style.overItem};
+        if (isDragging) styleItem = {...styleItem, ...style.draggingItem};
 
         return (
             <div
@@ -177,13 +184,11 @@ export default class CategoryItem extends React.Component<PropsType> {
                 className={
                     styles.rowWrapper
                     + (
-                        !canDrag ? ` ${styles.rowWrapperDragDisabled}` : ''
+                        !canDrag && isDragging ? ` ${styles.rowWrapperDragDisabled}` : ''
                     )
-
                 }
             >
                 {/* Set the row preview to be used during drag and drop */}
-                {connectDragPreview(
                     <div style={{display: 'flex', flex: 1, height: '100%'}}>
                         {scaffold}
                         <div
@@ -214,7 +219,7 @@ export default class CategoryItem extends React.Component<PropsType> {
                                 className={
                                     styles.rowContents
                                     + (
-                                        !canDrag ? ` ${styles.rowContentsDragDisabled}` : ''
+                                        !canDrag && isDragging ? ` ${styles.rowWrapperDragDisabled}` : ''
                                     )
                                 }
                             >
@@ -260,8 +265,7 @@ export default class CategoryItem extends React.Component<PropsType> {
                                 </div>
                             </div>
                         </div>
-                    </div>,
-                )}
+                    </div>
             </div>
         );
     }
