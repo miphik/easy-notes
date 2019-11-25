@@ -103,7 +103,7 @@ export default class ColumnToolbar extends React.PureComponent<PropsType> {
                                     <CButton
                                         className={styles.add_button}
                                         ghost
-                                        icon="cross"
+                                        icon="close"
                                         onClick={this.toggleOpenDeleteConfirm}
                                         style={style.addButton}
                                     >

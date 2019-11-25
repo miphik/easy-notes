@@ -1,6 +1,5 @@
 import PropTypes from 'prop-types';
 import React, {PureComponent} from 'react';
-import styles from './style.styl';
 
 class Spinner extends PureComponent {
     isShowed = false;
@@ -21,24 +20,24 @@ class Spinner extends PureComponent {
         let wrapSizeClass = '';
         let sizeClass = '';
         // eslint-disable-next-line default-case
-        switch (size) {
+        switch ('middle') {
             case 'small':
-                wrapSizeClass = styles.wrap_small;
-                sizeClass = styles.small;
+                wrapSizeClass = 'wrap_small';
+                sizeClass = 'small';
                 break;
             case 'middle':
-                wrapSizeClass = styles.wrap_middle;
-                sizeClass = styles.middle;
+                wrapSizeClass = 'wrap_middle';
+                sizeClass = 'middle';
                 break;
         }
-        const wrapFullClass = fullSize ? styles.wrap_full : '';
-        const wrapShowClass = show ? styles.wrap_show : styles.wrap_hide;
+        const wrapFullClass = fullSize ? 'wrap_full' : '';
+        const wrapShowClass = show ? 'wrap_show' : 'wrap_hide';
         return (
             <div
                 style={style}
-                className={`${styles.wrap} ${wrapFullClass} ${wrapSizeClass} ${this.isShowed ? wrapShowClass : ''}`}
+                className={`Spinner wrap ${wrapFullClass} ${wrapSizeClass} ${this.isShowed ? wrapShowClass : ''}`}
             >
-                <div className={`${styles.container} ${sizeClass}`}/>
+                <div className={`container ${sizeClass}`}/>
             </div>
         );
     }
