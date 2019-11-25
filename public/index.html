@@ -215,119 +215,6 @@
             fill: #888
         }
 
-        .Spinner .container {
-            display: block;
-            width: 8em;
-            height: 8em;
-            border-radius: 50%;
-            border: 1px solid transparent;
-            border-top-color: white;
-            animation: spin 2s linear infinite; /* Chrome, Firefox 16+, IE 10+, Opera */
-        }
-        .Spinner .container:before {
-            content: "";
-            position: absolute;
-            top: 0.5em;
-            left: 0.5em;
-            right: 0.5em;
-            bottom: 0.5em;
-            border-radius: 50%;
-            border: 1px solid transparent;
-            border-top-color: white;
-            animation: spin 3s linear infinite; /* Chrome, Firefox 16+, IE 10+, Opera */
-        }
-
-        .Spinner .container:after {
-            content: "";
-            position: absolute;
-            top: 1em;
-            left: 1em;
-            right: 1em;
-            bottom: 1em;
-            border-radius: 50%;
-            border: 1px solid transparent;
-            border-top-color: white;
-            animation: spin 1.5s linear infinite; /* Chrome, Firefox 16+, IE 10+, Opera */
-        }
-
-        .Spinner .small {
-            width: 4em;
-            height: 4em;
-        }
-
-        .Spinner .small:before {
-            top: 0.4em;
-            left: 0.4em;
-            right: 0.4em;
-            bottom: 0.4em;
-        }
-
-        .Spinner .small:after {
-            top: 1em;
-            left: 1em;
-            right: 1em;
-            bottom: 1em;
-        }
-
-        .Spinner .middle {
-            width: 6em;
-            height: 6em;
-        }
-
-        .Spinner .middle:before {
-            top: 0.2em;
-            left: 0.2em;
-            right: 0.2em;
-            bottom: 0.2em;
-        }
-
-        .Spinner .middle:after {
-            top: 0.5em;
-            left: 0.5em;
-            right: 0.5em;
-            bottom: 0.5em;
-        }
-
-        .Spinner.wrap {
-            position: absolute;
-            opacity: 0;
-            bottom: 10000px;
-            display: flex;
-            flex: 1;
-            justify-content: center;
-            align-items: center;
-            min-height: 8em;
-            width: 100%;
-            height: 100%;
-            z-index: 1000;
-        }
-
-        .Spinner.wrap_full {
-            display: flex;
-            flex: 1;
-            align-items: center;
-            justify-content: center;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(255, 255, 255, 0.3);
-        }
-
-        .Spinner.wrap_hide {
-            animation: hide-spinner .5s forwards;
-        }
-
-        .Spinner.wrap_show {
-            animation: show-spinner .5s forwards;
-        }
-
-        .Spinner.wrap_small {
-            min-height: 4em;
-        }
-
-         .Spinner.wrap_middle {
-             min-height: 6em;
-         }
-
         @keyframes hide-spinner {
             0% {
                 opacity: 1;
@@ -372,26 +259,7 @@
         }
     </style>
 </head>
-<body id="msp-theme" style="background-color: #242E32;">
-<!-- Simple splash screen-->
-<!--<div class="splash splash-container">
-    <div class="splash-wrapper">
-        <div class="splash-h1-wrap">
-            <div class="splash-h1">Mobile Admin</div>
-            &lt;!&ndash;<div class='cssload-loader'>
-                <div class='cssload-inner cssload-one'></div>
-                <div class='cssload-inner cssload-two'></div>
-                <div class='cssload-inner cssload-three'></div>
-            </div>&ndash;&gt;
-            <div class="splash-h1-second">2.0</div>
-        </div>
-        <div class="title-line-wrapper login-title-line">
-            <div class="title-line"></div>
-            <div class="title-line title-line2"></div>
-            <div class="title-line title-line3"></div>
-        </div>
-    </div>
-</div>-->
+<body id="main-theme" style="background-color: #242E32;">
 <div id="app-mount"></div>
 </body>
 </html>

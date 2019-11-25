@@ -63,49 +63,68 @@ function createMainWindow(data = {}) {
         },*/
         allowRunningInsecureContent: false,
         minWidth:                    880,
-        show:                        true,
+        show:                        false,
         titleBarStyle:               'hidden',
         frame:                       true,
         backgroundColor:             '#fff',
     });
 
-    if (data.isMaximized) mainWindow.maximize();
+    const loading = new BrowserWindow({show: false, frame: false});
 
-    mainWindow.on('close', () => storage.set(BOUNDS_KEY, {
-        bounds:      mainWindow.getBounds(),
-        isMaximized: mainWindow.isMaximized(),
-    }, error => {
-        if (error) throw error;
-    }));
+    loading.once('show', () => {
+        mainWindow.webContents.once('dom-ready', () => {
+            console.log('main loaded');
+            mainWindow.show();
+            loading.hide();
+            loading.close();
+        });
+        // long loading html
+        if (data.isMaximized) mainWindow.maximize();
 
-    if (isDevelopment) {
-        mainWindow.webContents.openDevTools();
-    }
-    if (isDevelopment) {
-        mainWindow.loadURL(`http://${IP}:${PORT}`);
-    } else {
-        mainWindow.loadURL(url.format({
-            pathname: path.resolve('index.html'),
+        mainWindow.on('close', () => storage.set(BOUNDS_KEY, {
+            bounds:      mainWindow.getBounds(),
+            isMaximized: mainWindow.isMaximized(),
+        }, error => {
+            if (error) throw error;
+        }));
+
+        if (isDevelopment) {
+            mainWindow.webContents.openDevTools();
+        }
+        if (isDevelopment) {
+            mainWindow.loadURL(`http://${IP}:${PORT}`);
+        } else {
+            mainWindow.loadURL(url.format({
+                pathname: path.resolve('index.html'),
+                protocol: 'file',
+                slashes:  false,
+            }));
+        }
+
+        mainWindow.webContents.on('did-finish-load', () => {
+            mainWindow.show();
+            mainWindow.focus();
+        });
+
+        mainWindow.on('closed', () => {
+            mainWindow = null;
+        });
+
+        mainWindow.webContents.on('devtools-opened', () => {
+            mainWindow.focus();
+            setImmediate(() => {
+                mainWindow.focus();
+            });
+        });
+    });
+    if (!isDevelopment) {
+        loading.loadURL(url.format({
+            pathname: path.resolve('loading.html'),
             protocol: 'file',
             slashes:  false,
         }));
     }
-
-    mainWindow.webContents.on('did-finish-load', () => {
-        mainWindow.show();
-        mainWindow.focus();
-    });
-
-    mainWindow.on('closed', () => {
-        mainWindow = null;
-    });
-
-    mainWindow.webContents.on('devtools-opened', () => {
-        mainWindow.focus();
-        setImmediate(() => {
-            mainWindow.focus();
-        });
-    });
+    loading.show();
 
     return mainWindow;
 }

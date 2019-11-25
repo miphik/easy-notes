@@ -1,5 +1,6 @@
 // @flow
 import {action, observable} from 'mobx';
+import store from 'store';
 
 export type ThemeType = {
     isBlack: boolean,
@@ -23,6 +24,8 @@ export type ThemeType = {
         textMain: string,
     },
 };
+
+export const COLORS_KEY = 'THEME:COLORS_KEY';
 
 const DEFAULT_THEME = (scale: number) => (
     {

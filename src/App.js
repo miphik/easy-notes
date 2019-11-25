@@ -49,7 +49,7 @@ class App extends Component {
                         {serializationInited ? <Route exact path="*" component={Layout}/> : null}
                     </Router>
                 </IntlProvider>
-                <Spinner size="big" show={false} fullSize/>
+                <Spinner size="big" show={!remoteStoreIsInited && !serializationInited} fullSize/>
                 <ToastContainer
                     transition={Slide}
                     newestOnTop
