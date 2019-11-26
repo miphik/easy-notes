@@ -9,7 +9,7 @@ import styles from './styles.styl';
 import moment from "moment";
 import memoizeOne from "memoize-one";
 import type {ThemeType} from "stores/ThemeStore";
-import Editor, { composeDecorators } from "draft-js-plugins-editor";
+import Editor, {composeDecorators} from "draft-js-plugins-editor";
 import createStore from "components/Plug/utils/createStore";
 import {defaultTheme} from "components/Plug/theme";
 import Toolbar from "components/Plug/components/Toolbar";
@@ -24,9 +24,9 @@ const focusPlugin = createFocusPlugin();
 const resizeablePlugin = createResizeablePlugin();
 const blockDndPlugin = createBlockDndPlugin();
 const alignmentPlugin = createAlignmentPlugin();
-const { AlignmentTool } = alignmentPlugin;
+const {AlignmentTool} = alignmentPlugin;
 const sideToolbarPlugin = createSideToolbarPlugin();
-const { SideToolbar } = sideToolbarPlugin;
+const {SideToolbar} = sideToolbarPlugin;
 
 const decorator = composeDecorators(
     resizeablePlugin.decorator,
@@ -34,7 +34,7 @@ const decorator = composeDecorators(
     focusPlugin.decorator,
     blockDndPlugin.decorator
 );
-const imagePlugin = createImagePlugin({ decorator });
+const imagePlugin = createImagePlugin({decorator});
 
 const ccc = (config = {}) => {
     const store = createStore({
@@ -146,7 +146,7 @@ export default class NoteEditor extends React.Component {
     render() {
         const {selectedNote, offset, theme} = this.props;
         const {currentNoteText} = this.state;
-        if (currentNoteText === null || !selectedNote) return null;
+        const showComponent = currentNoteText !== null && selectedNote;
         const style = STYLES(theme);
         return (
             <ScrollableColumn
@@ -156,19 +156,32 @@ export default class NoteEditor extends React.Component {
                 scrollColor={theme.color.second}
                 width="inherit"
                 toolbar={
-                    <div style={style.toolbar} className={`${styles.toolbar} ${toolbarClassName}`}>
-                        {moment(selectedNote.updatedAt).format('DD MMMM YYYY, HH:mm')}
-                    </div>
+                    <>
+                        <div className="main__toolbar"/>
+                        {showComponent ? (
+                            <div style={style.toolbar} className={`${styles.toolbar} ${toolbarClassName}`}>
+                                {moment(selectedNote.updatedAt).format('DD MMMM YYYY, HH:mm')}
+                            </div>
+                        ) : null}
+                    </>
                 }
                 footer={<div className={styles.footer}/>}
             >
-                <Editor
-                    plugins={plugins}
-                    editorState={currentNoteText}
-                    onChange={this.onChangeNote}
-                />
-                <InlineToolbar offset={offset} scaleFactor={theme.scaleFactor} toolbarClassName={toolbarClassName}/>
-                <SideToolbar />
+                {showComponent ? (
+                    <>
+                        <Editor
+                            plugins={plugins}
+                            editorState={currentNoteText}
+                            onChange={this.onChangeNote}
+                        />
+                        <InlineToolbar
+                            offset={offset}
+                            scaleFactor={theme.scaleFactor}
+                            toolbarClassName={toolbarClassName}
+                        />
+                        <SideToolbar/>
+                    </>
+                ) : <span/>}
             </ScrollableColumn>
         );
     }

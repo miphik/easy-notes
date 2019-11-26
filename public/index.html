@@ -215,6 +215,18 @@
             fill: #888
         }
 
+        .main__toolbar {
+            -webkit-app-region: drag;
+            -webkit-user-select: none;
+            position: absolute;
+            top: 0;
+            cursor: move;
+            height: 1.5em;
+            width: 100%;
+            z-index: 10000;
+            background-color: transparent !important;
+        }
+
         @keyframes hide-spinner {
             0% {
                 opacity: 1;

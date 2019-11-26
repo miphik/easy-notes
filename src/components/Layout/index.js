@@ -82,10 +82,11 @@ class AppLayout extends Component<PropsType> {
     render() {
         const {theme} = this.props;
 
+        const styles = STYLES(theme);
         return (
             <div
                 id="AppLayout"
-                style={STYLES(theme).wrapper}
+                style={styles.wrapper}
                 className={theme.isBlack ? 'AppLayout_is_black' : 'AppLayout_is_white'}
             >
                 <section className="msp-content-inner">

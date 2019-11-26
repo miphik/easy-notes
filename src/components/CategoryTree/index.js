@@ -239,14 +239,17 @@ export default class CategoryTree extends React.Component<PropsType> {
                 scrollColor={theme.color.second}
                 width="inherit"
                 toolbar={
-                    <ColumnToolbar
-                        theme={theme}
-                        selectedItem={!withoutCategorySelected && !removeCategorySelected && selectedCategory}
-                        deleteConfirmText={MESSAGES.deleteCategoryConfirm}
-                        createNewItem={this.onAddNewCategory}
-                        updateItem={this.onEditCategory}
-                        deleteItem={this.onRemoveCategory}
-                    />
+                    <>
+                        <div className="main__toolbar"/>
+                        <ColumnToolbar
+                            theme={theme}
+                            selectedItem={!withoutCategorySelected && !removeCategorySelected && selectedCategory}
+                            deleteConfirmText={MESSAGES.deleteCategoryConfirm}
+                            createNewItem={this.onAddNewCategory}
+                            updateItem={this.onEditCategory}
+                            deleteItem={this.onRemoveCategory}
+                        />
+                    </>
                 }
                 footer={<StatusIcon/>}
             >

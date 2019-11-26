@@ -106,6 +106,8 @@ const STYLES = memoizeOne((theme: ThemeType, isCategorySelected: boolean, isNote
             opacity:         1,
         },
         notesCounter:         {
+            position:       'absolute',
+            width:          '100%',
             display:        'flex',
             flex:           1,
             height:         '4em',
