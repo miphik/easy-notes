@@ -14,6 +14,7 @@ import SerializationService from 'services/SerializationService';
 import 'utils/momentUtils';
 import 'draft-js-inline-toolbar-plugin/lib/plugin.css';
 
+require('v8-compile-cache');
 // import {LocaleProvider} from 'antd';
 
 // import enUS from 'antd/lib/locale-provider/en_US';

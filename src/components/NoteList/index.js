@@ -217,6 +217,7 @@ export default class NoteList extends React.Component<PropsType> {
                     width="inherit"
                     toolbar={
                         <>
+                            <div className="main__toolbar"/>
                             <ColumnToolbar
                                 theme={theme}
                                 addButtonIsDisabled={isAddButtonDisabled}

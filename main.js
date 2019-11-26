@@ -65,66 +65,47 @@ function createMainWindow(data = {}) {
         minWidth:                    880,
         show:                        false,
         titleBarStyle:               'hidden',
-        frame:                       true,
+        frame:                       false,
         backgroundColor:             '#fff',
     });
 
-    const loading = new BrowserWindow({show: false, frame: false});
+    if (data.isMaximized) mainWindow.maximize();
 
-    loading.once('show', () => {
-        mainWindow.webContents.once('dom-ready', () => {
-            console.log('main loaded');
-            mainWindow.show();
-            loading.hide();
-            loading.close();
-        });
-        // long loading html
-        if (data.isMaximized) mainWindow.maximize();
+    mainWindow.on('close', () => storage.set(BOUNDS_KEY, {
+        bounds:      mainWindow.getBounds(),
+        isMaximized: mainWindow.isMaximized(),
+    }, error => {
+        if (error) throw error;
+    }));
 
-        mainWindow.on('close', () => storage.set(BOUNDS_KEY, {
-            bounds:      mainWindow.getBounds(),
-            isMaximized: mainWindow.isMaximized(),
-        }, error => {
-            if (error) throw error;
-        }));
-
-        if (isDevelopment) {
-            mainWindow.webContents.openDevTools();
-        }
-        if (isDevelopment) {
-            mainWindow.loadURL(`http://${IP}:${PORT}`);
-        } else {
-            mainWindow.loadURL(url.format({
-                pathname: path.resolve('index.html'),
-                protocol: 'file',
-                slashes:  false,
-            }));
-        }
-
-        mainWindow.webContents.on('did-finish-load', () => {
-            mainWindow.show();
-            mainWindow.focus();
-        });
-
-        mainWindow.on('closed', () => {
-            mainWindow = null;
-        });
-
-        mainWindow.webContents.on('devtools-opened', () => {
-            mainWindow.focus();
-            setImmediate(() => {
-                mainWindow.focus();
-            });
-        });
-    });
-    if (!isDevelopment) {
-        loading.loadURL(url.format({
-            pathname: path.resolve('loading.html'),
+    if (isDevelopment) {
+        mainWindow.webContents.openDevTools();
+    }
+    if (isDevelopment) {
+        mainWindow.loadURL(`http://${IP}:${PORT}`);
+    } else {
+        mainWindow.loadURL(url.format({
+            pathname: path.resolve('index.html'),
             protocol: 'file',
             slashes:  false,
         }));
     }
-    loading.show();
+
+    mainWindow.webContents.on('did-finish-load', () => {
+        mainWindow.show();
+        mainWindow.focus();
+    });
+
+    mainWindow.on('closed', () => {
+        mainWindow = null;
+    });
+
+    mainWindow.webContents.on('devtools-opened', () => {
+        mainWindow.focus();
+        setImmediate(() => {
+            mainWindow.focus();
+        });
+    });
 
     return mainWindow;
 }
