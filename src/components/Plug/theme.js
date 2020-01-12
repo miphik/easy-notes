@@ -12,7 +12,7 @@ const STYLES = memoizeOne((theme: ThemeType) => (
             justifyContent: 'center',
             alignItems:     'center',
             background:     '#fbfbfb',
-            color:          '#888',
+            color:          '#cdcdcd',
             fontSize:       18,
             border:         0,
             paddingTop:     5,
@@ -28,7 +28,7 @@ const STYLES = memoizeOne((theme: ThemeType) => (
                 outline:    0,
             },
             svg: {
-                fill: '#888',
+                fill: '#fff',
             },
         },
         toolbar: {
@@ -36,7 +36,7 @@ const STYLES = memoizeOne((theme: ThemeType) => (
             transform:       'translate(-50%) scale(0)',
             visibility:      'hidden',
             position:        'absolute',
-            border:          '1px solid #00000054',
+            border:          '1px solid rgba(255, 255, 255, 0.2)',
             backgroundColor: 'rgb(36, 46, 50)',
             borderRadius:    3,
             boxShadow:       'rgba(15, 15, 15, 0.1) 0px 0px 0px 1px, rgba(15, 15, 15, 0.2) 0px 3px 6px, rgba(15, 15, 15, 0.4) 0px 9px 24px',

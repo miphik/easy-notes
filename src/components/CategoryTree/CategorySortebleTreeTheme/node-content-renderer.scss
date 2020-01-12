@@ -1,3 +1,7 @@
+.collapseButton i,
+.expandButton i {
+  margin-right: 0.5em;
+}
 .collapseButton,
 .expandButton {
   appearance: none;
@@ -137,7 +141,8 @@ $highlight-line-size: 3px; // Make it an even number for clean rendering
  * +-----+
  */
 .highlightBottomLeftCorner {
-  $arrow-size: 6px;
+  $arrow-size: 3px;
+  $arrow-size-after: 6px;
   z-index: 3;
 
   &::before {
@@ -156,11 +161,11 @@ $highlight-line-size: 3px; // Make it an even number for clean rendering
     content: '';
     position: absolute;
     height: 0;
-    right: 0;
+    right: -$arrow-size;
     top: 100%;
-    margin-top: -1 * $arrow-size;
-    border-top: $arrow-size solid transparent;
-    border-bottom: $arrow-size solid transparent;
-    border-left: $arrow-size solid $highlight-color;
+    margin-top: -1 * $arrow-size-after;
+    border-top: $arrow-size-after solid transparent;
+    border-bottom: $arrow-size-after solid transparent;
+    border-left: $arrow-size-after solid $highlight-color;
   }
 }

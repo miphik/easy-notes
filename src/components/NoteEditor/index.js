@@ -1,24 +1,29 @@
+// @flow
+
 import debounce from 'lodash/debounce';
 import {inject, observer} from 'mobx-react';
 import PropTypes from 'prop-types';
 import * as React from 'react';
-import {EditorState, convertToRaw, convertFromRaw} from 'draft-js';
+import {
+    EditorState, convertToRaw, convertFromRaw, Modifier, convertFromHTML, ContentState,
+} from 'draft-js';
 import ScrollableColumn from 'components/ScrollableColumn';
 import isEqual from 'lodash/isEqual';
-import styles from './styles.styl';
-import moment from "moment";
-import memoizeOne from "memoize-one";
-import type {ThemeType} from "stores/ThemeStore";
-import Editor, {composeDecorators} from "draft-js-plugins-editor";
-import createStore from "components/Plug/utils/createStore";
-import {defaultTheme} from "components/Plug/theme";
-import Toolbar from "components/Plug/components/Toolbar";
+import moment from 'moment';
+import memoizeOne from 'memoize-one';
+import type {ThemeType} from 'stores/ThemeStore';
+import Editor, {composeDecorators} from 'draft-js-plugins-editor';
+import createStore from 'components/Plug/utils/createStore';
+import {defaultTheme} from 'components/Plug/theme';
+import Toolbar from 'components/Plug/components/Toolbar';
 import createImagePlugin from 'draft-js-image-plugin';
 import createAlignmentPlugin from 'draft-js-alignment-plugin';
 import createFocusPlugin from 'draft-js-focus-plugin';
 import createResizeablePlugin from 'draft-js-resizeable-plugin';
 import createBlockDndPlugin from 'draft-js-drag-n-drop-plugin';
 import createSideToolbarPlugin from 'draft-js-side-toolbar-plugin';
+import {stateFromHTML} from 'draft-js-import-html';
+import styles from './styles.styl';
 
 const focusPlugin = createFocusPlugin();
 const resizeablePlugin = createResizeablePlugin();
@@ -32,11 +37,11 @@ const decorator = composeDecorators(
     resizeablePlugin.decorator,
     alignmentPlugin.decorator,
     focusPlugin.decorator,
-    blockDndPlugin.decorator
+    blockDndPlugin.decorator,
 );
 const imagePlugin = createImagePlugin({decorator});
 
-const ccc = (config = {}) => {
+const inlineToolbar = (config = {}) => {
     const store = createStore({
         isVisible: false,
     });
@@ -58,7 +63,7 @@ const ccc = (config = {}) => {
     };
 };
 
-const inlineToolbarPlugin = ccc();
+const inlineToolbarPlugin = inlineToolbar();
 const {InlineToolbar} = inlineToolbarPlugin;
 const plugins = [
     blockDndPlugin,
@@ -67,7 +72,7 @@ const plugins = [
     resizeablePlugin,
     imagePlugin,
     inlineToolbarPlugin,
-    sideToolbarPlugin
+    sideToolbarPlugin,
 ];
 
 const toolbarClassName = 'NoteText__toolbar';
@@ -81,15 +86,15 @@ const STYLES = memoizeOne((theme: ThemeType) => (
 
 @inject(stores => (
     {
-        theme: stores.themeStore.getTheme,
-        noteText: stores.noteStore.getNoteText,
-        selectedNote: stores.noteStore.getSelectedNote,
-        selectedCategory: stores.categoryStore.getSelectedCategory,
+        theme:               stores.themeStore.getTheme,
+        noteText:            stores.noteStore.getNoteText,
+        selectedNote:        stores.noteStore.getSelectedNote,
+        selectedCategory:    stores.categoryStore.getSelectedCategory,
         setSelectedNoteText: stores.noteStore.setSelectedNoteText,
     }
 ))
 @observer
-export default class NoteEditor extends React.Component {
+class NoteEditor extends React.Component {
     static propTypes = {
         name: PropTypes.string,
     };
@@ -103,11 +108,10 @@ export default class NoteEditor extends React.Component {
         if (!prevState.currentNote
             || !nextProps.selectedNote.text
             || nextProps.selectedNote.uuid !== prevState.currentNote.uuid) {
-
             const state = {currentNote: nextProps.selectedNote};
             if ((!prevState.currentNoteText || nextProps.selectedNote.uuid !== prevState.currentNote.uuid)
                 && nextProps.noteText && nextProps.noteText.entityMap) {
-                state.currentNoteText = EditorState.createWithContent(convertFromRaw(nextProps.noteText))
+                state.currentNoteText = EditorState.createWithContent(CustomContentStateConverter(convertFromRaw(nextProps.noteText)));
             } else if (!prevState.currentNoteText) {
                 state.currentNoteText = EditorState.createEmpty();
             }
@@ -132,8 +136,11 @@ export default class NoteEditor extends React.Component {
     onChangeNote = data => {
         const {selectedNote, selectedCategory} = this.props;
         this.setState({
-            currentNoteText: data,
-            currentNote: selectedNote
+            currentNoteText: EditorState.set(
+                data,
+                {currentContent: CustomContentStateConverter(data.getCurrentContent())},
+            ),
+            currentNote: selectedNote,
         }, () => {
             if (!this.props.selectedNote.text
                 || !isEqual(this.props.selectedNote.text.blocks, convertToRaw(data.getCurrentContent()).blocks)) {
@@ -141,6 +148,40 @@ export default class NoteEditor extends React.Component {
             }
         });
     };
+
+    handlePastedText = (text: string, html?: string): boolean => {
+        const contentState = stateFromHTML(html);
+        const blocksFromHTML = convertFromHTML(html || text);
+        const state = ContentState.createFromBlockArray(
+            blocksFromHTML.contentBlocks,
+            blocksFromHTML.entityMap,
+        );
+
+        console.log(1111, state, html);
+        // if they try to paste something they shouldn't let's handle it
+        if (text.indexOf('text that should not be pasted') !== -1) {
+            // we'll add a message for the offending user to the editor state
+            const newContent = Modifier.insertText(
+                this.state.editorState.getCurrentContent(),
+                this.state.editorState.getSelection(),
+                'nice try, chump!',
+            );
+
+            // update our state with the new editor content
+            this.onChange(EditorState.push(
+                this.state.editorState,
+                newContent,
+                'insert-characters',
+            ));
+            return true;
+        }
+        this.onChange(EditorState.createWithContent(
+            CustomContentStateConverter(state),
+            decoratorR,
+        ));
+        return true;
+    };
+
     onChange = editorState => this.setState({editorState});
 
     render() {
@@ -155,7 +196,7 @@ export default class NoteEditor extends React.Component {
                 shadowColor={theme.color.second}
                 scrollColor={theme.color.second}
                 width="inherit"
-                toolbar={
+                toolbar={(
                     <>
                         <div className="main__toolbar"/>
                         {showComponent ? (
@@ -164,7 +205,7 @@ export default class NoteEditor extends React.Component {
                             </div>
                         ) : null}
                     </>
-                }
+                )}
                 footer={<div className={styles.footer}/>}
             >
                 {showComponent ? (
@@ -173,6 +214,7 @@ export default class NoteEditor extends React.Component {
                             plugins={plugins}
                             editorState={currentNoteText}
                             onChange={this.onChangeNote}
+                            // handlePastedText={this.handlePastedText}
                         />
                         <InlineToolbar
                             offset={offset}
@@ -180,9 +222,37 @@ export default class NoteEditor extends React.Component {
                             toolbarClassName={toolbarClassName}
                         />
                         <SideToolbar/>
+                        <AlignmentTool />
                     </>
                 ) : <span/>}
             </ScrollableColumn>
         );
     }
 }
+
+export default NoteEditor;
+
+export const CustomContentStateConverter = contentState => {
+    // changes block type of images to 'atomic'
+    const newBlockMap = contentState.getBlockMap().map(block => {
+        const entityKey = block.getEntityAt(0);
+        if (entityKey !== null) {
+            const entityBlock = contentState.getEntity(entityKey);
+            const entityType = entityBlock.getType();
+            switch (entityType) {
+                case 'IMAGE': {
+                    const newBlock = block.merge({
+                        type: 'atomic',
+                        text: 'img',
+                    });
+                    return newBlock;
+                }
+                default:
+                    return block;
+            }
+        }
+        return block;
+    });
+    const newContentState = contentState.set('blockMap', newBlockMap);
+    return newContentState;
+};
