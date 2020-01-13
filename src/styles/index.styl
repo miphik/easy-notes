@@ -46,5 +46,45 @@
   .public-DraftEditor-content {
     height: 100%;
   }
+
+  .jodit_container,
+  .jodit_container .jodit_wysiwyg,
+  .jodit_container .jodit_workplace {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 100% !important;
+    background: transparent !important;
+    border: none !important;
+  }
+
+  .jodit_container .jodit_workplace,
+  .jodit_container .jodit_toolbar,
+  .jodit_container .jodit_statusbar,
+  .jodit_container .jodit_toolbar>li.jodit_toolbar_btn.jodit_toolbar_btn-separator,
+  .jodit_container .jodit_toolbar>li.jodit_toolbar_btn.jodit_toolbar_btn-break {
+    border-color: transparent;
+  }
+  .jodit_container .jodit_toolbar,
+  .jodit_container .jodit_statusbar {
+    background-color: #1c262a;
+  }
+  .jodit_container .jodit_icon,
+  .jodit_container .jodit_toolbar .jodit_toolbar_btn>a {
+    fill: #d3d3d3;
+    color: #d3d3d3;
+  }
+  .jodit_container {
+    background-color: #1c262a;
+  }
+  .jodit_container .jodit_wysiwyg {
+    color: #d3d3d3;
+  }
+  .jodit_container .jodit_toolbar>li.jodit_toolbar_btn.jodit_with_dropdownlist .jodit_with_dropdownlist-trigger {
+    border-top-color: #d3d3d3;
+  }
+  .jodit_container .jodit_placeholder {
+    color: #d3d3d3;
+  }
 }
 
