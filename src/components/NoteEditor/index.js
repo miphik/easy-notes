@@ -23,7 +23,7 @@ import createResizeablePlugin from 'draft-js-resizeable-plugin';
 import createBlockDndPlugin from 'draft-js-drag-n-drop-plugin';
 import createSideToolbarPlugin from 'draft-js-side-toolbar-plugin';
 import {stateFromHTML} from 'draft-js-import-html';
-import JoditEditor from "jodit-react";
+import JoditEditor from 'jodit-react';
 import styles from './styles.styl';
 
 const focusPlugin = createFocusPlugin();
@@ -77,16 +77,17 @@ const plugins = [
 ];
 
 const config = {
-    showPlaceholder: false,
-    askBeforePasteHTML: false,
-    autofocus: true,
-    "theme": "dark",
-    "showCharsCounter": false,
-    "showWordsCounter": false,
+    showPlaceholder:      false,
+    askBeforePasteHTML:   false,
+    autofocus:            true,
+    theme:                'dark',
+    toolbarStickyOffset:  0,
+    showCharsCounter:     false,
+    showWordsCounter:     false,
     defaultActionOnPaste: 'insert_as_html',
-    "showXPathInStatusbar": false,
-    readonly: false // all options from https://xdsoft.net/jodit/doc/
-}
+    showXPathInStatusbar: false,
+    readonly:             false, // all options from https://xdsoft.net/jodit/doc/
+};
 
 const toolbarClassName = 'NoteText__toolbar';
 const STYLES = memoizeOne((theme: ThemeType) => (
@@ -137,7 +138,7 @@ class NoteEditor extends React.Component {
         super(props);
         const {noteText} = props;
         this.state = {
-            content: '',
+            content:         '',
             currentNoteText: noteText && noteText.entityMap
                 ? EditorState.createWithContent(convertFromRaw(noteText))
                 : EditorState.createEmpty(),
@@ -205,7 +206,6 @@ class NoteEditor extends React.Component {
         const style = STYLES(theme);
         return (
             <ScrollableColumn
-                showScrollShadow
                 autoHideScrollbar
                 shadowColor={theme.color.second}
                 scrollColor={theme.color.second}
@@ -230,8 +230,9 @@ class NoteEditor extends React.Component {
                             config={config}
                             // tabIndex={1} // tabIndex of textarea
                             onBlur={newContent => this.setState({content: newContent})} // preferred to use
-                                // only this option to update the content for performance reasons
-                            onChange={newContent => {}}
+                            // only this option to update the content for performance reasons
+                            onChange={newContent => {
+                            }}
                         />
                     </>
                 ) : <span/>}
