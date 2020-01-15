@@ -47,50 +47,141 @@
     height: 100%;
   }
 
-  .jodit_container,
-  .jodit_container .jodit_wysiwyg,
-  .jodit_container .jodit_workplace {
+  .jodit_container {
+    font-size: 1em;
     display: flex;
     flex-direction: column;
     flex: 1;
     min-height: 100% !important;
     background: transparent !important;
     border: none !important;
+    background-color: #1c262a;
+
+    .jodit_toolbar {
+      font-size: 1em;
+    }
+
+    .jodit_wysiwyg,
+    .jodit_workplace {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      min-height: 100% !important;
+      background: transparent !important;
+      border: none !important;
+    }
+
+    .jodit_workplace,
+    .jodit_toolbar,
+    .jodit_statusbar,
+    .jodit_toolbar > li.jodit_toolbar_btn.jodit_toolbar_btn-separator,
+    .jodit_toolbar > li.jodit_toolbar_btn.jodit_toolbar_btn-break {
+      border-color: transparent;
+    }
+
+    .jodit_toolbar > .jodit_toolbar_btn:not(.jodit_toolbar-input):hover {
+      background-color: #1c262a !important;
+    }
+
+    .jodit_toolbar > li:not(.jodit_disabled):hover svg {
+      fill: #d3d3d3 !important;
+    }
+
+    .jodit_toolbar,
+    .jodit_statusbar {
+      background-color: #1c262a;
+      padding: 0.5em 0em !important;
+    }
+
+    .jodit_toolbar_list>.jodit_toolbar li.jodit_toolbar_btn>a {
+      padding: 0.5em 1em;
+    }
+
+    .jodit_icon,
+    .jodit_toolbar .jodit_toolbar_btn > a {
+      fill: #8e8e8e !important;
+      color: #8e8e8e;
+    }
+
+    .jodit_wysiwyg {
+      color: #d3d3d3;
+    }
+
+    .jodit_toolbar > li.jodit_toolbar_btn.jodit_with_dropdownlist .jodit_with_dropdownlist-trigger {
+      border-top-color: #d3d3d3;
+    }
+
+    .jodit_placeholder {
+      color: #d3d3d3;
+    }
+
+    .jodit_disabled,
+    .jodit_dark_theme .jodit_toolbar_list > .jodit_toolbar {
+      background-color: #1c262a !important;
+      font-size: 1em;
+    }
+
+    .jodit_colorpicker a:hover svg {
+      fill: #d3d3d3 !important;
+    }
+
+    .jodit_colorpicker a svg {
+      fill: #8e8e8e !important;
+    }
+
+    .jodit_popup_triangle {
+      background-color: #8e8e8e !important;
+    }
+
+    .jodit_active {
+      background-color: rgba(211, 211, 211, 0.2) !important;
+    }
+    .jodit_dark_theme .jodit_toolbar li.jodit_toolbar_btn>a:hover,
+    .jodit_toolbar > .jodit_toolbar_btn.jodit_active, .jodit_toolbar > .jodit_toolbar_btn:not(.jodit_toolbar-input):active {
+      background-color: rgba(211, 211, 211, 0.2);
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+      color: #d3d3d3;
+    }
+
+    .jodit_button {
+      padding: 0 1.5em !important;
+      border-radius: 0.3em !important;
+      background-color: #1c262a !important;
+      font-size: 1em !important;
+      color: #d3d3d3 !important;
+      border: 1px solid #747474;
+      color: #d3d3d3 !important;
+      text-align: center;
+      margin: 0;
+    }
+
+    .jodit_form {
+      color: inherit !important;
+    }
+    .jodit_form_inserter .jodit_form-table-creator-box .jodit_form-container>div.hovered:after {
+      background: #d3d3d3;
+    }
+    .jodit_tabs_buttons {
+      margin: 1.2em 0 !important;
+    }
+    .jodit_toolbar_container {
+      position: sticky;
+      z-index: 3;
+      top: 0;
+      left: auto;
+    }
   }
 
-  .jodit_container .jodit_workplace,
-  .jodit_container .jodit_toolbar,
-  .jodit_container .jodit_statusbar,
-  .jodit_container .jodit_toolbar>li.jodit_toolbar_btn.jodit_toolbar_btn-separator,
-  .jodit_container .jodit_toolbar>li.jodit_toolbar_btn.jodit_toolbar_btn-break {
-    border-color: transparent;
-  }
-  .jodit_toolbar>.jodit_toolbar_btn:not(.jodit_toolbar-input):hover {
+
+
+  .jodit_toolbar_popup {
+    border-radius: 0.2em !important;
     background-color: #1c262a !important;
-  }
-  .jodit_container .jodit_toolbar>li:hover svg {
-    fill: #d3d3d3 !important;
-  }
-  .jodit_container .jodit_toolbar,
-  .jodit_container .jodit_statusbar {
-    background-color: #1c262a;
-  }
-  .jodit_container .jodit_icon,
-  .jodit_container .jodit_toolbar .jodit_toolbar_btn>a {
-    fill: #8e8e8e !important;
-    color: #8e8e8e;
-  }
-  .jodit_container {
-    background-color: #1c262a;
-  }
-  .jodit_container .jodit_wysiwyg {
-    color: #d3d3d3;
-  }
-  .jodit_container .jodit_toolbar>li.jodit_toolbar_btn.jodit_with_dropdownlist .jodit_with_dropdownlist-trigger {
-    border-top-color: #d3d3d3;
-  }
-  .jodit_container .jodit_placeholder {
-    color: #d3d3d3;
+    font-size: 0.8em !important;
+    color: #d3d3d3 !important;
+    border: 1px solid #747474 !important;
   }
 }
 

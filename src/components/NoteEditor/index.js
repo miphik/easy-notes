@@ -24,6 +24,7 @@ import createBlockDndPlugin from 'draft-js-drag-n-drop-plugin';
 import createSideToolbarPlugin from 'draft-js-side-toolbar-plugin';
 import {stateFromHTML} from 'draft-js-import-html';
 import JoditEditor from 'jodit-react';
+import Radium, {Style} from 'radium';
 import styles from './styles.styl';
 
 const focusPlugin = createFocusPlugin();
@@ -95,6 +96,15 @@ const STYLES = memoizeOne((theme: ThemeType) => (
         toolbar: {
             color: theme.color.gray,
         },
+        jodit_tooltip: {
+            padding:         '0.3em 0.5em !important',
+            borderRadius:    '0.2em !important',
+            backgroundColor: `${theme.color.second} !important`,
+            fontSize:        '0.8em !important',
+            border:          '1px solid #747474',
+            color:           '#d3d3d3 !important',
+            textAlign:       'center',
+        },
     }
 ));
 
@@ -108,6 +118,7 @@ const STYLES = memoizeOne((theme: ThemeType) => (
     }
 ))
 @observer
+@Radium
 class NoteEditor extends React.Component {
     static propTypes = {
         name: PropTypes.string,
@@ -224,6 +235,10 @@ class NoteEditor extends React.Component {
             >
                 {showComponent ? (
                     <>
+                        <Style rules={{
+                            '.jodit_tooltip': style.jodit_tooltip,
+                        }}
+                        />
                         <JoditEditor
                             // ref={editor}
                             value={content}
