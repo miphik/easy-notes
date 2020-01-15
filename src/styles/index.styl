@@ -48,14 +48,13 @@
   }
 
   .jodit_container {
-    font-size: 1em;
+    font-size: 1em !important;
     display: flex;
     flex-direction: column;
     flex: 1;
     min-height: 100% !important;
     background: transparent !important;
     border: none !important;
-    background-color: #1c262a;
 
     .jodit_toolbar {
       font-size: 1em;
@@ -71,6 +70,12 @@
       border: none !important;
     }
 
+    .jodit_toolbar .jodit_toolbar_btn {
+      min-width: 2.29em;
+      height: 2.29em;
+      line-height: 2.29em;
+    }
+
     .jodit_workplace,
     .jodit_toolbar,
     .jodit_statusbar,
@@ -79,28 +84,37 @@
       border-color: transparent;
     }
 
-    .jodit_toolbar > .jodit_toolbar_btn:not(.jodit_toolbar-input):hover {
-      background-color: #1c262a !important;
+    .jodit_toolbar .jodit_toolbar .jodit_toolbar {
+      font-size: 1.2em !important;
     }
 
-    .jodit_toolbar > li:not(.jodit_disabled):hover svg {
-      fill: #d3d3d3 !important;
+    .jodit_dark_theme .jodit_tabs .jodit_tabs_buttons>a.active {
+      background-color: transparent;
     }
 
     .jodit_toolbar,
     .jodit_statusbar {
-      background-color: #1c262a;
-      padding: 0.5em 0em !important;
+      padding: 0.5em !important;
     }
 
     .jodit_toolbar_list>.jodit_toolbar li.jodit_toolbar_btn>a {
       padding: 0.5em 1em;
     }
 
+    .jodit_icon {
+      width: 1em;
+      height: 1em;
+      font-size: 1.1em;
+    }
+
     .jodit_icon,
     .jodit_toolbar .jodit_toolbar_btn > a {
       fill: #8e8e8e !important;
       color: #8e8e8e;
+    }
+
+    .jodit_toolbar .jodit_toolbar_btn.jodit_with_dropdownlist {
+      padding: 0 0.5em;
     }
 
     .jodit_wysiwyg {
@@ -113,6 +127,10 @@
 
     .jodit_placeholder {
       color: #d3d3d3;
+    }
+
+    .jodit_form label {
+      margin: 1em 0;
     }
 
     .jodit_disabled,
@@ -129,39 +147,16 @@
       fill: #8e8e8e !important;
     }
 
-    .jodit_popup_triangle {
-      background-color: #8e8e8e !important;
-    }
-
-    .jodit_active {
-      background-color: rgba(211, 211, 211, 0.2) !important;
-    }
-    .jodit_dark_theme .jodit_toolbar li.jodit_toolbar_btn>a:hover,
-    .jodit_toolbar > .jodit_toolbar_btn.jodit_active, .jodit_toolbar > .jodit_toolbar_btn:not(.jodit_toolbar-input):active {
-      background-color: rgba(211, 211, 211, 0.2);
-    }
-
-    h1, h2, h3, h4, h5, h6 {
-      color: #d3d3d3;
-    }
-
     .jodit_button {
       padding: 0 1.5em !important;
       border-radius: 0.3em !important;
-      background-color: #1c262a !important;
       font-size: 1em !important;
-      color: #d3d3d3 !important;
-      border: 1px solid #747474;
-      color: #d3d3d3 !important;
       text-align: center;
       margin: 0;
     }
 
     .jodit_form {
       color: inherit !important;
-    }
-    .jodit_form_inserter .jodit_form-table-creator-box .jodit_form-container>div.hovered:after {
-      background: #d3d3d3;
     }
     .jodit_tabs_buttons {
       margin: 1.2em 0 !important;
@@ -172,10 +167,23 @@
       top: 0;
       left: auto;
     }
+
+    .jodit_dark_theme .jodit_toolbar li.jodit_toolbar_btn>a:hover {
+      background-color: transparent;
+    }
+
+    .jodit_dark_theme .jodit_toolbar li.jodit_toolbar_btn.jodit_toolbar_btn-break {
+      margin: 0.8em 0 !important;
+    }
   }
 
+  .jodit_toolbar_btn .jodit_toolbar_popup {
+    font-size: 1em !important;
+  }
 
-
+  .jodit_toolbar_popup > div {
+    width: 13em !important;
+  }
   .jodit_toolbar_popup {
     border-radius: 0.2em !important;
     background-color: #1c262a !important;

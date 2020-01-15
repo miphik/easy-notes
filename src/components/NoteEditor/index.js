@@ -93,16 +93,51 @@ const config = {
 const toolbarClassName = 'NoteText__toolbar';
 const STYLES = memoizeOne((theme: ThemeType) => (
     {
+        headers: {
+            color: '#8e8e8e',
+        },
+        joditPopupTriangle: {
+            backgroundColor: '#8e8e8e !important',
+        },
         toolbar: {
             color: theme.color.gray,
         },
-        jodit_tooltip: {
+        joditBtn: {
+            color:           '#d3d3d3 !important',
+            backgroundColor: '#1c262a !important',
+            border:          '1px solid #747474',
+        },
+        joditToolbarBtn: {
+            color: '#8e8e8e',
+        },
+        joditTabBtn: {
+            backgroundColor: 'rgba(211, 211, 211, 0.2) !important',
+        },
+        joditInserterAfter: {
+            color: '#d3d3d3',
+        },
+        joditToolbarHover: {
+            color: '#d3d3d3',
+        },
+        joditTooltipHover2: {
+            fill: '#d3d3d3 !important',
+        },
+        joditTooltipHover: {
+            backgroundColor: '#1c262a !important',
+        },
+        joditToolbar: {
+            backgroundColor: '#1c262a !important',
+        },
+        joditToolbar3: {
+            border: '1px solid #747474',
+        },
+        joditTooltip: {
             padding:         '0.3em 0.5em !important',
             borderRadius:    '0.2em !important',
             backgroundColor: `${theme.color.second} !important`,
             fontSize:        '0.8em !important',
-            border:          '1px solid #747474',
-            color:           '#d3d3d3 !important',
+            border:          `1px solid ${theme.color.gray}`,
+            color:           `${theme.color.buttonActive} !important`,
             textAlign:       'center',
         },
     }
@@ -236,7 +271,22 @@ class NoteEditor extends React.Component {
                 {showComponent ? (
                     <>
                         <Style rules={{
-                            '.jodit_tooltip': style.jodit_tooltip,
+                            '.jodit_form_inserter .jodit_form-table-creator-box.jodit_form-container>div.hovered:after':                             style.joditInserterAfter,
+                            '.jodit_dark_theme .jodit_tabs .jodit_tabs_buttons>a':                                                                   style.joditTabBtn,
+                            '.jodit_dark_theme .jodit_toolbar li.jodit_toolbar_btn>a':                                                               style.joditToolbarBtn,
+                            '.jodit_dark_theme .jodit_toolbar li.jodit_toolbar_btn:hover>a':                                                         style.joditToolbarHover,
+                            '.jodit_toolbar .jodit_toolbar .jodit_toolbar':                                                                          style.joditToolbar3,
+                            '.jodit_toolbar > li:not(.jodit_disabled):hover>a svg':                                                                  style.joditTooltipHover2,
+                            '.jodit_tooltip':                                                                                                        style.joditTooltip,
+                            '.jodit_toolbar':                                                                                                        style.joditToolbar,
+                            '.jodit_popup_triangle':                                                                                                 style.joditPopupTriangle,
+                            '.jodit_button':                                                                                                         style.joditBtn,
+                            '.jodit_statusbar':                                                                                                      style.joditToolbar,
+                            '.jodit_toolbar >.jodit_toolbar_btn.jodit_active, .jodit_toolbar > .jodit_toolbar_btn:not(.jodit_toolbar-input):active': style.joditTabBtn,
+                            '.jodit_active':                                                                                                         style.joditTabBtn,
+                            'h1, h2, h3, h4, h5, h6':                                                                                                style.headers,
+                            'h1:hover, h2:hover, h3:hover, h4:hover, h5:hover, h6:hover':                                                            style.joditToolbarHover,
+                            '.jodit_toolbar > .jodit_toolbar_btn:not(.jodit_toolbar-input):hover':                                                   style.joditTooltipHover,
                         }}
                         />
                         <JoditEditor
