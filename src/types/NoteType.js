@@ -8,6 +8,7 @@ export type NoteType = {
     noteType: 'TEXT' | 'HTML' | 'MARKDOWN' | 'CODE',
     text: string,
     textIsLoaded: boolean,
+    noteIsNew: boolean,
     updatedAt: string,
     createdAt: string,
     isDeleted: boolean,

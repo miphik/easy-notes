@@ -526,7 +526,7 @@ function (_Component) {
             // Default ltr
             _style = {
               width: scaffoldBlockPxWidth,
-              left: scaffoldBlockPxWidth * i
+              left: (scaffoldBlockPxWidth * i) + 3
             };
           }
 

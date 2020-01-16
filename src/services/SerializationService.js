@@ -54,12 +54,12 @@ class SerializationService {
     static convertStringToNote = (data: string): NoteType => {
         if (data === '' || data.length < 5) return {};
         const note = NoteMessage.decode(Buffer.from(data, 'latin1'));
-        try {
+        /* try {
             note['.easy_note.NoteFull.text'] = JSON.parse(note['.easy_note.NoteFull.text']);
         } catch (ignore) {
             console.warn('convertStringToNote', note['.easy_note.NoteFull.text'], ignore);
-            /* NOP */
-        }
+            /!* NOP *!/
+        }*/
         note.text = note['.easy_note.NoteFull.text'] || '';
         return note;
     };
