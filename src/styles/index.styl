@@ -142,13 +142,18 @@
       left: auto;
     }
 
+    .jodit_container .jodit_dark_theme .jodit_tabs .jodit_tabs_buttons>a.active,
     .jodit_dark_theme .jodit_toolbar li.jodit_toolbar_btn>a:hover {
-      background-color: transparent;
+      background-color: transparent !important;
     }
 
     .jodit_dark_theme .jodit_toolbar li.jodit_toolbar_btn.jodit_toolbar_btn-break {
       margin: 0.8em 0 !important;
     }
+  }
+
+  .jodit_dark_theme .jodit_tabs .jodit_tabs_buttons>a.active {
+    background-color: transparent !important;
   }
 
   .jodit_toolbar_btn .jodit_toolbar_popup {
@@ -157,6 +162,9 @@
 
   .jodit_toolbar_popup > div {
     width: 13em !important;
+  }
+  .jodit_toolbar_popup-inline>div>.jodit_toolbar {
+    border-radius: 0.2em !important;
   }
   .jodit_toolbar_popup {
     border-radius: 0.2em !important;

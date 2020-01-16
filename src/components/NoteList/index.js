@@ -97,7 +97,7 @@ export default class NoteList extends React.Component<PropsType> {
             noteIsEdit: true,
         });
         setSelectedNote(null);
-        createUpdateNote({title: formatMessageIntl(MESSAGES.newNoteTitle)}, emptyFunc, () => {
+        createUpdateNote({title: formatMessageIntl(MESSAGES.newNoteTitle), noteIsNew: true}, emptyFunc, () => {
             syncNotes();
         });
     };
