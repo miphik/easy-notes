@@ -89,7 +89,8 @@
     }
 
     .jodit_dark_theme .jodit_tabs .jodit_tabs_buttons>a.active {
-      background-color: transparent;
+      background-color: transparent !important;
+      border: none;
     }
 
     .jodit_toolbar,
@@ -107,26 +108,8 @@
       font-size: 1.1em;
     }
 
-    .jodit_icon,
-    .jodit_toolbar .jodit_toolbar_btn > a {
-      fill: #8e8e8e !important;
-      color: #8e8e8e;
-    }
-
     .jodit_toolbar .jodit_toolbar_btn.jodit_with_dropdownlist {
       padding: 0 0.5em;
-    }
-
-    .jodit_wysiwyg {
-      color: #d3d3d3;
-    }
-
-    .jodit_toolbar > li.jodit_toolbar_btn.jodit_with_dropdownlist .jodit_with_dropdownlist-trigger {
-      border-top-color: #d3d3d3;
-    }
-
-    .jodit_placeholder {
-      color: #d3d3d3;
     }
 
     .jodit_form label {
@@ -135,16 +118,7 @@
 
     .jodit_disabled,
     .jodit_dark_theme .jodit_toolbar_list > .jodit_toolbar {
-      background-color: #1c262a !important;
       font-size: 1em;
-    }
-
-    .jodit_colorpicker a:hover svg {
-      fill: #d3d3d3 !important;
-    }
-
-    .jodit_colorpicker a svg {
-      fill: #8e8e8e !important;
     }
 
     .jodit_button {
@@ -186,10 +160,7 @@
   }
   .jodit_toolbar_popup {
     border-radius: 0.2em !important;
-    background-color: #1c262a !important;
     font-size: 0.8em !important;
-    color: #d3d3d3 !important;
-    border: 1px solid #747474 !important;
   }
 }
 

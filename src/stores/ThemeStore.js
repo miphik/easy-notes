@@ -12,6 +12,7 @@ export type ThemeType = {
     },
     color: {
         gray: string,
+        selected: string,
         button: string,
         buttonActive: string,
         dangerButton: string,
@@ -38,6 +39,8 @@ const DEFAULT_THEME = (scale: number) => (
         },
         color: {
             gray: '#747474',
+
+            selected: 'rgba(211, 211, 211, 0.2)',
 
             button:       '#8e8e8e',
             buttonActive: '#d3d3d3',
