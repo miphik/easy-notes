@@ -58,24 +58,24 @@ module.exports = function (env, argv) {
         common.plugins.push(new WebpackMd5Hash());
         common.plugins.push(new TerserPlugin({
             terserOptions: {
-                parallel: 4,
+                parallel:  4,
                 sourceMap: true,
-                ecma: 8,
-                output: {
+                ecma:      8,
+                output:    {
                     comments: false, // remove comments
                 },
                 compress: {
-                    unused: true,
-                    dead_code: true, // big one--strip code that will never execute
-                    warnings: false, // good for prod apps so users can't peek behind curtain
+                    unused:        true,
+                    dead_code:     true, // big one--strip code that will never execute
+                    warnings:      false, // good for prod apps so users can't peek behind curtain
                     drop_debugger: true,
-                    conditionals: true,
-                    evaluate: true,
-                    drop_console: true, // strips console statements
-                    sequences: true,
-                    booleans: true,
-                    if_return: true,
-                    join_vars: true,
+                    conditionals:  true,
+                    evaluate:      true,
+                    drop_console:  true, // strips console statements
+                    sequences:     true,
+                    booleans:      true,
+                    if_return:     true,
+                    join_vars:     true,
                 },
             },
         }));

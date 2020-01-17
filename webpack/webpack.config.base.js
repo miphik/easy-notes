@@ -7,7 +7,7 @@ const {CleanWebpackPlugin} = require('clean-webpack-plugin');
 const path = require('path');
 const PATHS = require('./paths');
 
-const NODE_ENV = process.env.NODE_ENV;
+const {NODE_ENV} = process.env;
 console.log(`START NODE_ENV is: ${NODE_ENV}`);
 
 const HTML_PLUGIN_MINIFY_OPTIONS = {

@@ -28,6 +28,9 @@
   "build": {
     "productName": "Easy-Note",
     "appId": "omatic.app.easy.note",
+    "mac": {
+      "category": "your.app.category.type"
+    },
     "dmg": {
       "contents": [
         {
@@ -127,7 +130,7 @@
     "extract-text-webpack-plugin": "^4.0.0-beta.0",
     "favicons-webpack-plugin": "3.0.0",
     "file-loader": "^5.0.2",
-    "html-webpack-plugin": "^3.2.0",
+    "html-webpack-plugin": "^4.0.0-beta.11",
     "jest": "^24.8.0",
     "jest-dom": "^4.0.0",
     "less": "^3.9.0",
