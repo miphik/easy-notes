@@ -175,41 +175,6 @@
             display: none;
         }
 
-        .DraftJs__buttons_buttonWrapper {
-            display: inline-block;
-        }
-
-        .DraftJs__buttons_active {
-            background: #171e21 !important;
-            outline: 0;
-        }
-
-        .DraftJs__buttons_button svg {
-            fill: #9a9a9a;
-        }
-
-        .DraftJs__buttons_button {
-            background: rgb(36, 46, 50);
-            color: #888;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 18px;
-            border: 0;
-            padding-top: 5px;
-            vertical-align: bottom;
-            width: 36px;
-        }
-
-        .DraftJs__buttons_button:hover svg {
-            fill: #cbcbcb;
-        }
-
-        .DraftJs__buttons_button:focus {
-            background: #f3f3f3;
-            outline: 0;
-        }
-
         .main__toolbar {
             -webkit-app-region: drag;
             -webkit-user-select: none;
@@ -220,6 +185,172 @@
             width: 100%;
             z-index: 10000;
             background-color: transparent !important;
+        }
+
+        body,
+        html,
+        #app-mount {
+            padding: 0;
+            margin: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        button {
+            overflow: hidden !important;
+        }
+
+        .full_height {
+            height: 100%;
+        }
+
+        .ant-btn,
+        .ant-input {
+            font-size: 1em !important;
+        }
+
+        .anticon-delete:hover i svg {
+            fill: #ff4d4f
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background-color: hsla(0, 0%, 100%, .4);
+            background-clip: padding-box;
+            border: 5px solid transparent;
+            border-radius: 7px;
+        }
+
+        ::-webkit-scrollbar {
+            size: 13px;
+        }
+
+        .jodit_container {
+            font-size: 1em !important;
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            min-height: 100% !important;
+            background: transparent !important;
+            border: none !important;
+        }
+
+        .jodit_container .jodit_toolbar {
+            font-size: 1em;
+        }
+
+        .jodit_container .jodit_wysiwyg,
+        .jodit_container .jodit_workplace {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            min-height: 100% !important;
+            background: transparent !important;
+            border: none !important;
+        }
+
+        .jodit_container .jodit_toolbar .jodit_toolbar_btn {
+            min-width: 2.29em;
+            height: 2.29em;
+            line-height: 2.29em;
+        }
+
+        .jodit_container .jodit_workplace,
+        .jodit_container .jodit_toolbar,
+        .jodit_container .jodit_statusbar,
+        .jodit_container .jodit_toolbar > li.jodit_toolbar_btn.jodit_toolbar_btn-separator,
+        .jodit_container .jodit_toolbar > li.jodit_toolbar_btn.jodit_toolbar_btn-break {
+            border-color: transparent;
+        }
+
+        .jodit_container .jodit_toolbar .jodit_toolbar .jodit_toolbar {
+            font-size: 1.2em !important;
+        }
+
+        .jodit_container .jodit_dark_theme .jodit_tabs .jodit_tabs_buttons > a.active {
+            background-color: transparent !important;
+            border: none;
+        }
+
+        .jodit_container .jodit_toolbar,
+        .jodit_container .jodit_statusbar {
+            padding: 0.5em !important;
+        }
+
+        .jodit_container .jodit_toolbar_list > .jodit_toolbar li.jodit_toolbar_btn > a {
+            padding: 0.5em 1em;
+        }
+
+        .jodit_container .jodit_icon {
+            width: 1em;
+            height: 1em;
+            font-size: 1.1em;
+        }
+
+        .jodit_container .jodit_toolbar .jodit_toolbar_btn.jodit_with_dropdownlist {
+            padding: 0 0.5em;
+        }
+
+        .jodit_container .jodit_form label {
+            margin: 1em 0;
+        }
+
+        .jodit_container .jodit_disabled,
+        .jodit_container .jodit_dark_theme .jodit_toolbar_list > .jodit_toolbar {
+            font-size: 1em;
+        }
+
+        .jodit_container .jodit_button {
+            padding: 0 1.5em !important;
+            border-radius: 0.3em !important;
+            font-size: 1em !important;
+            text-align: center;
+            margin: 0;
+        }
+
+        .jodit_container .jodit_form {
+            color: inherit !important;
+        }
+
+        .jodit_container .jodit_tabs_buttons {
+            margin: 1.2em 0 !important;
+        }
+
+        .jodit_container .jodit_toolbar_container {
+            position: sticky;
+            z-index: 3;
+            top: 0;
+            left: auto;
+        }
+
+        .jodit_container .jodit_container .jodit_dark_theme .jodit_tabs .jodit_tabs_buttons > a.active,
+        .jodit_container .jodit_dark_theme .jodit_toolbar li.jodit_toolbar_btn > a:hover {
+            background-color: transparent !important;
+        }
+
+        .jodit_container .jodit_dark_theme .jodit_toolbar li.jodit_toolbar_btn.jodit_toolbar_btn-break {
+            margin: 0.8em 0 !important;
+        }
+
+        .jodit_dark_theme .jodit_tabs .jodit_tabs_buttons > a.active {
+            background-color: transparent !important;
+        }
+
+        .jodit_toolbar_btn .jodit_toolbar_popup {
+            font-size: 1em !important;
+        }
+
+        .jodit_toolbar_popup > div {
+            width: 13em !important;
+        }
+
+        .jodit_toolbar_popup-inline > div > .jodit_toolbar {
+            border-radius: 0.2em !important;
+        }
+
+        .jodit_toolbar_popup {
+            border-radius: 0.2em !important;
+            font-size: 0.8em !important;
         }
 
         @keyframes hide-spinner {

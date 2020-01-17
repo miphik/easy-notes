@@ -3,7 +3,6 @@ import {configure} from 'mobx';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import 'regenerator-runtime/runtime';
-import 'src/styles/index.styl?raw';
 import AppProvider from './AppProvider';
 
 configure({enforceActions: 'observed'});
