@@ -67,6 +67,8 @@ export default class StatusIcon extends React.Component<PropsType> {
             </span>
         );
 
+        if (syncErrors) console.error('SYNC ERROR', syncErrors);
+        if (remoteStoreIsError) console.error('REMOTE STORE ERROR', remoteStoreIsError);
         return (
             <div style={style.container}>
                 <NavLink to={WEBDAV_AUTH_PATH}>

@@ -160,7 +160,14 @@ export default class NoteItem extends React.PureComponent<PropsType> {
                         <div style={style.date} className={styles.date}>{moment(note.updatedAt).format('lll')}</div>
                     </div>
                 </div>
-                <div style={style.divider}/>
+                <div
+                    style={style.divider}
+                    onClick={(event: MouseEvent) => {
+                        event.preventDefault();
+                        event.stopPropagation();
+                        return false;
+                    }}
+                />
             </>
         );
     }

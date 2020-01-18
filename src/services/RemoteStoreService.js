@@ -15,6 +15,7 @@ import type {
 } from 'src/types/NoteType';
 import {FormattedMessage as Fm} from 'react-intl';
 import {createClient} from 'webdav';
+import {categoryComparator} from 'utils/ComparatorsUtils';
 
 const WEBDAV_CREDENTIALS = 'WEBDAV_CREDENTIALS';
 const WEBDAV_PROJECT_PATH = '/easy-notes';
@@ -341,6 +342,7 @@ export default class RemoteStoreService {
         success: () => {} = () => {
         },
     ) => {
+        data.sort(categoryComparator);
         console.info('remoteStoreService.saveCategoriesList', data);
         if (!RemoteStoreService.isClientInitialized(error)) return;
         const categoriesAsString = serializationService.convertCategoriesListToString(

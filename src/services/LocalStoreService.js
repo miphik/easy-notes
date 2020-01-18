@@ -6,14 +6,14 @@ import * as path from 'path';
 import type {SerializationServiceType} from 'services/SerializationService';
 import SerializationService from 'services/SerializationService';
 import {
-    NOTE_DATE_FORMAT,
     NOTE_DAY_DATE_FORMAT,
     NOTE_MONTH_DATE_FORMAT,
-    NOTE_YAER_DATE_FORMAT
+    NOTE_YAER_DATE_FORMAT,
 } from 'src/constants/general';
 import type {
     CategoriesType, CategoryType, NotesType, NoteType,
 } from 'types/NoteType';
+import {categoryComparator} from "utils/ComparatorsUtils";
 
 const LOCAL_PROJECT_PATH = 'easy-notes';
 const INDEX_FILE_NAME = 'notes.index';
@@ -168,6 +168,7 @@ export default class LocalStoreService {
         error: () => {} = () => {},
         success: () => {} = () => {},
     ) => {
+        data.sort(categoryComparator);
         console.info('localeStoreService.saveCategoriesList', data);
         const categories = serializationService.convertCategoriesListToString(
             data.map((item: CategoryType, index: number) => ({...item, orderNumber: index})),
