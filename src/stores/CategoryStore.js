@@ -12,6 +12,7 @@ import noteStore from 'stores/NoteStore';
 import type {CategoryType} from 'types/NoteType';
 import type {StoreType} from 'types/StoreType';
 import uuidv4 from 'uuid/v4';
+import {categoryComparator} from 'utils/ComparatorsUtils';
 
 let remoteStorageService: StoreType = RemoteStoreService;
 let localStorageService: StoreType = LocalStoreService;
@@ -25,7 +26,6 @@ const EXPANDED_NODES = 'EXPANDED_NODES';
 
 const getKey = (node: CategoryType) => node.uuid;
 const getParentKey = (node: CategoryType) => node.parentUUID[0];
-const categoryComparator = (a: CategoryType, b: CategoryType) => a.orderNumber - b.orderNumber;
 
 class CategoryStore {
     constructor() {
@@ -126,8 +126,8 @@ class CategoryStore {
         successCallback: () => void,
     ) => {
         const newCategories = getFlatDataFromTree({
-            treeData: treeNodes,
-            getNodeKey: getKey,
+            treeData:        treeNodes,
+            getNodeKey:      getKey,
             ignoreCollapsed: false,
         }).map((item, index) => {
             item.node.parentUUID = item.parentNode ? [item.parentNode.uuid] : [ROOT_CATEGORY_NAME];
@@ -178,12 +178,16 @@ class CategoryStore {
         category: CategoryType,
         errorCallback: () => void,
         successCallback: () => void,
+        selectedCategoryUuid: string,
     ) => {
         const cat = {...category};
         const isNew = !cat.uuid;
 
         cat.updatedAt = moment().format();
-        if (!cat.parentUUID) {
+        if (!cat.parentUUID && selectedCategoryUuid) {
+            cat.parentUUID = [selectedCategoryUuid];
+            this.changeExpandedNodes(true, selectedCategoryUuid);
+        } else if (!cat.parentUUID) {
             cat.parentUUID = [];
         }
         if (cat.parent) {
@@ -266,7 +270,7 @@ class CategoryStore {
         // categories.unshift(DELETED_CATEGORY);
         return getTreeFromFlatData({
             flatData: categories,
-            rootKey: ROOT_CATEGORY_NAME,
+            rootKey:  ROOT_CATEGORY_NAME,
             getKey,
             getParentKey,
         });

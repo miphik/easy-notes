@@ -2,8 +2,7 @@
 import type {UpdateOperationType} from 'services/SyncService';
 import {ADD_NEW_NOTE_OPERATION, UPDATE_NEW_NOTE_OPERATION} from 'services/SyncService';
 import type {CategoryType, NoteType} from 'src/types/NoteType';
-
-const sortEntities = (noteA: NoteType, noteB: NoteType) => noteB.updatedAt.localeCompare(noteA.updatedAt);
+import {sortEntities} from 'utils/ComparatorsUtils';
 
 export type MergedIndexResultType = {
     updateOperations: Array<UpdateOperationType>
