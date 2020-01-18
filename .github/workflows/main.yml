@@ -27,6 +27,8 @@ jobs:
           npm run build:macos
         env:
           CI: true
+      - name: copy artefact
+      run: mv build/Easy-Note-*.dmg build/Easy-Note.dmg
       - name: Cache
         uses: actions/cache@v1.0.3
         with:
@@ -39,4 +41,4 @@ jobs:
       - uses: actions/upload-artifact@v1
         with:
           name: easy-notes
-          path: build/Easy-Note-*.dmg
+          path: build/Easy-Note.dmg
