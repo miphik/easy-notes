@@ -106,9 +106,9 @@ class NoteEditor extends React.Component {
                 )}
                 footer={<div className={styles.footer}/>}
             >
+                <Style rules={textStyle}/>
                 {showComponent ? (
                     <>
-                        <Style rules={textStyle}/>
                         <JoditEditor
                             ref={this.editor}
                             value={currentNoteText}
