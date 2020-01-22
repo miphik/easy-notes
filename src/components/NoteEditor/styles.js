@@ -80,10 +80,19 @@ const STYLES = memoizeOne((theme: ThemeType) => (
             color:           `${theme.color.buttonActive} !important`,
             textAlign:       'center',
         },
+        ace_gutter: {
+            zIndex: 1,
+        },
+        iframe: {
+          height: '100%',
+          flex: 1,
+        },
     }
 ));
 
 const getTextStyles = memoizeOne((style: STYLES) => ({
+    '.jodit_wysiwyg_iframe':                            style.iframe,
+    '.ace_gutter':                            style.ace_gutter,
     '.jodit_form_inserter .jodit_form-table-creator-box .jodit_form-container>div.hovered:after':                            style.joditInserterAfter,
     '.jodit_dark_theme .jodit_tabs .jodit_tabs_buttons>a':                                                                   style.joditTabBtn,
     '.jodit_dark_theme .jodit_toolbar li.jodit_toolbar_btn>a':                                                               style.joditToolbarBtn,
