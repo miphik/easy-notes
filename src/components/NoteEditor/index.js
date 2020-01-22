@@ -12,7 +12,6 @@ import {Jodit} from 'jodit';
 import {STYLES, getTextStyles} from './styles';
 import styles from './styles.styl';
 import {tasklist} from "components/Jodit/plugins/tasklist";
-import * as readability from "readability"
 
 Jodit.plugins.add('codeBlock', tasklist);
 Jodit.modules.Dummy = function (editor) {
@@ -27,13 +26,6 @@ Jodit.modules.Dummy = function (editor) {
         t.setContent(html),
         t.setSize(500, 900),
         t.open();*/
-        const ddd= readability;
-        debugger;
-        const article = readability.parse(editor.value);
-
-        console.log(1111,article);
-
-        return;
         console.log(2342342342);
         const html = editor.create.fromHTML(`
 <section class="tasks-checkbox">
@@ -101,12 +93,25 @@ const button = ['source',
 
 const config = {
     iframeStyle: `
+    .jodit_resizer,
+    table td{
+        border: 1px solid white;
+    }
+    table {
+        border-style: solid;
+        border-collapse: collapse;
+        border-color: white;
+    }
+    pre {
+        white-space: inherit;
+    }
     iframe: {
         flex: 1;
         height: 100%;
         }
     html {
         color: white;
+        overflow-y: auto !important;
     }
     a {
         color:lightblue;
