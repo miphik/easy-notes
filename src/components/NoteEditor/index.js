@@ -82,7 +82,7 @@ const button = ['source',
     'fullsize', {
         iconURL: 'images/dummy.png',
         tooltip: 'insert Dummy Image',
-        exec:    editor => editor.dummy.insertDummyImage(100, 100, 'f00', '000'),
+        exec: editor => editor.dummy.insertDummyImage(100, 100, 'f00', '000'),
     }, {
         command: 'insertcode',
         icon: 'source',
@@ -246,11 +246,11 @@ const config = {
         fillEmptyParagraph: false,
         replaceNBSP: false,
     },
-    readonly:             false, // all options from https://xdsoft.net/jodit/doc/
-    buttonsSM:             button,
-    buttonsMD:             button,
-    buttonsXS:             button,
-    buttons:             button,
+    readonly: false, // all options from https://xdsoft.net/jodit/doc/
+    buttonsSM: button,
+    buttonsMD: button,
+    buttonsXS: button,
+    buttons: button,
     events: {
         afterInit: editor => editor.dummy = new Jodit.modules.Dummy(editor),
     },
