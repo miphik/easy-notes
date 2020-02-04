@@ -27,14 +27,12 @@ const USER_DATA_PATH_TEMP = (
 );
 const USER_DATA_PATH = USER_DATA_PATH_TEMP ? USER_DATA_PATH_TEMP.getPath('userData') : '';
 const LOCAL_PROJECT_FULL_PATH = path.resolve(USER_DATA_PATH, LOCAL_PROJECT_PATH);
-if (!fs.existsSync(LOCAL_PROJECT_FULL_PATH)) {
-    fs.mkdirSync(LOCAL_PROJECT_FULL_PATH);
-}
+const LOCAL_PROJECT_CATEGORIES_MAIN_FILE = `${LOCAL_PROJECT_FULL_PATH}/${INDEX_CATEGORIES_FILE_NAME}`;
+const LOCAL_PROJECT_MAIN_FILE = `${LOCAL_PROJECT_FULL_PATH}/${INDEX_FILE_NAME}`;
+
 const NOTE_YEAR_PATH_PART = (note: NoteType) => moment(note.createdAt).format(NOTE_YAER_DATE_FORMAT);
 const NOTE_MONTH_PATH_PART = (note: NoteType) => moment(note.createdAt).format(NOTE_MONTH_DATE_FORMAT);
 const NOTE_DAY_PATH_PART = (note: NoteType) => moment(note.createdAt).format(NOTE_DAY_DATE_FORMAT);
-
-const LOCAL_PROJECT_MAIN_FILE = `${LOCAL_PROJECT_FULL_PATH}/${INDEX_FILE_NAME}`;
 
 const LOCAL_PROJECT_NOTE_FILE = (note: NoteType) => `${LOCAL_PROJECT_FULL_PATH}/${NOTE_YEAR_PATH_PART(note)}/`
     + `${NOTE_MONTH_PATH_PART(note)}/${NOTE_DAY_PATH_PART(note)}/${note.uuid}`;
@@ -45,8 +43,6 @@ const LOCAL_PROJECT_MONTH_NOTE_DIR = (note: NoteType) => `${LOCAL_PROJECT_FULL_P
 const LOCAL_PROJECT_DAY_NOTE_DIR = (note: NoteType) => `${LOCAL_PROJECT_FULL_PATH}/${NOTE_YEAR_PATH_PART(note)}/`
     + `${NOTE_MONTH_PATH_PART(note)}/${NOTE_DAY_PATH_PART(note)}`;
 
-const LOCAL_PROJECT_CATEGORIES_MAIN_FILE = `${LOCAL_PROJECT_FULL_PATH}/${INDEX_CATEGORIES_FILE_NAME}`;
-
 console.info('LOCAL_PROJECT_FULL_PATH', LOCAL_PROJECT_FULL_PATH);
 
 let serializationService = SerializationService;
@@ -55,7 +51,8 @@ export const setSerializationService = (serializeService: SerializationServiceTy
     serializationService = serializeService;
 };
 
-export default class LocalStoreService {
+class LocalStoreService {
+
     static getDirectoryContent = (directory = '/', error: () => {} = () => {}, success: () => {} = () => {}) => {
     };
 
@@ -182,3 +179,17 @@ export default class LocalStoreService {
     static deleteNote = (data, error: () => {} = () => {}, success: () => {} = () => {}) => {
     };
 }
+
+if (!fs.existsSync(LOCAL_PROJECT_FULL_PATH)) {
+    fs.mkdirSync(LOCAL_PROJECT_FULL_PATH);
+}
+
+if (!fs.existsSync(LOCAL_PROJECT_CATEGORIES_MAIN_FILE)) {
+    fs.writeFileSync(LOCAL_PROJECT_CATEGORIES_MAIN_FILE, '');
+}
+
+if (!fs.existsSync(LOCAL_PROJECT_MAIN_FILE)) {
+    fs.writeFileSync(LOCAL_PROJECT_MAIN_FILE, '');
+}
+
+export default LocalStoreService;

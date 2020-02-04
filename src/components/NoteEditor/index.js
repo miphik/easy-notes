@@ -92,6 +92,13 @@ const button = ['source',
     }];
 
 const config = {
+    showPlaceholder: false,
+    askBeforePasteHTML: false,
+    autofocus: true,
+    theme: 'dark',
+    toolbarStickyOffset: 0,
+    showCharsCounter: false,
+    showWordsCounter: false,
     iframeStyle: `
     .jodit_resizer,
     table td{
@@ -227,16 +234,18 @@ const config = {
   font-size: 0.8em !important;
 }
     `,
-    showPlaceholder:      false,
     //askBeforePasteHTML:   false,
-    autofocus:            true,
-    theme:                'dark',
     iframe: true,
-    toolbarStickyOffset:  0,
-    showCharsCounter:     false,
-    showWordsCounter:     false,
     defaultActionOnPaste: 'insert_as_html',
     showXPathInStatusbar: false,
+    disablePlugins: 'cleanHTML',
+    cleanHTML: {
+        timeout: null,
+        cleanOnPaste: false,
+        removeEmptyElements: false,
+        fillEmptyParagraph: false,
+        replaceNBSP: false,
+    },
     readonly:             false, // all options from https://xdsoft.net/jodit/doc/
     buttonsSM:             button,
     buttonsMD:             button,
@@ -251,10 +260,10 @@ const toolbarClassName = 'NoteText__toolbar';
 
 @inject(stores => (
     {
-        theme:               stores.themeStore.getTheme,
-        noteText:            stores.noteStore.getNoteText,
-        selectedNote:        stores.noteStore.getSelectedNote,
-        selectedCategory:    stores.categoryStore.getSelectedCategory,
+        theme: stores.themeStore.getTheme,
+        noteText: stores.noteStore.getNoteText,
+        selectedNote: stores.noteStore.getSelectedNote,
+        selectedCategory: stores.categoryStore.getSelectedCategory,
         setSelectedNoteText: stores.noteStore.setSelectedNoteText,
     }
 ))
@@ -289,7 +298,7 @@ class NoteEditor extends React.Component {
         const {selectedNote, selectedCategory} = this.props;
         this.setState({
             currentNoteText: data,
-            currentNote:     selectedNote,
+            currentNote: selectedNote,
         }, () => {
             if (!this.props.selectedNote.text || !isEqual(this.props.selectedNote.text, data)) {
                 this.debounceChangeNoteText(selectedNote, selectedCategory, data);

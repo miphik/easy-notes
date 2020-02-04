@@ -4,6 +4,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import 'regenerator-runtime/runtime';
 import AppProvider from './AppProvider';
+import 'core-js';
 
 configure({enforceActions: 'observed'});
 
