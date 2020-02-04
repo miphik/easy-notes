@@ -11,28 +11,35 @@ import Radium, {Style} from 'radium';
 import {STYLES, getTextStyles} from './styles';
 import styles from './styles.styl';
 
-
 const config = {
-    showPlaceholder:      false,
-    askBeforePasteHTML:   false,
-    autofocus:            true,
-    theme:                'dark',
-    toolbarStickyOffset:  0,
-    showCharsCounter:     false,
-    showWordsCounter:     false,
+    showPlaceholder: false,
+    askBeforePasteHTML: false,
+    autofocus: true,
+    theme: 'dark',
+    toolbarStickyOffset: 0,
+    showCharsCounter: false,
+    showWordsCounter: false,
     defaultActionOnPaste: 'insert_as_html',
     showXPathInStatusbar: false,
-    readonly:             false, // all options from https://xdsoft.net/jodit/doc/
+    readonly: false, // all options from https://xdsoft.net/jodit/doc/
+    disablePlugins: 'cleanHTML',
+    cleanHTML: {
+        timeout: null,
+        cleanOnPaste: false,
+        removeEmptyElements: false,
+        fillEmptyParagraph: false,
+        replaceNBSP: false,
+    },
 };
 
 const toolbarClassName = 'NoteText__toolbar';
 
 @inject(stores => (
     {
-        theme:               stores.themeStore.getTheme,
-        noteText:            stores.noteStore.getNoteText,
-        selectedNote:        stores.noteStore.getSelectedNote,
-        selectedCategory:    stores.categoryStore.getSelectedCategory,
+        theme: stores.themeStore.getTheme,
+        noteText: stores.noteStore.getNoteText,
+        selectedNote: stores.noteStore.getSelectedNote,
+        selectedCategory: stores.categoryStore.getSelectedCategory,
         setSelectedNoteText: stores.noteStore.setSelectedNoteText,
     }
 ))
@@ -67,7 +74,7 @@ class NoteEditor extends React.Component {
         const {selectedNote, selectedCategory} = this.props;
         this.setState({
             currentNoteText: data,
-            currentNote:     selectedNote,
+            currentNote: selectedNote,
         }, () => {
             if (!this.props.selectedNote.text || !isEqual(this.props.selectedNote.text, data)) {
                 this.debounceChangeNoteText(selectedNote, selectedCategory, data);
