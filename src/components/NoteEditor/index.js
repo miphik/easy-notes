@@ -9,9 +9,26 @@ import moment from 'moment';
 import Radium, {Style} from 'radium';
 import JoditEditor from 'components/Jodit';
 import {Jodit} from 'jodit';
-import {STYLES, getTextStyles} from './styles';
+import {STYLES, getTextStyles, IFRAME_EDITOR_STYLES} from './styles';
 import styles from './styles.styl';
 import {tasklist} from "components/Jodit/plugins/tasklist";
+import memoizeOne from "memoize-one";
+import type {ThemeType} from "stores/ThemeStore";
+import Prism from "prismjs";
+import 'prismjs/themes/prism-twilight.css';
+
+const removeStyles = (el) => {
+    if (!el) return;
+    el.removeAttribute('style');
+    el.removeAttribute('class');
+
+    if(el.childNodes.length > 0) {
+        for(var child in el.childNodes) {
+            /* filter element nodes only */
+            if(el.childNodes[child].nodeType == 1) removeStyles(el.childNodes[child]);
+        }
+    }
+}
 
 Jodit.plugins.add('codeBlock', tasklist);
 Jodit.modules.Dummy = function (editor) {
@@ -90,155 +107,47 @@ const button = ['source',
         tags: ['ul'],
         tooltip: 'Insert Unordered List'
     }];
+const helpers = {
+    closest(tags, el, editor) {
+        const condition = (node) => new RegExp(`^(${tags})$`, 'i').test(node.nodeName);
+        let closest = el;
+        do {
+            if (condition(closest)) {
+                return closest;
+            }
+            closest = closest.parentElement;
+        } while (closest && closest !== editor.editor);
+        return null;
+    },
+    nextSiblings(el) {
+        const nextSiblings = [];
+        let current = el;
+        while (current.nextElementSibling) {
+            current = current.nextElementSibling;
+            nextSiblings.push(current);
+        }
+        return nextSiblings;
+    }
+};
 
-const config = {
+const config = memoizeOne((theme: ThemeType) => ({
     showPlaceholder: false,
     askBeforePasteHTML: false,
-    autofocus: true,
+    // autofocus: true,
     theme: 'dark',
+    link: {
+        followOnDblClick: false,
+    },
     toolbarStickyOffset: 0,
     showCharsCounter: false,
     showWordsCounter: false,
-    iframeStyle: `
-    .jodit_resizer,
-    table td{
-        border: 1px solid white;
-    }
-    table {
-        border-style: solid;
-        border-collapse: collapse;
-        border-color: white;
-    }
-    pre {
-        white-space: inherit;
-    }
-    iframe: {
-        flex: 1;
-        height: 100%;
-        }
-    html {
-        color: white;
-        overflow-y: auto !important;
-    }
-    a {
-        color:lightblue;
-        }
-        
-    .jodit_container {
-  font-size: 1em !important;
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-  min-height: 100% !important;
-  background: transparent !important;
-  border: none !important;
-}
-.jodit_container .jodit_toolbar {
-  font-size: 1em;
-}
-.jodit_container .jodit_wysiwyg,
-.jodit_container .jodit_workplace {
-  flex-direction: column;
-  flex: 1;
-  display: inline-block;
-  min-height: 100% !important;
-  background: transparent !important;
-  border: none !important;
-}
-.jodit_container .jodit_toolbar .jodit_toolbar_btn {
-  min-width: 2.29em;
-  height: 2.29em;
-  line-height: 2.29em;
-}
-.jodit_container .jodit_workplace,
-.jodit_container .jodit_toolbar,
-.jodit_container .jodit_statusbar,
-.jodit_container .jodit_toolbar > li.jodit_toolbar_btn.jodit_toolbar_btn-separator,
-.jodit_container .jodit_toolbar > li.jodit_toolbar_btn.jodit_toolbar_btn-break {
-  border-color: transparent;
-}
-.jodit_container .jodit_toolbar .jodit_toolbar .jodit_toolbar {
-  font-size: 1.2em !important;
-}
-.jodit_container .jodit_dark_theme .jodit_tabs .jodit_tabs_buttons > a.active {
-  background-color: transparent !important;
-  border: none;
-}
-.jodit_container .jodit_toolbar,
-.jodit_container .jodit_statusbar {
-  padding: 0.5em !important;
-}
-.jodit_container .jodit_toolbar_list > .jodit_toolbar li.jodit_toolbar_btn > a {
-  padding: 0.5em 1em;
-}
-.jodit_container .jodit_icon {
-  width: 1em;
-  height: 1em;
-  font-size: 1.1em;
-}
-.jodit_container .jodit_toolbar .jodit_toolbar_btn.jodit_with_dropdownlist {
-  padding: 0 0.5em;
-}
-.jodit_container .jodit_form label {
-  margin: 1em 0;
-}
-.jodit_container .jodit_disabled,
-.jodit_container .jodit_dark_theme .jodit_toolbar_list > .jodit_toolbar {
-  font-size: 1em;
-}
-.jodit_container .jodit_button {
-  padding: 0 1.5em !important;
-  border-radius: 0.3em !important;
-  font-size: 1em !important;
-  text-align: center;
-  margin: 0;
-}
-.jodit_container .jodit_form {
-  color: inherit !important;
-}
-.jodit_container .jodit_tabs_buttons {
-  margin: 1.2em 0 !important;
-}
-.jodit_container .jodit_toolbar_container {
-  position: sticky;
-  z-index: 3;
-  top: 0;
-  left: auto;
-}
-.jodit_container .jodit_container .jodit_dark_theme .jodit_tabs .jodit_tabs_buttons > a.active,
-.jodit_container .jodit_dark_theme .jodit_toolbar li.jodit_toolbar_btn > a:hover {
-  background-color: transparent !important;
-}
-.jodit_container .jodit_dark_theme .jodit_toolbar li.jodit_toolbar_btn.jodit_toolbar_btn-break {
-  margin: 0.8em 0 !important;
-}
-
-.jodit_dark_theme .jodit_tabs .jodit_tabs_buttons > a.active {
-  background-color: transparent !important;
-}
-
-.jodit_toolbar_btn .jodit_toolbar_popup {
-  font-size: 1em !important;
-}
-
-.jodit_toolbar_popup > div {
-  width: 13em !important;
-}
-
-.jodit_toolbar_popup-inline > div > .jodit_toolbar {
-  border-radius: 0.2em !important;
-}
-
-.jodit_toolbar_popup {
-  border-radius: 0.2em !important;
-  font-size: 0.8em !important;
-}
-    `,
+    iframeStyle: IFRAME_EDITOR_STYLES(theme),
     //askBeforePasteHTML:   false,
-    iframe: true,
+    // iframe: true,
     defaultActionOnPaste: 'insert_as_html',
     showXPathInStatusbar: false,
     disablePlugins: 'cleanHTML',
+    enter: 'div',
     cleanHTML: {
         timeout: null,
         cleanOnPaste: false,
@@ -251,10 +160,125 @@ const config = {
     buttonsMD: button,
     buttonsXS: button,
     buttons: button,
-    events: {
-        afterInit: editor => editor.dummy = new Jodit.modules.Dummy(editor),
+    popup: {
+        a: Jodit.Array(Jodit.defaultOptions.popup.a.filter(b => b.icon !== 'pencil'))
     },
-};
+    extraButtons: [
+        {
+            name: 'list-increase-indent',
+            iconURL: 'data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/PjxzdmcgaGVpZ2h0PSI0OCIgdmlld0JveD0iMCAwIDQ4IDQ4IiB3aWR0aD0iNDgiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZD0iTTIyIDM0aDIwdi00aC0yMHY0em0tMTYtMTBsOCA4di0xNmwtOCA4em0wIDE4aDM2di00aC0zNnY0em0wLTM2djRoMzZ2LTRoLTM2em0xNiAxMmgyMHYtNGgtMjB2NHptMCA4aDIwdi00aC0yMHY0eiIvPjxwYXRoIGQ9Ik0wIDBoNDh2NDhoLTQ4eiIgZmlsbD0ibm9uZSIvPjwvc3ZnPg==',
+            tooltip: 'Increase list indent',
+            exec: function (editor) {
+                const current = editor.selection.current(false);
+                const currentListItemElement = helpers.closest('pre', current, editor);
+                removeStyles(currentListItemElement);
+                console.log(11112121, currentListItemElement);
+                Prism.highlightElement(currentListItemElement);
+            }
+        },
+        /* {
+            name: 'list-increase-indent',
+            iconURL: 'data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/PjxzdmcgaGVpZ2h0PSI0OCIgdmlld0JveD0iMCAwIDQ4IDQ4IiB3aWR0aD0iNDgiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZD0iTTIyIDM0aDIwdi00aC0yMHY0em0tMTYtMTBsOCA4di0xNmwtOCA4em0wIDE4aDM2di00aC0zNnY0em0wLTM2djRoMzZ2LTRoLTM2em0xNiAxMmgyMHYtNGgtMjB2NHptMCA4aDIwdi00aC0yMHY0eiIvPjxwYXRoIGQ9Ik0wIDBoNDh2NDhoLTQ4eiIgZmlsbD0ibm9uZSIvPjwvc3ZnPg==',
+            tooltip: 'Increase list indent',
+            exec: function (editor) {
+                const current = editor.selection.current(false);
+                if (!current) {
+                    console.log('No element selected');
+                    return;
+                }
+                // Get currently selected list item (li)
+                const currentListItemElement = helpers.closest('li', current, editor);
+                if (!currentListItemElement) {
+                    console.log('No current list item element');
+                    return;
+                }
+
+                // Get currently selected list (ol/ul)
+                const currentListElement = helpers.closest('ul|ol', currentListItemElement, editor);
+                if (!currentListElement) {
+                    console.log('No current list element');
+                    return;
+                }
+
+                // Get previous list item to append item to sub list of that item.
+                const previousListItemElement = currentListItemElement.previousElementSibling;
+                if (!previousListItemElement) {
+                    console.log('No previous sibling');
+                    return;
+                }
+                // Store snapshot to restore after having moved element
+                const snapshot = editor.selection.save();
+                // Check if previous list item already contains a list
+                let childListElement = previousListItemElement.querySelector('ol,ul');
+                // Create new list if previous item does not include any list
+                childListElement = childListElement || editor.create.inside.element(currentListElement.nodeName);
+                childListElement.appendChild(currentListItemElement);
+                previousListItemElement.appendChild(childListElement);
+                editor.selection.restore(snapshot);
+            }
+        },
+        {
+            name: 'list-decrease-indent',
+            icon: 'source',
+            tooltip: 'Decrease list indent',
+            exec: function (editor) {
+                const current = editor.selection.current(false);
+                if (!current) {
+                    console.log('No element selected');
+                    return;
+                }
+                // Get currently selected list item (li)
+                const currentListItemElement = helpers.closest('li', current, editor);
+                if (!currentListItemElement) {
+                    console.log('No current list element');
+                    return;
+                }
+                // Get currently selected list (ul/ol)
+                const currentListElement = helpers.closest('ol|ul', current, editor);
+                // Get parent list item of selected list (li)
+                // Return if not nested.
+                const parentListItemElement = helpers.closest('li', currentListElement, editor);
+                if (!parentListItemElement) {
+                    console.log('Not nested');
+                    return;
+                }
+                // Get parent list
+                const parentListElement = helpers.closest('ol|ul', parentListItemElement, editor);
+                if (!parentListElement) {
+                    console.log('Not nested');
+                    return;
+                }
+                // Store snapshot to restore after having moved element
+                const snapshot = editor.selection.save();
+
+                // Add all next siblings of current list item to current list item sub-list.
+                const currentListItemNextSiblings = helpers.nextSiblings(currentListItemElement);
+                if (currentListItemNextSiblings.length) {
+                    // Check if list item already contains a list
+                    let childListElement = currentListItemElement.querySelector('ol,ul');
+                    childListElement = childListElement || editor.create.inside.element(currentListElement.nodeName);
+                    currentListItemElement.appendChild(childListElement);
+                    for (const currentListItemNextSibling of currentListItemNextSiblings) {
+                        childListElement.appendChild(currentListItemNextSibling);
+                    }
+                }
+
+                // Insert current list item (li) into parent list at the correct position
+                parentListElement.insertBefore(currentListItemElement, parentListItemElement.nextElementSibling);
+                // Check if previous list is empty, remove if so
+                if (!currentListElement.childNodes.length) {
+                    parentListItemElement.removeChild(currentListElement);
+                }
+                editor.selection.restore(snapshot);
+            }
+        }*/
+    ],
+    events: {
+        afterInit: editor => {
+            // return editor.dummy = new Jodit.modules.Dummy(editor);
+        },
+    }
+}));
 
 const toolbarClassName = 'NoteText__toolbar';
 
@@ -286,6 +310,11 @@ class NoteEditor extends React.Component {
         return null;
     }
 
+    /* componentDidUpdate = (prevProps, prevState, snapshot) => {
+        console.log(111);
+        setTimeout(() => Prism.highlightAll(), 0);
+    }*/
+
     constructor(props) {
         super(props);
         const {noteText, selectedNote} = props;
@@ -295,20 +324,20 @@ class NoteEditor extends React.Component {
     debounceChangeNoteText = debounce(this.props.setSelectedNoteText, 700);
 
     onChangeNote = data => {
-        const {selectedNote, selectedCategory} = this.props;
+        const {selectedNote, selectedCategory, setSelectedNoteText} = this.props;
         this.setState({
             currentNoteText: data,
             currentNote: selectedNote,
         }, () => {
             if (!this.props.selectedNote.text || !isEqual(this.props.selectedNote.text, data)) {
-                this.debounceChangeNoteText(selectedNote, selectedCategory, data);
+                setSelectedNoteText(selectedNote, selectedCategory, data);
             }
         });
     };
 
     onChange = data => {
         const {selectedNote, selectedCategory, setSelectedNoteText} = this.props;
-        setSelectedNoteText(selectedNote, selectedCategory, data);
+        if (selectedNote.text !== data) setSelectedNoteText(selectedNote, selectedCategory, data);
     };
 
     editor = null;
@@ -339,18 +368,18 @@ class NoteEditor extends React.Component {
             >
                 <Style rules={textStyle}/>
                 {showComponent ? (
-                    <>
+                    <div className="NoteEditor__container">
                         <JoditEditor
                             ref={this.editor}
                             value={currentNoteText}
-                            config={config}
+                            config={config(theme)}
                             // tabIndex={1} // tabIndex of textarea
-                            onBlur={this.onChange} // preferred to use
+                            onBlur={this.onChangeNote} // preferred to use
                             // only this option to update the content for performance reasons
                             onChange={newContent => {
                             }}
                         />
-                    </>
+                    </div>
                 ) : <span/>}
             </ScrollableColumn>
         );

@@ -8,7 +8,7 @@ import PropTypes from 'prop-types';
 import Jodit from 'jodit';
 import 'jodit/build/jodit.min.css';
 
-
+// .fire('afterInit', this)
 const JoditEditor = forwardRef(({
     value, config, onChange, onBlur, tabIndex, name,
 }, ref) => {
@@ -51,7 +51,12 @@ const JoditEditor = forwardRef(({
         }
     }, [textArea, value]);
 
-    return <textarea ref={textArea} name={name}/>;
+    return (
+        <>
+
+            <textarea ref={textArea} name={name}/>
+        </>
+    );
 });
 
 JoditEditor.propTypes = {

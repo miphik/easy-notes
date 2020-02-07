@@ -1819,6 +1819,13 @@
   resolved "https://registry.yarnpkg.com/@emotion/memoize/-/memoize-0.7.1.tgz#e93c13942592cf5ef01aa8297444dc192beee52f"
   integrity sha512-Qv4LTqO11jepd5Qmlp3M1YEjBumoTHcHFdgPTQ+sFlIL5myi/7xu/POwP7IRu6odBdmLXdtIs1D6TuW6kbwbbg==
 
+"@formatjs/intl-displaynames@^1.2.0":
+  version "1.2.0"
+  resolved "https://artifactory.cd-tech26.de:443/artifactory/api/npm/npm/@formatjs/intl-displaynames/-/intl-displaynames-1.2.0.tgz#b89935e232a454d113c7a6684c01ae391682a46d"
+  integrity sha1-uJk14jKkVNETx6ZoTAGuORaCpG0=
+  dependencies:
+    "@formatjs/intl-utils" "^2.2.0"
+
 "@formatjs/intl-listformat@^1.3.7":
   version "1.3.7"
   resolved "https://artifactory.cd-tech26.de:443/artifactory/api/npm/npm/@formatjs/intl-listformat/-/intl-listformat-1.3.7.tgz#36bb8cc1f532a1ece62e5c45a9e836b02223017c"
@@ -1845,6 +1852,11 @@
   version "2.0.4"
   resolved "https://artifactory.cd-tech26.de:443/artifactory/api/npm/npm/@formatjs/intl-utils/-/intl-utils-2.0.4.tgz#936961b7eade01f6d331d31cc9fb512d1fb3981a"
   integrity sha1-k2lht+reAfbTMdMcyftRLR+zmBo=
+
+"@formatjs/intl-utils@^2.2.0":
+  version "2.2.0"
+  resolved "https://artifactory.cd-tech26.de:443/artifactory/api/npm/npm/@formatjs/intl-utils/-/intl-utils-2.2.0.tgz#ba6e12fe64ff7fd160be392007c47d24b7ae5c75"
+  integrity sha1-um4S/mT/f9FgvjkgB8R9JLeuXHU=
 
 "@formatjs/macro@^0.2.6":
   version "0.2.6"
@@ -2638,14 +2650,6 @@
     "@types/prop-types" "*"
     csstype "^2.2.0"
 
-"@types/react@^16.9.17":
-  version "16.9.19"
-  resolved "https://artifactory.cd-tech26.de:443/artifactory/api/npm/npm/@types/react/-/react-16.9.19.tgz#c842aa83ea490007d29938146ff2e4d9e4360c40"
-  integrity sha1-yEKqg+pJAAfSmTgUb/Lk2eQ2DEA=
-  dependencies:
-    "@types/prop-types" "*"
-    csstype "^2.2.0"
-
 "@types/shallowequal@^1.1.1":
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/@types/shallowequal/-/shallowequal-1.1.1.tgz#aad262bb3f2b1257d94c71d545268d592575c9b1"
@@ -3114,10 +3118,10 @@ ansi-wrap@^0.1.0:
   resolved "https://artifactory.cd-tech26.de:443/artifactory/api/npm/npm/ansi-wrap/-/ansi-wrap-0.1.0.tgz#a82250ddb0015e9a27ca82e82ea603bbfa45efaf"
   integrity sha1-qCJQ3bABXponyoLoLqYDu/pF768=
 
-antd@3.26.7:
-  version "3.26.7"
-  resolved "https://artifactory.cd-tech26.de:443/artifactory/api/npm/npm/antd/-/antd-3.26.7.tgz#271555f4862b747019defb972f70b7dd4015fd3f"
-  integrity sha1-JxVV9IYrdHAZ3vuXL3C33UAV/T8=
+antd@3.26.8:
+  version "3.26.8"
+  resolved "https://artifactory.cd-tech26.de:443/artifactory/api/npm/npm/antd/-/antd-3.26.8.tgz#e40982c5cdb6c5c2c5f037ead27889b5f71e4ea3"
+  integrity sha1-5AmCxc22xcLF8Dfq0niJtfceTqM=
   dependencies:
     "@ant-design/create-react-context" "^0.2.4"
     "@ant-design/icons" "~2.1.1"
@@ -4786,6 +4790,15 @@ cli-width@^2.0.0:
   resolved "https://artifactory.cd-tech26.de:443/artifactory/api/npm/npm/cli-width/-/cli-width-2.2.0.tgz#ff19ede8a9a5e579324147b0c11f0fbcbabed639"
   integrity sha1-/xnt6Kml5XkyQUewwR8PvLq+1jk=
 
+clipboard@^2.0.0:
+  version "2.0.4"
+  resolved "https://artifactory.cd-tech26.de:443/artifactory/api/npm/npm/clipboard/-/clipboard-2.0.4.tgz#836dafd66cf0fea5d71ce5d5b0bf6e958009112d"
+  integrity sha1-g22v1mzw/qXXHOXVsL9ulYAJES0=
+  dependencies:
+    good-listener "^1.2.2"
+    select "^1.1.2"
+    tiny-emitter "^2.0.0"
+
 cliui@^2.1.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/cliui/-/cliui-2.1.0.tgz#4b475760ff80264c762c3a1719032e91c7fea0d1"
@@ -5947,6 +5960,11 @@ delayed-stream@~1.0.0:
   resolved "https://artifactory.cd-tech26.de:443/artifactory/api/npm/npm/delayed-stream/-/delayed-stream-1.0.0.tgz#df3ae199acadfb7d440aaae0b29e2272b24ec619"
   integrity sha1-3zrhmayt+31ECqrgsp4icrJOxhk=
 
+delegate@^3.1.2:
+  version "3.2.0"
+  resolved "https://artifactory.cd-tech26.de:443/artifactory/api/npm/npm/delegate/-/delegate-3.2.0.tgz#b66b71c3158522e8ab5744f720d8ca0c2af59166"
+  integrity sha1-tmtxwxWFIuirV0T3INjKDCr1kWY=
+
 delegates@^1.0.0:
   version "1.0.0"
   resolved "https://artifactory.cd-tech26.de:443/artifactory/api/npm/npm/delegates/-/delegates-1.0.0.tgz#84c6e159b81904fdca59a0ef44cd870d31250f9a"
@@ -6564,10 +6582,10 @@ electron-webpack@^2.7.2:
     webpack-merge "^4.2.1"
     yargs "^13.2.4"
 
-electron@^7.1.8:
-  version "7.1.11"
-  resolved "https://artifactory.cd-tech26.de:443/artifactory/api/npm/npm/electron/-/electron-7.1.11.tgz#3a95e35804af083d58b590513afea5e2290c4b66"
-  integrity sha1-OpXjWASvCD1YtZBROv6l4ikMS2Y=
+electron@^8.0.0:
+  version "8.0.0"
+  resolved "https://artifactory.cd-tech26.de:443/artifactory/api/npm/npm/electron/-/electron-8.0.0.tgz#b5f105cda6985ca2f2496de15e44b2bbb0c8e4f4"
+  integrity sha1-tfEFzaaYXKLySW3hXkSyu7DI5PQ=
   dependencies:
     "@electron/get" "^1.0.1"
     "@types/node" "^12.0.12"
@@ -6829,10 +6847,10 @@ eslint-plugin-flowtype@^4.5.3:
   dependencies:
     lodash "^4.17.15"
 
-eslint-plugin-import@^2.19.1:
-  version "2.20.0"
-  resolved "https://artifactory.cd-tech26.de:443/artifactory/api/npm/npm/eslint-plugin-import/-/eslint-plugin-import-2.20.0.tgz#d749a7263fb6c29980def8e960d380a6aa6aecaa"
-  integrity sha1-10mnJj+2wpmA3vjpYNOApqpq7Ko=
+eslint-plugin-import@^2.20.1:
+  version "2.20.1"
+  resolved "https://artifactory.cd-tech26.de:443/artifactory/api/npm/npm/eslint-plugin-import/-/eslint-plugin-import-2.20.1.tgz#802423196dcb11d9ce8435a5fc02a6d3b46939b3"
+  integrity sha1-gCQjGW3LEdnOhDWl/AKm07RpObM=
   dependencies:
     array-includes "^3.0.3"
     array.prototype.flat "^1.2.1"
@@ -6867,10 +6885,10 @@ eslint-plugin-promise@^4.2.1:
   resolved "https://registry.yarnpkg.com/eslint-plugin-promise/-/eslint-plugin-promise-4.2.1.tgz#845fd8b2260ad8f82564c1222fce44ad71d9418a"
   integrity sha512-VoM09vT7bfA7D+upt+FjeBO5eHIJQBUWki1aPvB+vbNiHS3+oGIJGIeyBtKQTME6UPXXy3vV07OL1tHd3ANuDw==
 
-eslint-plugin-react@^7.17.0:
-  version "7.18.0"
-  resolved "https://artifactory.cd-tech26.de:443/artifactory/api/npm/npm/eslint-plugin-react/-/eslint-plugin-react-7.18.0.tgz#2317831284d005b30aff8afb7c4e906f13fa8e7e"
-  integrity sha1-IxeDEoTQBbMK/4r7fE6QbxP6jn4=
+eslint-plugin-react@^7.18.3:
+  version "7.18.3"
+  resolved "https://artifactory.cd-tech26.de:443/artifactory/api/npm/npm/eslint-plugin-react/-/eslint-plugin-react-7.18.3.tgz#8be671b7f6be095098e79d27ac32f9580f599bc8"
+  integrity sha1-i+Zxt/a+CVCY550nrDL5WA9Zm8g=
   dependencies:
     array-includes "^3.1.1"
     doctrine "^2.1.0"
@@ -6881,6 +6899,7 @@ eslint-plugin-react@^7.17.0:
     object.values "^1.1.1"
     prop-types "^15.7.2"
     resolve "^1.14.2"
+    string.prototype.matchall "^4.0.2"
 
 eslint-scope@^4.0.3:
   version "4.0.3"
@@ -8203,6 +8222,13 @@ gonzales-pe@^4.2.4:
   dependencies:
     minimist "1.1.x"
 
+good-listener@^1.2.2:
+  version "1.2.2"
+  resolved "https://artifactory.cd-tech26.de:443/artifactory/api/npm/npm/good-listener/-/good-listener-1.2.2.tgz#d53b30cdf9313dffb7dc9a0d477096aa6d145c50"
+  integrity sha1-1TswzfkxPf+33JoNR3CWqm0UXFA=
+  dependencies:
+    delegate "^3.1.2"
+
 got@^9.6.0:
   version "9.6.0"
   resolved "https://artifactory.cd-tech26.de:443/artifactory/api/npm/npm/got/-/got-9.6.0.tgz#edf45e7d67f99545705de1f7bbeeeb121765ed85"
@@ -8961,6 +8987,15 @@ internal-ip@^4.3.0:
   dependencies:
     default-gateway "^4.2.0"
     ipaddr.js "^1.9.0"
+
+internal-slot@^1.0.2:
+  version "1.0.2"
+  resolved "https://artifactory.cd-tech26.de:443/artifactory/api/npm/npm/internal-slot/-/internal-slot-1.0.2.tgz#9c2e9fb3cd8e5e4256c6f45fe310067fcfa378a3"
+  integrity sha1-nC6fs82OXkJWxvRf4xAGf8+jeKM=
+  dependencies:
+    es-abstract "^1.17.0-next.1"
+    has "^1.0.3"
+    side-channel "^1.0.2"
 
 interpret@1.2.0, interpret@^1.2.0:
   version "1.2.0"
@@ -10028,22 +10063,14 @@ jimp@^0.9.3:
     core-js "^3.4.1"
     regenerator-runtime "^0.13.3"
 
-jodit-react@^1.0.35:
-  version "1.0.37"
-  resolved "https://artifactory.cd-tech26.de:443/artifactory/api/npm/npm/jodit-react/-/jodit-react-1.0.37.tgz#b11fdc6cdfbdc95c4a48357a25329c5dd69d520e"
-  integrity sha1-sR/cbN+9yVxKSDV6JTKcXdadUg4=
-  dependencies:
-    "@types/react" "^16.9.17"
-    jodit "^3.3.17"
-
-jodit@^3.3.17:
-  version "3.3.17"
-  resolved "https://artifactory.cd-tech26.de:443/artifactory/api/npm/npm/jodit/-/jodit-3.3.17.tgz#b51df3e0eb7fbdca11664c7bff1992408443035d"
-  integrity sha1-tR3z4Ot/vcoRZkx7/xmSQIRDA10=
+jodit@^3.3.20:
+  version "3.3.20"
+  resolved "https://artifactory.cd-tech26.de:443/artifactory/api/npm/npm/jodit/-/jodit-3.3.20.tgz#45bad557ec9500bb8315a926480cf0e12faa7b29"
+  integrity sha1-RbrVV+yVALuDFakmSAzw4S+qeyk=
   dependencies:
     chai "^4.2.0"
     gulp-typescript "^5.0.1"
-    mocha "^7.0.0"
+    mocha "^7.0.1"
 
 jpeg-js@^0.1.1:
   version "0.1.2"
@@ -11254,7 +11281,7 @@ mobx@^5.15.1:
   resolved "https://artifactory.cd-tech26.de:443/artifactory/api/npm/npm/mobx/-/mobx-5.15.4.tgz#9da1a84e97ba624622f4e55a0bf3300fb931c2ab"
   integrity sha1-naGoTpe6YkYi9OVaC/MwD7kxwqs=
 
-mocha@^7.0.0:
+mocha@^7.0.1:
   version "7.0.1"
   resolved "https://artifactory.cd-tech26.de:443/artifactory/api/npm/npm/mocha/-/mocha-7.0.1.tgz#276186d35a4852f6249808c6dd4a1376cbf6c6ce"
   integrity sha1-J2GG01pIUvYkmAjG3UoTdsv2xs4=
@@ -11389,6 +11416,11 @@ neo-async@^2.5.0, neo-async@^2.6.1:
   version "2.6.1"
   resolved "https://registry.yarnpkg.com/neo-async/-/neo-async-2.6.1.tgz#ac27ada66167fa8849a6addd837f6b189ad2081c"
   integrity sha512-iyam8fBuCUpWeKPGpaNMetEocMt364qkCsfL9JuhjXX6dRnguRVOfk2GZaDpPjcOKiiXCPINZC1GczQ7iTq3Zw==
+
+nested-property@^1.0.4:
+  version "1.0.4"
+  resolved "https://artifactory.cd-tech26.de:443/artifactory/api/npm/npm/nested-property/-/nested-property-1.0.4.tgz#4068c4289d1f3ac9f367e784502ff342d277ee2f"
+  integrity sha1-QGjEKJ0fOsnzZ+eEUC/zQtJ37i8=
 
 new-github-issue-url@^0.2.1:
   version "0.2.1"
@@ -12674,12 +12706,12 @@ postcss-filter-plugins@^2.0.0:
   dependencies:
     postcss "^5.0.4"
 
-postcss-flexbugs-fixes@^4.1.0:
-  version "4.1.0"
-  resolved "https://registry.yarnpkg.com/postcss-flexbugs-fixes/-/postcss-flexbugs-fixes-4.1.0.tgz#e094a9df1783e2200b7b19f875dcad3b3aff8b20"
-  integrity sha512-jr1LHxQvStNNAHlgco6PzY308zvLklh7SJVYuWUwyUQncofaAlD2l+P/gxKHOdqWKe7xJSkVLFF/2Tp+JqMSZA==
+postcss-flexbugs-fixes@^4.2.0:
+  version "4.2.0"
+  resolved "https://artifactory.cd-tech26.de:443/artifactory/api/npm/npm/postcss-flexbugs-fixes/-/postcss-flexbugs-fixes-4.2.0.tgz#662b3dcb6354638b9213a55eed8913bcdc8d004a"
+  integrity sha1-Zis9y2NUY4uSE6Ve7YkTvNyNAEo=
   dependencies:
-    postcss "^7.0.0"
+    postcss "^7.0.26"
 
 postcss-html@^0.36.0:
   version "0.36.0"
@@ -13325,6 +13357,13 @@ pretty-time@^1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/pretty-time/-/pretty-time-1.1.0.tgz#ffb7429afabb8535c346a34e41873adf3d74dd0e"
   integrity sha512-28iF6xPQrP8Oa6uxE6a1biz+lWeTOAPKggvjB8HAs6nVMKZwf5bG++632Dx614hIWgUPkgivRfG+a8uAXGTIbA==
+
+prismjs@^1.19.0:
+  version "1.19.0"
+  resolved "https://artifactory.cd-tech26.de:443/artifactory/api/npm/npm/prismjs/-/prismjs-1.19.0.tgz#713afbd45c3baca4b321569f2df39e17e729d4dc"
+  integrity sha1-cTr71Fw7rKSzIVafLfOeF+cp1Nw=
+  optionalDependencies:
+    clipboard "^2.0.0"
 
 private@^0.1.6, private@^0.1.8:
   version "0.1.8"
@@ -14384,11 +14423,12 @@ react-inlinese@^0.9.3:
     react-icons "^2.2.5"
     styled-components "^2.0.0"
 
-react-intl@^3.11.0:
-  version "3.11.0"
-  resolved "https://artifactory.cd-tech26.de:443/artifactory/api/npm/npm/react-intl/-/react-intl-3.11.0.tgz#a8c5392b8345753cd57bba0b45a1b4fdb1a4dd82"
-  integrity sha1-qMU5K4NFdTzVe7oLRaG0/bGk3YI=
+react-intl@^3.12.0:
+  version "3.12.0"
+  resolved "https://artifactory.cd-tech26.de:443/artifactory/api/npm/npm/react-intl/-/react-intl-3.12.0.tgz#98ef1c94434cc25a8c67448e1e283e6bfe11b2fc"
+  integrity sha1-mO8clENMwlqMZ0SOHig+a/4Rsvw=
   dependencies:
+    "@formatjs/intl-displaynames" "^1.2.0"
     "@formatjs/intl-listformat" "^1.3.7"
     "@formatjs/intl-relativetimeformat" "^4.5.7"
     "@formatjs/intl-unified-numberformat" "^3.0.4"
@@ -14681,6 +14721,10 @@ read-pkg@^5.2.0:
     parse-json "^5.0.0"
     type-fest "^0.6.0"
 
+"readability@github:mozilla/readability#master":
+  version "0.2.0"
+  resolved "https://codeload.github.com/mozilla/readability/tar.gz/d6fc38c4b45d9bc337e3579b53ffa7c188cc4d77"
+
 "readable-stream@1 || 2", readable-stream@^2.0.0, readable-stream@^2.0.1, readable-stream@^2.0.2, readable-stream@^2.0.5, readable-stream@^2.0.6, readable-stream@^2.1.5, readable-stream@^2.2.2, readable-stream@^2.3.3, readable-stream@^2.3.5, readable-stream@^2.3.6, readable-stream@~2.3.6:
   version "2.3.7"
   resolved "https://artifactory.cd-tech26.de:443/artifactory/api/npm/npm/readable-stream/-/readable-stream-2.3.7.tgz#1eca1cf711aef814c04f62252a36a62f6cb23b57"
@@ -14850,7 +14894,7 @@ regexp-tree@^0.1.13:
   resolved "https://registry.yarnpkg.com/regexp-tree/-/regexp-tree-0.1.14.tgz#1abca3675f6cc4b0dee5c959c6c4554ed172dfae"
   integrity sha512-59v5A90TAh4cAMyDQEOzcnsu4q7Wb10RsyTjngEnJIZsWYM4siVGu+JmLT1WsxHvOWhiu4YS20XiTuxWMeVoHQ==
 
-regexp.prototype.flags@^1.2.0:
+regexp.prototype.flags@^1.2.0, regexp.prototype.flags@^1.3.0:
   version "1.3.0"
   resolved "https://artifactory.cd-tech26.de:443/artifactory/api/npm/npm/regexp.prototype.flags/-/regexp.prototype.flags-1.3.0.tgz#7aba89b3c13a64509dabcf3ca8d9fbb9bdf5cb75"
   integrity sha1-erqJs8E6ZFCdq888qNn7ub31y3U=
@@ -15465,6 +15509,11 @@ select-hose@^2.0.0:
   resolved "https://artifactory.cd-tech26.de:443/artifactory/api/npm/npm/select-hose/-/select-hose-2.0.0.tgz#625d8658f865af43ec962bfc376a37359a4994ca"
   integrity sha1-Yl2GWPhlr0Psliv8N2o3NZpJlMo=
 
+select@^1.1.2:
+  version "1.1.2"
+  resolved "https://artifactory.cd-tech26.de:443/artifactory/api/npm/npm/select/-/select-1.1.2.tgz#0e7350acdec80b1108528786ec1d4418d11b396d"
+  integrity sha1-DnNQrN7ICxEIUoeG7B1EGNEbOW0=
+
 selfsigned@^1.10.7:
   version "1.10.7"
   resolved "https://artifactory.cd-tech26.de:443/artifactory/api/npm/npm/selfsigned/-/selfsigned-1.10.7.tgz#da5819fd049d5574f28e88a9bcc6dbc6e6f3906b"
@@ -15688,6 +15737,14 @@ shellwords@^0.1.1:
   version "0.1.1"
   resolved "https://registry.yarnpkg.com/shellwords/-/shellwords-0.1.1.tgz#d6b9181c1a48d397324c84871efbcfc73fc0654b"
   integrity sha512-vFwSUfQvqybiICwZY5+DAWIPLKsWO31Q91JSKl3UYv+K5c2QRPzn0qzec6QPu1Qc9eHYItiP3NdJqNVqetYAww==
+
+side-channel@^1.0.2:
+  version "1.0.2"
+  resolved "https://artifactory.cd-tech26.de:443/artifactory/api/npm/npm/side-channel/-/side-channel-1.0.2.tgz#df5d1abadb4e4bf4af1cd8852bf132d2f7876947"
+  integrity sha1-310auttOS/SvHNiFK/Ey0veHaUc=
+  dependencies:
+    es-abstract "^1.17.0-next.1"
+    object-inspect "^1.7.0"
 
 signal-exit@^3.0.0, signal-exit@^3.0.2:
   version "3.0.2"
@@ -16159,6 +16216,18 @@ string-width@^4.2.0:
     emoji-regex "^8.0.0"
     is-fullwidth-code-point "^3.0.0"
     strip-ansi "^6.0.0"
+
+string.prototype.matchall@^4.0.2:
+  version "4.0.2"
+  resolved "https://artifactory.cd-tech26.de:443/artifactory/api/npm/npm/string.prototype.matchall/-/string.prototype.matchall-4.0.2.tgz#48bb510326fb9fdeb6a33ceaa81a6ea04ef7648e"
+  integrity sha1-SLtRAyb7n962ozzqqBpuoE73ZI4=
+  dependencies:
+    define-properties "^1.1.3"
+    es-abstract "^1.17.0"
+    has-symbols "^1.0.1"
+    internal-slot "^1.0.2"
+    regexp.prototype.flags "^1.3.0"
+    side-channel "^1.0.2"
 
 string.prototype.padend@^3.0.0:
   version "3.0.0"
@@ -16792,6 +16861,11 @@ timsort@^0.3.0:
   version "0.3.0"
   resolved "https://registry.yarnpkg.com/timsort/-/timsort-0.3.0.tgz#405411a8e7e6339fe64db9a234de11dc31e02bd4"
   integrity sha1-QFQRqOfmM5/mTbmiNN4R3DHgK9Q=
+
+tiny-emitter@^2.0.0:
+  version "2.1.0"
+  resolved "https://artifactory.cd-tech26.de:443/artifactory/api/npm/npm/tiny-emitter/-/tiny-emitter-2.1.0.tgz#1d1a56edfc51c43e863cbb5382a72330e3555423"
+  integrity sha1-HRpW7fxRxD6GPLtTgqcjMONVVCM=
 
 tiny-invariant@^1.0.2:
   version "1.0.6"
@@ -17678,16 +17752,17 @@ wbuf@^1.1.0, wbuf@^1.7.3:
   dependencies:
     minimalistic-assert "^1.0.0"
 
-webdav@^3.0.0:
-  version "3.0.0"
-  resolved "https://artifactory.cd-tech26.de:443/artifactory/api/npm/npm/webdav/-/webdav-3.0.0.tgz#4a79ab13a6ca298ae3be2a055ef4d4a87f4f0ede"
-  integrity sha1-SnmrE6bKKYrjvioFXvTUqH9PDt4=
+webdav@^3.2.0:
+  version "3.2.0"
+  resolved "https://artifactory.cd-tech26.de:443/artifactory/api/npm/npm/webdav/-/webdav-3.2.0.tgz#79bb136ed1916f49332b92b429fad6d1dfc2a7ea"
+  integrity sha1-ebsTbtGRb0kzK5K0KfrW0d/Cp+o=
   dependencies:
     axios "^0.19.2"
     base-64 "^0.1.0"
     fast-xml-parser "^3.16.0"
     hot-patcher "^0.5.0"
     minimatch "^3.0.4"
+    nested-property "^1.0.4"
     path-posix "^1.0.0"
     url-join "^4.0.1"
     url-parse "^1.4.7"
@@ -17761,10 +17836,10 @@ webpack-dev-middleware@^3.7.2:
     range-parser "^1.2.1"
     webpack-log "^2.0.0"
 
-webpack-dev-server@^3.10.1:
-  version "3.10.2"
-  resolved "https://artifactory.cd-tech26.de:443/artifactory/api/npm/npm/webpack-dev-server/-/webpack-dev-server-3.10.2.tgz#3403287d674c7407aab6d9b3f72259ecd0aa0874"
-  integrity sha1-NAMofWdMdAeqttmz9yJZ7NCqCHQ=
+webpack-dev-server@^3.10.3:
+  version "3.10.3"
+  resolved "https://artifactory.cd-tech26.de:443/artifactory/api/npm/npm/webpack-dev-server/-/webpack-dev-server-3.10.3.tgz#f35945036813e57ef582c2420ef7b470e14d3af0"
+  integrity sha1-81lFA2gT5X71gsJCDve0cOFNOvA=
   dependencies:
     ansi-html "0.0.7"
     bonjour "^3.5.0"

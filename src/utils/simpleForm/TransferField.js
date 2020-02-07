@@ -30,7 +30,6 @@ class TransferField extends PureComponent {
                     filterOption={filterOption}
                     targetKeys={value}
                     onChange={val => {
-                        console.log(22222, val);
                         onChange(name, val);}}
                     // onSearch={this.handleSearch}
                     rowKey={record => record.uuid}
