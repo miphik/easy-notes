@@ -168,12 +168,16 @@ const config = memoizeOne((theme: ThemeType) => ({
             name: 'list-increase-indent',
             iconURL: 'data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/PjxzdmcgaGVpZ2h0PSI0OCIgdmlld0JveD0iMCAwIDQ4IDQ4IiB3aWR0aD0iNDgiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZD0iTTIyIDM0aDIwdi00aC0yMHY0em0tMTYtMTBsOCA4di0xNmwtOCA4em0wIDE4aDM2di00aC0zNnY0em0wLTM2djRoMzZ2LTRoLTM2em0xNiAxMmgyMHYtNGgtMjB2NHptMCA4aDIwdi00aC0yMHY0eiIvPjxwYXRoIGQ9Ik0wIDBoNDh2NDhoLTQ4eiIgZmlsbD0ibm9uZSIvPjwvc3ZnPg==',
             tooltip: 'Increase list indent',
-            exec: function (editor) {
+            exec: (editor, ...rest) => {
+
                 const current = editor.selection.current(false);
                 const currentListItemElement = helpers.closest('pre', current, editor);
                 removeStyles(currentListItemElement);
-                console.log(11112121, currentListItemElement);
-                Prism.highlightElement(currentListItemElement);
+                // Jodit.modules.Dom
+                debugger;
+                console.log(11112121, currentListItemElement.innerHTML, currentListItemElement);
+
+                // Prism.highlightElement(currentListItemElement);
             }
         },
         /* {
