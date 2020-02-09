@@ -206,11 +206,14 @@ const STYLES = memoizeOne((theme: ThemeType) => (
             backgroundColor: `${theme.color.second} !important`,
         },
         joditToolbar: {
-            borderColor: 'transparent !important',
+            borderColor: 'transparent',
             backgroundColor: `${theme.color.second} !important`,
         },
         joditToolbar3: {
             border: `1px solid ${theme.color.gray}`,
+        },
+        joditTooltipCheckbox: {
+            color: `${theme.color.buttonActive} !important`,
         },
         joditTooltip: {
             padding: '0.3em 0.5em !important',
@@ -236,6 +239,15 @@ const STYLES = memoizeOne((theme: ThemeType) => (
             height: '100%',
             flex: 1,
         },
+        joditPre: {
+            border: `1px solid ${theme.color.selected}`,
+            background: 'transparent',
+            boxShadow: '1px 1px 0.5em rgba(0, 0, 0, 0.4) inset',
+        },
+        joditlanguageButton: {
+            display: 'flex !important',
+            justifyContent: 'flex-start !important',
+        },
     }
 ));
 
@@ -243,6 +255,7 @@ const getTextStyles = memoizeOne((style: STYLES) => ({
     '.jodit_wysiwyg_iframe': style.iframe,
     'iframe.jodit_wysiwyg_iframe html': style.iframe,
     '.ace_gutter': style.ace_gutter,
+    '.jodit_toolbar_popup label': style.joditTooltipCheckbox,
     '.jodit_dark_theme .jodit_toolbar li.jodit_toolbar_btn.jodit_toolbar_btn-separator': style.joditToolbarSeparator,
     '.jodit_dark_theme .jodit_toolbar li.jodit_toolbar_btn.jodit_toolbar_btn-break': style.joditToolbarTopSeparator,
     '.jodit_form_inserter .jodit_form-table-creator-box .jodit_form-container>div.hovered:after': style.joditInserterAfter,
@@ -254,6 +267,9 @@ const getTextStyles = memoizeOne((style: STYLES) => ({
     '.jodit_toolbar > li:not(.jodit_disabled):hover>a svg': style.joditTooltipHover2,
     '.jodit_tooltip': style.joditTooltip,
     '.jodit_toolbar': style.joditToolbar,
+    '.jodit_container pre': style.joditPre,
+    '.language-button': style.joditlanguageButton,
+    '.jodit_toolbar_container > .jodit_toolbar': style.joditToolbar,
     '.jodit_popup_triangle': style.joditPopupTriangle,
     '.jodit_button': style.joditBtn,
     '.jodit_statusbar': style.joditToolbar,
