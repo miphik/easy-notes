@@ -1,29 +1,18 @@
 // @flow
 
-import debounce from 'lodash/debounce';
 import {inject, observer} from 'mobx-react';
 import React from 'react';
 import ScrollableColumn from 'components/ScrollableColumn';
 import isEqual from 'lodash/isEqual';
 import moment from 'moment';
-import JoditEditor from 'jodit-react';
 import Radium, {Style} from 'radium';
-import {STYLES, getTextStyles} from './styles';
+import JoditEditor from 'components/Jodit';
+import 'prismjs/themes/prism-twilight.css';
+import 'highlight.js/styles/a11y-dark.css';
 import styles from './styles.styl';
-
-
-const config = {
-    showPlaceholder:      false,
-    askBeforePasteHTML:   false,
-    autofocus:            true,
-    theme:                'dark',
-    toolbarStickyOffset:  0,
-    showCharsCounter:     false,
-    showWordsCounter:     false,
-    defaultActionOnPaste: 'insert_as_html',
-    showXPathInStatusbar: false,
-    readonly:             false, // all options from https://xdsoft.net/jodit/doc/
-};
+import {STYLES, getTextStyles} from './styles';
+import config from './config';
+import 'components/NoteEditor/plugins/codeBlock';
 
 const toolbarClassName = 'NoteText__toolbar';
 
@@ -61,23 +50,21 @@ class NoteEditor extends React.Component {
         this.state = {currentNoteText: noteText, currentNote: selectedNote};
     }
 
-    debounceChangeNoteText = debounce(this.props.setSelectedNoteText, 700);
-
     onChangeNote = data => {
-        const {selectedNote, selectedCategory} = this.props;
+        const {selectedNote, selectedCategory, setSelectedNoteText} = this.props;
         this.setState({
             currentNoteText: data,
             currentNote:     selectedNote,
         }, () => {
             if (!this.props.selectedNote.text || !isEqual(this.props.selectedNote.text, data)) {
-                this.debounceChangeNoteText(selectedNote, selectedCategory, data);
+                setSelectedNoteText(selectedNote, selectedCategory, data);
             }
         });
     };
 
     onChange = data => {
         const {selectedNote, selectedCategory, setSelectedNoteText} = this.props;
-        setSelectedNoteText(selectedNote, selectedCategory, data);
+        if (selectedNote.text !== data) setSelectedNoteText(selectedNote, selectedCategory, data);
     };
 
     editor = null;
@@ -108,18 +95,17 @@ class NoteEditor extends React.Component {
             >
                 <Style rules={textStyle}/>
                 {showComponent ? (
-                    <>
+                    <div className="NoteEditor__container">
                         <JoditEditor
-                            ref={this.editor}
                             value={currentNoteText}
                             config={config}
                             // tabIndex={1} // tabIndex of textarea
-                            onBlur={this.onChange} // preferred to use
+                            onBlur={this.onChangeNote} // preferred to use
                             // only this option to update the content for performance reasons
                             onChange={newContent => {
                             }}
                         />
-                    </>
+                    </div>
                 ) : <span/>}
             </ScrollableColumn>
         );
