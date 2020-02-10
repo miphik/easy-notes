@@ -1,9 +1,10 @@
 import Jodit from 'jodit';
-import hljs from "highlight.js";
-import pretty from 'code-prettify';
+import hljs from 'highlight.js';
+import {removeTags} from 'components/NoteEditor/plugins/helpers';
 
 Jodit.defaultOptions.controls.info = {
-    command: 'formatBlock2',
+    command:  'codeHighlight',
+    icon:     'codeHighlightIcon',
     getLabel: (editor, btn, button) => {
         const current = editor.selection.current();
 
@@ -39,7 +40,6 @@ Jodit.defaultOptions.controls.info = {
     },
 
     exec: (editor, event, control) => {
-        console.log(222, control.command, control.args);
         editor.execCommand(
             control.command,
             false,
@@ -70,7 +70,7 @@ Jodit.defaultOptions.controls.info = {
             return (
                 control.args !== undefined
                 && currentBox.nodeName.toLowerCase() === 'pre'
-                && currentBox.classList.contains('language-' + control.args[1])
+                && currentBox.classList.contains(`language-${control.args[1]}`)
             );
         }
         return false;
@@ -100,7 +100,6 @@ Jodit.defaultOptions.controls.info = {
             currentBox.classList.forEach(item => {
                 if (item.startsWith('language-')) classExists = true;
             });
-            console.log(1111, classExists);
             return classExists;
         }
 
@@ -109,32 +108,30 @@ Jodit.defaultOptions.controls.info = {
 
     template: (editor, key, value) => value,
 
-    tooltip: '12121212',
+    tooltip: 'Highlight code block',
 };
 
-Jodit.plugins.add('formatBlock2', (editor) => {
-    console.log(1111, 'formatBlock2');
+Jodit.plugins.add('codeHighlight', editor => {
     editor.registerCommand(
-        'formatBlock2',
+        'codeHighlight',
         (command, second, third) => {
             editor.selection.focus();
-            let work = true;
+            const work = true;
             const selectionInfo = editor.selection.save();
 
-            let html = editor.selection.getHTML().replace(/(<([^>]+)>)/ig, '');
-            const txt = document.createElement("textarea");
-            txt.innerHTML = html;
-
-            const textNode = document.createTextNode(txt.value);
-
+            const tempHtml = removeTags(editor.selection.getHTML());
             editor.selection.remove();
+
+            const txt = document.createElement('textarea');
+            txt.innerHTML = tempHtml;
+
             const pre = document.createElement('pre');
             editor.selection.insertNode(pre);
-            pre.classList.add('language-' + third);
+            pre.classList.add(`language-${third}`);
             const code = document.createElement('code');
-            code.classList.add('language-' + third);
-            code.appendChild(textNode);
+            code.classList.add(`language-${third}`);
             pre.appendChild(code);
+            code.innerHTML = txt.value;
             hljs.highlightBlock(pre);
             editor.selection.setCursorIn(pre.getElementsByTagName('code')[0]);
             /* currentBox = Jodit.modules.Dom.replace(
