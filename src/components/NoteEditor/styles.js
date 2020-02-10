@@ -145,8 +145,11 @@ a {
 
 const STYLES = memoizeOne((theme: ThemeType) => (
     {
-        headers: {
+        joditHeaders: {
             color: theme.color.button,
+        },
+        joditWorkplaceHeaders: {
+            color: theme.color.buttonActive,
         },
         joditPopupTriangle: {
             backgroundColor: `${theme.color.button} !important`,
@@ -194,7 +197,7 @@ const STYLES = memoizeOne((theme: ThemeType) => (
         },
         joditToolbarHover: {
             color: theme.color.buttonActive,
-            backgroundColor: 'inherit',
+            backgroundColor: 'transparent !important',
         },
         joditToolbarTrigger: {
             borderTopColor: theme.color.buttonActive,
@@ -203,7 +206,7 @@ const STYLES = memoizeOne((theme: ThemeType) => (
             fill: `${theme.color.buttonActive} !important`,
         },
         joditTooltipHover: {
-            backgroundColor: `${theme.color.second} !important`,
+            // backgroundColor: `${theme.color.second} !important`,
         },
         joditToolbar: {
             borderColor: 'transparent',
@@ -243,6 +246,7 @@ const STYLES = memoizeOne((theme: ThemeType) => (
             border: `1px solid ${theme.color.selected}`,
             background: 'transparent',
             boxShadow: '1px 1px 0.5em rgba(0, 0, 0, 0.4) inset',
+            margin: '1em',
         },
         joditlanguageButton: {
             display: 'flex !important',
@@ -252,40 +256,50 @@ const STYLES = memoizeOne((theme: ThemeType) => (
 ));
 
 const getTextStyles = memoizeOne((style: STYLES) => ({
-    '.jodit_wysiwyg_iframe': style.iframe,
-    'iframe.jodit_wysiwyg_iframe html': style.iframe,
     '.ace_gutter': style.ace_gutter,
-    '.jodit_toolbar_popup label': style.joditTooltipCheckbox,
-    '.jodit_dark_theme .jodit_toolbar li.jodit_toolbar_btn.jodit_toolbar_btn-separator': style.joditToolbarSeparator,
-    '.jodit_dark_theme .jodit_toolbar li.jodit_toolbar_btn.jodit_toolbar_btn-break': style.joditToolbarTopSeparator,
-    '.jodit_form_inserter .jodit_form-table-creator-box .jodit_form-container>div.hovered:after': style.joditInserterAfter,
-    '.jodit_dark_theme .jodit_tabs .jodit_tabs_buttons>a': style.joditTabBtn,
-    '.jodit_dark_theme .jodit_toolbar li.jodit_toolbar_btn>a': style.joditToolbarBtn,
-    '.jodit_dark_theme .jodit_toolbar li.jodit_toolbar_btn:hover>a': style.joditToolbarHover,
-    '.jodit_toolbar .jodit_toolbar .jodit_toolbar': style.joditToolbar3,
-    '.jodit_toolbar_popup-inline>div>.jodit_toolbar': style.joditToolbar3,
-    '.jodit_toolbar > li:not(.jodit_disabled):hover>a svg': style.joditTooltipHover2,
-    '.jodit_tooltip': style.joditTooltip,
-    '.jodit_toolbar': style.joditToolbar,
-    '.jodit_container pre': style.joditPre,
-    '.language-button': style.joditlanguageButton,
-    '.jodit_toolbar_container > .jodit_toolbar': style.joditToolbar,
-    '.jodit_popup_triangle': style.joditPopupTriangle,
-    '.jodit_button': style.joditBtn,
-    '.jodit_statusbar': style.joditToolbar,
-    '.jodit_toolbar >.jodit_toolbar_btn.jodit_active, .jodit_toolbar > .jodit_toolbar_btn:not(.jodit_toolbar-input):active': style.backgroundTransparent,
     '.jodit_active': style.backgroundTransparent,
-    '.jodit_toolbar_popup': style.joditToolbarPopup,
+    '.jodit_button': style.joditBtn,
     '.jodit_colorpicker a svg': style.joditColorpicker,
     '.jodit_colorpicker a:hover svg': style.joditColorpickerHover,
-    'h1, h2, h3, h4, h5, h6': style.headers,
+    '.jodit_container pre': style.joditPre,
+    '.jodit_dark_theme .jodit_tabs .jodit_tabs_buttons>a': style.joditTabBtn,
+    '.jodit_dark_theme .jodit_toolbar li.jodit_toolbar_btn.jodit_toolbar_btn-break': style.joditToolbarTopSeparator,
+    '.jodit_dark_theme .jodit_toolbar li.jodit_toolbar_btn.jodit_toolbar_btn-separator': style.joditToolbarSeparator,
+    '.jodit_dark_theme .jodit_toolbar li.jodit_toolbar_btn:hover>a h1': style.joditToolbarHover,
+    '.jodit_dark_theme .jodit_toolbar li.jodit_toolbar_btn:hover>a h2': style.joditToolbarHover,
+    '.jodit_dark_theme .jodit_toolbar li.jodit_toolbar_btn:hover>a h3': style.joditToolbarHover,
+    '.jodit_dark_theme .jodit_toolbar li.jodit_toolbar_btn:hover>a h4': style.joditToolbarHover,
+    '.jodit_dark_theme .jodit_toolbar li.jodit_toolbar_btn:hover>a h5': style.joditToolbarHover,
+    '.jodit_dark_theme .jodit_toolbar li.jodit_toolbar_btn:hover>a h6': style.joditToolbarHover,
+    '.jodit_dark_theme .jodit_toolbar li.jodit_toolbar_btn:hover>a': style.joditToolbarHover,
+    '.jodit_dark_theme .jodit_toolbar li.jodit_toolbar_btn>a': style.joditToolbarBtn,
     '.jodit_disabled, .jodit_dark_theme .jodit_toolbar_list > .jodit_toolbar': style.joditDisabled,
-    'h1:hover, h2:hover, h3:hover, h4:hover, h5:hover, h6:hover': style.joditToolbarHover,
-    '.jodit_toolbar > .jodit_toolbar_btn:not(.jodit_toolbar-input):hover': style.joditTooltipHover,
-    '.jodit_placeholder': style.joditInserterAfter,
-    '.jodit_wysiwyg': style.joditInserterAfter,
+    '.jodit_form_inserter .jodit_form-table-creator-box .jodit_form-container>div.hovered:after': style.joditInserterAfter,
     '.jodit_icon, .jodit_toolbar .jodit_toolbar_btn > a': style.joditIconA,
+    '.jodit_placeholder': style.joditInserterAfter,
+    '.jodit_popup_triangle': style.joditPopupTriangle,
+    '.jodit_statusbar': style.joditToolbar,
+    '.jodit_toolbar .jodit_toolbar .jodit_toolbar': style.joditToolbar3,
+    '.jodit_toolbar>.jodit_toolbar_btn:not(.jodit_toolbar-input):hover': style.joditToolbarHover,
+    '.jodit_toolbar > .jodit_toolbar_btn:not(.jodit_toolbar-input):hover': style.joditTooltipHover,
+    '.jodit_dark_theme .jodit_toolbar li.jodit_toolbar_btn.active, .jodit_dark_theme .jodit_toolbar li.jodit_toolbar_btn.jodit_active, .jodit_dark_theme .jodit_toolbar li.jodit_toolbar_btn:active, .jodit_dark_theme .jodit_toolbar li.jodit_toolbar_btn:hover': style.joditTooltipHover,
     '.jodit_toolbar > li.jodit_toolbar_btn.jodit_with_dropdownlist.jodit_with_dropdownlist-trigger': style.joditToolbarTrigger,
+    '.jodit_toolbar > li:not(.jodit_disabled):hover>a svg': style.joditTooltipHover2,
+    '.jodit_toolbar >.jodit_toolbar_btn.jodit_active, .jodit_toolbar > .jodit_toolbar_btn:not(.jodit_toolbar-input):active': style.backgroundTransparent,
+    '.jodit_toolbar': style.joditToolbar,
+    '.jodit_toolbar_container > .jodit_toolbar': style.joditToolbar,
+    '.jodit_toolbar_popup label': style.joditTooltipCheckbox,
+    '.jodit_toolbar_popup': style.joditToolbarPopup,
+    '.jodit_toolbar_popup-inline>div>.jodit_toolbar': style.joditToolbar3,
+    '.jodit_tooltip': style.joditTooltip,
+    '.jodit_wysiwyg': style.joditInserterAfter,
+    '.jodit_wysiwyg_iframe': style.iframe,
+    '.language-button': style.joditlanguageButton,
+    // 'h1, h2, h3, h4, h5, h6': style.headers,
+    '.jodit_toolbar h1, .jodit_toolbar h2, .jodit_toolbar h3, .jodit_toolbar h4, .jodit_toolbar h5, .jodit_toolbar h6': style.joditHeaders,
+    '.jodit_workplace h1, .jodit_workplace h2, .jodit_workplace h3, .jodit_workplace h4, .jodit_workplace h5, .jodit_workplace h6': style.joditWorkplaceHeaders,
+    'iframe.jodit_wysiwyg_iframe html': style.iframe,
+    // 'h1:hover, h2:hover, h3:hover, h4:hover, h5:hover, h6:hover': style.joditToolbarHover,
 }));
 
 export {getTextStyles, STYLES, IFRAME_EDITOR_STYLES};

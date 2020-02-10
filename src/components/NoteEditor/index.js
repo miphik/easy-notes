@@ -139,7 +139,7 @@ const helpers = {
 
 const config = {
     showPlaceholder:    false,
-    askBeforePasteHTML: false,
+    // askBeforePasteHTML: false,
     // autofocus: true,
     theme:              'dark',
     link:               {
@@ -176,22 +176,7 @@ const config = {
             name:    'clear',
             iconURL: 'data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/PjxzdmcgaGVpZ2h0PSI0OCIgdmlld0JveD0iMCAwIDQ4IDQ4IiB3aWR0aD0iNDgiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZD0iTTIyIDM0aDIwdi00aC0yMHY0em0tMTYtMTBsOCA4di0xNmwtOCA4em0wIDE4aDM2di00aC0zNnY0em0wLTM2djRoMzZ2LTRoLTM2em0xNiAxMmgyMHYtNGgtMjB2NHptMCA4aDIwdi00aC0yMHY0eiIvPjxwYXRoIGQ9Ik0wIDBoNDh2NDhoLTQ4eiIgZmlsbD0ibm9uZSIvPjwvc3ZnPg==',
             tooltip: 'Clear list indent',
-            popup:   (editor, ...rest) => {
-                console.log(111, editor, rest);
-                let result = '<ul class="jodit_toolbar">';
-                LANGUAGES.forEach(lang => result += `
-                <li class="jodit_toolbar_btn">
-                    <a role="button" href="javascript:void(0)" class="language-button" tabIndex="-1">
-                        <span>${lang}</span>
-                    </a>
-                </li>
-                `);
-                result += '</ul>';
-                return result;
-                // arduino, bash, c-like css dart d dockerfile go gradle http java javascript json kotlin pgsql
-                // protobuf python sql
-            },
-            /* exec:    (editor, ...rest) => {
+            exec:    (editor, ...rest) => {
                 let parentElement = editor.selection.current(false);
                 console.log(323232, parentElement, parentElement == editor.editor, parentElement.innerHTML);
                 if (parentElement.parentElement && (parentElement.parentElement.tagName === 'CODE' || parentElement.parentElement.tagName === 'PRE')) {
@@ -205,7 +190,7 @@ const config = {
                 Jodit.modules.Dom.safeRemove(parentElement);
                 // editor.selection.remove();
                 editor.selection.insertNode(html);
-            },*/
+            },
         },
         {
             name:    'aaa',
