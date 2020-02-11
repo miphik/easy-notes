@@ -145,6 +145,9 @@ a {
 
 const STYLES = memoizeOne((theme: ThemeType) => (
     {
+        headers: {
+            color: 'inherit',
+        },
         joditHeaders: {
             color: theme.color.button,
         },
@@ -295,9 +298,9 @@ const getTextStyles = memoizeOne((style: STYLES) => ({
     '.jodit_wysiwyg': style.joditInserterAfter,
     '.jodit_wysiwyg_iframe': style.iframe,
     '.language-button': style.joditlanguageButton,
-    // 'h1, h2, h3, h4, h5, h6': style.headers,
+    'h1, h2, h3, h4, h5, h6': style.headers,
     '.jodit_toolbar h1, .jodit_toolbar h2, .jodit_toolbar h3, .jodit_toolbar h4, .jodit_toolbar h5, .jodit_toolbar h6': style.joditHeaders,
-    '.jodit_workplace h1, .jodit_workplace h2, .jodit_workplace h3, .jodit_workplace h4, .jodit_workplace h5, .jodit_workplace h6': style.joditWorkplaceHeaders,
+    // '.jodit_workplace h1, .jodit_workplace h2, .jodit_workplace h3, .jodit_workplace h4, .jodit_workplace h5, .jodit_workplace h6': style.joditWorkplaceHeaders,
     'iframe.jodit_wysiwyg_iframe html': style.iframe,
     // 'h1:hover, h2:hover, h3:hover, h4:hover, h5:hover, h6:hover': style.joditToolbarHover,
 }));
