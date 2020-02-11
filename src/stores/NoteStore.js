@@ -91,7 +91,7 @@ class NoteStore {
     @action
     setSelectedNote = (note: NoteType) => {
         if (note !== null) {
-            if (this.selectedNote && this.selectedNote.uuid === note.uuid) return;
+            // if (this.selectedNote && this.selectedNote.uuid === note.uuid) return;
             note.textIsLoaded = true;
             localStorageService.getNote(note, this.setSelectedNoteInner, this.setSelectedNoteInner);
         } else this.setSelectedNoteInner(note);

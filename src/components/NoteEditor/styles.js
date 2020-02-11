@@ -4,7 +4,7 @@
 import memoizeOne from 'memoize-one';
 import type {ThemeType} from 'stores/ThemeStore';
 
-const IFRAME_EDITOR_STYLES = memoizeOne((theme: ThemeType) =>`
+const IFRAME_EDITOR_STYLES = memoizeOne((theme: ThemeType) => `
 .jodit_resizer,
 table td {
   border: 1px solid white;
@@ -255,10 +255,44 @@ const STYLES = memoizeOne((theme: ThemeType) => (
             display: 'flex !important',
             justifyContent: 'flex-start !important',
         },
+        joditSearchBoxCounts: {
+            borderLeft: `solid 1px ${theme.color.selected}`,
+            width: '35%',
+        },
+        joditSearchBox: {
+            backgroundColor: theme.color.first,
+            border: `solid 1px ${theme.color.selected}`,
+            boxShadow: 'box-shadow: -5px 5px 5em 5px rgba(0, 0, 0, 0.4)',
+            right: '1em',
+            position: 'fixed',
+            top: '3em',
+            zIndex: 111,
+        },
+        joditSearchBoxInputPlaceholder: {
+            color: theme.color.button,
+        },
+        joditSearchBoxButton: {
+            cursor: 'pointer',
+            border: 'none !important',
+        },
+        joditSearchBoxButtonSvg: {
+            fill: theme.color.button,
+        },
+        joditSearchBoxButtonHover: {
+            fill: theme.color.buttonActive,
+            backgroundColor: 'transparent',
+        },
     }
 ));
 
 const getTextStyles = memoizeOne((style: STYLES) => ({
+    '.jodit_search .jodit_search_box .jodit_search_buttons button': style.joditSearchBoxButton,
+    '.jodit_search .jodit_search_box .jodit_search_buttons button svg': style.joditSearchBoxButtonSvg,
+    '.jodit_search .jodit_search_box .jodit_search_buttons button:hover': style.joditSearchBoxButtonHover,
+    '.jodit_search .jodit_search_box .jodit_search_buttons button:hover svg': style.joditSearchBoxButtonHover,
+    '.jodit_search .jodit_search_box .jodit_search_counts': style.joditSearchBoxCounts,
+    '.jodit_search .jodit_search_box input::placeholder': style.joditSearchBoxInputPlaceholder,
+    '.jodit_search .jodit_search_box': style.joditSearchBox,
     '.ace_gutter': style.ace_gutter,
     '.jodit_active': style.backgroundTransparent,
     '.jodit_button': style.joditBtn,

@@ -1,3 +1,6 @@
+import invert from 'invert-color';
+import Color from "color";
+
 const closest = (tags, el, editor) => {
     const condition = node => new RegExp(`^(${tags})$`, 'i').test(node.nodeName);
     let closest = el;
@@ -33,6 +36,53 @@ const removeStyles = el => {
     }
 };
 
+const removeBackgroundColors = el => {
+    if (!el) return;
+    if (el.style) {
+        el.style.background = null;
+        el.style.backgroundColor = null;
+    }
+
+    if (el.childNodes.length > 0) {
+        for (const child in el.childNodes) {
+            /* filter element nodes only */
+            if (el.childNodes[child].nodeType == 1) removeBackgroundColors(el.childNodes[child]);
+        }
+    }
+};
+
+const invertColors = el => {
+    if (!el) return;
+    if (el.style && el.style.color) {
+        try {
+            el.style.color = Color(el.style.color).negate();
+        } catch (e) {
+
+        }
+    }
+    if (el.style && el.style.backgroundColor) {
+        try {
+            el.style.backgroundColor = Color(el.style.backgroundColor).negate();
+        } catch (e) {
+
+        }
+    }
+    if (el.style && el.style.background) {
+        try {
+            el.style.background = Color(el.style.background).negate();
+        } catch (e) {
+
+        }
+    }
+
+    if (el.childNodes.length > 0) {
+        for (const child in el.childNodes) {
+            /* filter element nodes only */
+            if (el.childNodes[child].nodeType == 1) invertColors(el.childNodes[child]);
+        }
+    }
+};
+
 const removeTags = html => {
     html = html.replace(/<br>/g, '$br$');
     html = html.replace(/(?:\r\n|\r|\n)/g, '$br$');
@@ -41,7 +91,6 @@ const removeTags = html => {
     html = tmp.textContent || tmp.innerText;
     html = html.replace(/\$br\$/g, '<br>');
     html = html.replace(/(<br>\s*){2,}/m, '<br>');
-    console.log(111, html);
     return html;
 };
 
@@ -69,4 +118,4 @@ Jodit.modules.Dummy = function (editor) {
     };
 };*/
 
-export {closest, nextSiblings, removeStyles, removeTags};
+export {closest, nextSiblings, removeStyles, removeTags, invertColors, removeBackgroundColors};

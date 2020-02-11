@@ -4,6 +4,8 @@ import listIncreaseIndent from 'components/NoteEditor/plugins/listIncreaseIndent
 import listDecreaseIndent from 'components/NoteEditor/plugins/listDecreaseIndent';
 import getIcon from 'components/NoteEditor/plugins/getIcon';
 import {CODE_CONTROL_NAME} from 'components/NoteEditor/plugins/codeBlock';
+import {INVERT_CONTROL_NAME} from 'components/NoteEditor/plugins/invertColors';
+import {REMOVE_BACKGROUND_CONTROL_NAME} from 'components/NoteEditor/plugins/removeBackground';
 
 export default {
     showPlaceholder: false,
@@ -14,6 +16,7 @@ export default {
         followOnDblClick: false,
     },
     toolbarStickyOffset:  0,
+    useSearch:            true,
     showCharsCounter:     false,
     showWordsCounter:     false,
     // iframeStyle: IFRAME_EDITOR_STYLES(theme),
@@ -41,6 +44,8 @@ export default {
         clearCode,
         listDecreaseIndent,
         listIncreaseIndent,
+        INVERT_CONTROL_NAME,
+        REMOVE_BACKGROUND_CONTROL_NAME,
     ],
     events: {
         getIcon,
