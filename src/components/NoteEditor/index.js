@@ -12,7 +12,7 @@ import 'highlight.js/styles/a11y-dark.css';
 import styles from './styles.styl';
 import {STYLES, getTextStyles} from './styles';
 import config from './config';
-import 'components/NoteEditor/plugins/codeBlock';
+import 'components/NoteEditor/plugins/search';
 
 const toolbarClassName = 'NoteText__toolbar';
 

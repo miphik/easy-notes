@@ -90,6 +90,8 @@ export default class NoteItem extends React.PureComponent<PropsType> {
         updateNoteTitle(null);
     };
 
+    handleFocus = (event) => event.target.select();
+
     render() {
         const {
             note, onSelectNode, noteIsDragging, noteIsEditing, noteIsSelected, theme, isOver,
@@ -147,8 +149,9 @@ export default class NoteItem extends React.PureComponent<PropsType> {
                                     autoFocus
                                     onBlur={this.editCancel}
                                     onKeyDown={this.handleKeyPress}
+                                    onFocus={this.handleFocus}
                                     onChange={this.onChangeNoteTitle}
-                                    value={noteTitle || note.title}
+                                    value={noteTitle === null ? note.title : noteTitle}
                                     defaultValue={note.title}
                                 />
                             </div>

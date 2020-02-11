@@ -4,7 +4,7 @@
 import memoizeOne from 'memoize-one';
 import type {ThemeType} from 'stores/ThemeStore';
 
-const IFRAME_EDITOR_STYLES = memoizeOne((theme: ThemeType) =>`
+const IFRAME_EDITOR_STYLES = memoizeOne((theme: ThemeType) => `
 .jodit_resizer,
 table td {
   border: 1px solid white;
@@ -145,6 +145,9 @@ a {
 
 const STYLES = memoizeOne((theme: ThemeType) => (
     {
+        headers: {
+            color: 'inherit',
+        },
         joditHeaders: {
             color: theme.color.button,
         },
@@ -252,10 +255,44 @@ const STYLES = memoizeOne((theme: ThemeType) => (
             display: 'flex !important',
             justifyContent: 'flex-start !important',
         },
+        joditSearchBoxCounts: {
+            borderLeft: `solid 1px ${theme.color.selected}`,
+            width: '35%',
+        },
+        joditSearchBox: {
+            backgroundColor: theme.color.first,
+            border: `solid 1px ${theme.color.selected}`,
+            boxShadow: 'box-shadow: -5px 5px 5em 5px rgba(0, 0, 0, 0.4)',
+            right: '1em',
+            position: 'fixed',
+            top: '3em',
+            zIndex: 111,
+        },
+        joditSearchBoxInputPlaceholder: {
+            color: theme.color.button,
+        },
+        joditSearchBoxButton: {
+            cursor: 'pointer',
+            border: 'none !important',
+        },
+        joditSearchBoxButtonSvg: {
+            fill: theme.color.button,
+        },
+        joditSearchBoxButtonHover: {
+            fill: theme.color.buttonActive,
+            backgroundColor: 'transparent',
+        },
     }
 ));
 
 const getTextStyles = memoizeOne((style: STYLES) => ({
+    '.jodit_search .jodit_search_box .jodit_search_buttons button': style.joditSearchBoxButton,
+    '.jodit_search .jodit_search_box .jodit_search_buttons button svg': style.joditSearchBoxButtonSvg,
+    '.jodit_search .jodit_search_box .jodit_search_buttons button:hover': style.joditSearchBoxButtonHover,
+    '.jodit_search .jodit_search_box .jodit_search_buttons button:hover svg': style.joditSearchBoxButtonHover,
+    '.jodit_search .jodit_search_box .jodit_search_counts': style.joditSearchBoxCounts,
+    '.jodit_search .jodit_search_box input::placeholder': style.joditSearchBoxInputPlaceholder,
+    '.jodit_search .jodit_search_box': style.joditSearchBox,
     '.ace_gutter': style.ace_gutter,
     '.jodit_active': style.backgroundTransparent,
     '.jodit_button': style.joditBtn,
@@ -295,9 +332,9 @@ const getTextStyles = memoizeOne((style: STYLES) => ({
     '.jodit_wysiwyg': style.joditInserterAfter,
     '.jodit_wysiwyg_iframe': style.iframe,
     '.language-button': style.joditlanguageButton,
-    // 'h1, h2, h3, h4, h5, h6': style.headers,
+    'h1, h2, h3, h4, h5, h6': style.headers,
     '.jodit_toolbar h1, .jodit_toolbar h2, .jodit_toolbar h3, .jodit_toolbar h4, .jodit_toolbar h5, .jodit_toolbar h6': style.joditHeaders,
-    '.jodit_workplace h1, .jodit_workplace h2, .jodit_workplace h3, .jodit_workplace h4, .jodit_workplace h5, .jodit_workplace h6': style.joditWorkplaceHeaders,
+    // '.jodit_workplace h1, .jodit_workplace h2, .jodit_workplace h3, .jodit_workplace h4, .jodit_workplace h5, .jodit_workplace h6': style.joditWorkplaceHeaders,
     'iframe.jodit_wysiwyg_iframe html': style.iframe,
     // 'h1:hover, h2:hover, h3:hover, h4:hover, h5:hover, h6:hover': style.joditToolbarHover,
 }));
