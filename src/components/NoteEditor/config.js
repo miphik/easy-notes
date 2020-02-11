@@ -3,6 +3,7 @@ import clearCode from 'components/NoteEditor/plugins/clearCode';
 import listIncreaseIndent from 'components/NoteEditor/plugins/listIncreaseIndent';
 import listDecreaseIndent from 'components/NoteEditor/plugins/listDecreaseIndent';
 import getIcon from 'components/NoteEditor/plugins/getIcon';
+import {CODE_CONTROL_NAME} from 'components/NoteEditor/plugins/codeBlock';
 
 export default {
     showPlaceholder: false,
@@ -36,7 +37,7 @@ export default {
     buttons,
     // popup:     { a: Jodit.Array(Jodit.defaultOptions.popup.a.filter(b => b.icon !== 'pencil')) },
     extraButtons: [
-        'info',
+        CODE_CONTROL_NAME,
         clearCode,
         listDecreaseIndent,
         listIncreaseIndent,

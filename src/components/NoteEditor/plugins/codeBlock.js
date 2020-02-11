@@ -2,8 +2,10 @@ import Jodit from 'jodit';
 import hljs from 'highlight.js';
 import {removeTags} from 'components/NoteEditor/plugins/helpers';
 
-Jodit.defaultOptions.controls.info = {
-    command:  'codeHighlight',
+export const CODE_CONTROL_NAME = 'codeHighlight';
+
+Jodit.defaultOptions.controls[CODE_CONTROL_NAME] = {
+    command:  CODE_CONTROL_NAME,
     icon:     'codeHighlightIcon',
     getLabel: (editor, btn, button) => {
         const current = editor.selection.current();
@@ -111,9 +113,9 @@ Jodit.defaultOptions.controls.info = {
     tooltip: 'Highlight code block',
 };
 
-Jodit.plugins.add('codeHighlight', editor => {
+Jodit.plugins.add(CODE_CONTROL_NAME, editor => {
     editor.registerCommand(
-        'codeHighlight',
+        CODE_CONTROL_NAME,
         (command, second, third) => {
             editor.selection.focus();
             const work = true;
