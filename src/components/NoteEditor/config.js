@@ -46,6 +46,8 @@ export default {
         REMOVE_BACKGROUND_CONTROL_NAME,
         listDecreaseIndent,
         listIncreaseIndent,
+        INVERT_CONTROL_NAME,
+        REMOVE_BACKGROUND_CONTROL_NAME,
     ],
     events: {
         getIcon,
