@@ -14,10 +14,11 @@ import styles from './styles.styl';
 import {STYLES, getTextStyles} from './styles';
 import config from './config';
 import 'components/NoteEditor/plugins/search';
-import {Command, SnapshotType} from 'components/NoteEditor/plugins/types';
+import {Command} from 'components/NoteEditor/plugins/types';
 import type {NoteHistoryType} from 'types/NoteType';
 
 const toolbarClassName = 'NoteText__toolbar';
+const maxHistoryElements = 50;
 
 @inject(stores => (
     {
@@ -63,9 +64,11 @@ class NoteEditor extends React.Component {
             setTimeout(() => {
                 const editor = Jodit.instances[Object.keys(Jodit.instances)[0]];
                 editor.observer.stack.clear();
-                if (selectedNote.history) selectedNote.history.forEach(item => {
-                    editor.observer.stack.push(new Command(item.oldValue, item.newValue, editor.observer));
-                });
+                if (selectedNote.history) {
+                    selectedNote.history.forEach(item => {
+                        editor.observer.stack.push(new Command(item.oldValue, item.newValue, editor.observer));
+                    });
+                }
             }, 500);
         }
     }
@@ -80,7 +83,8 @@ class NoteEditor extends React.Component {
                 const editor = Jodit.instances[Object.keys(Jodit.instances)[0]];
                 const history: Array<NoteHistoryType> = [];
                 if (editor && editor.observer.stack.commands.length) {
-                    editor.observer.stack.commands.forEach(command => history.push({
+                    const {commands} = editor.observer.stack;
+                    commands.slice(Math.max(commands.length - maxHistoryElements, 1)).forEach(command => history.push({
                         createdAt: moment().format(),
                         oldValue:  command.oldValue,
                         newValue:  command.newValue,
@@ -102,7 +106,6 @@ class NoteEditor extends React.Component {
         const showComponent = currentNoteText !== null && selectedNote;
         const style = STYLES(theme);
         const textStyle = getTextStyles(style);
-        console.log(111, selectedNote);
         return (
             <ScrollableColumn
                 autoHideScrollbar

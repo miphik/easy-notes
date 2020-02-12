@@ -153,6 +153,8 @@ export default class CategoryItem extends React.Component<PropsType> {
         updateCategoryName(null);
     };
 
+    handleFocus = event => event.target.select();
+
     render() {
         const {isOver, categoryName} = this.state;
         const {
@@ -243,6 +245,7 @@ export default class CategoryItem extends React.Component<PropsType> {
                                             onBlur={this.editCancel}
                                             value={categoryName || category.title}
                                             defaultValue={category.title}
+                                            onFocus={this.handleFocus}
                                             style={style.input}
                                         />
                                     </div>

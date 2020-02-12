@@ -90,7 +90,7 @@ export default class NoteItem extends React.PureComponent<PropsType> {
         updateNoteTitle(null);
     };
 
-    handleFocus = (event) => event.target.select();
+    handleFocus = event => event.target.select();
 
     render() {
         const {

@@ -106,6 +106,7 @@ module.exports = function (env, argv) {
         // common.plugins.push(new BundleAnalyzerPlugin());
         common.plugins.push(new CopyPlugin([
             {from: 'proto', to: `${PATHS.buildCode}/proto`},
+            {from: 'src/images/icon.icns', to: `${PATHS.buildCode}/icon.icns`},
         ]));
         common.plugins.push(new CompressionPlugin({
             algorithm: 'gzip',

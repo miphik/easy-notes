@@ -1,13 +1,17 @@
 // @flow
 import {load, Root} from 'protobufjs';
-import type {CategoriesType, CategoryType, NotesType, NoteType} from 'types/NoteType';
+import type {
+    CategoriesType, CategoryType, NotesType, NoteType,
+} from 'types/NoteType';
 
-let NoteMessage = null;
-let NoteFullMessage = null;
-let NotesListMessage = null;
+const zlib = require('zlib');
 
-let CategoryMessage = null;
-let CategoriesListMessage = null;
+const NoteMessage = null;
+const NoteFullMessage = null;
+const NotesListMessage = null;
+
+const CategoryMessage = null;
+const CategoriesListMessage = null;
 
 export type SerializationServiceType = {
     convertNotesListToString: (notes: Array<NoteType>) => string,
@@ -20,7 +24,7 @@ export type SerializationServiceType = {
 
 class SerializationService {
     static init = (accomplish: () => {}) => {
-        load('proto/note.proto', (err: Error, root: Root) => {
+        /* load('proto/note.proto', (err: Error, root: Root) => {
             if (err) throw err;
 
             NoteMessage = root.lookupType('easy_note.Note');
@@ -29,69 +33,48 @@ class SerializationService {
 
             CategoryMessage = root.lookupType('easy_note.Category');
             CategoriesListMessage = root.lookupType('easy_note.CategoriesList');
-            /* const message = AwesomeMessage.create({awesomeField: 'hello'});
+            /!* const message = AwesomeMessage.create({awesomeField: 'hello'});
             console.log(`message = ${JSON.stringify(message)}`);
 
             const buffer = AwesomeMessage.encode(message).finish();
             console.log(`buffer = ${Array.prototype.toString.call(buffer)}`);
 
             const decoded = AwesomeMessage.decode(buffer);
-            console.log(`decoded = ${JSON.stringify(decoded)}`);*/
-            accomplish();
-        });
+            console.log(`decoded = ${JSON.stringify(decoded)}`);*!/
+        });*/
+        accomplish();
     };
 
     static convertNoteToString = (note: NoteType): string => {
         if (note.text && typeof note.text !== 'string') note.text = JSON.stringify(note.text);
-        note['.easy_note.NoteFull.text'] = note.text;
-        note['.easy_note.NoteFull.history'] = note.history;
-        const buffer = NoteMessage.encode(NoteMessage.create(note)).finish();
-        return buffer.toString('latin1');
+        return zlib.deflateSync(JSON.stringify(note)).toString('base64');
     };
 
     static convertStringToNote = (data: string): NoteType => {
         if (data === '' || data.length < 5) return {};
-        const note = NoteMessage.decode(Buffer.from(data, 'latin1'));
-        /* try {
-            note['.easy_note.NoteFull.text'] = JSON.parse(note['.easy_note.NoteFull.text']);
-        } catch (ignore) {
-            console.warn('convertStringToNote', note['.easy_note.NoteFull.text'], ignore);
-            /!* NOP *!/
-        }*/
-        note.text = note['.easy_note.NoteFull.text'] || '';
-        note.history = note['.easy_note.NoteFull.history'] || [];
-        return note;
+        return JSON.parse(zlib.inflateSync(new Buffer(data, 'base64')).toString());
     };
 
     static convertNotesListToString = (notes: NotesType): string => {
-        const notesList = NotesListMessage.create({
-            notes: notes.map((note: NoteType) => {
-                const newNote = {...note};
-                newNote.text = '';
-                newNote['.easy_note.NoteFull.text'] = '';
-                return NoteMessage.create(newNote);
-            }),
+        const notesList = notes.map((note: NoteType) => {
+            const newNote = {...note};
+            newNote.text = '';
+            newNote.history = [];
+            return newNote;
         });
-        const buffer = NotesListMessage.encode(notesList).finish();
-        return buffer.toString('latin1');
+        return zlib.deflateSync(JSON.stringify(notesList)).toString('base64');
     };
 
     static convertStringToNotesList = (data: string): NotesType => {
-        if (data === '' || data.length < 5) return {notes: []};
-        return NotesListMessage.decode(Buffer.from(data, 'latin1'));
+        if (data === '' || data.length < 5) return [];
+        return JSON.parse(zlib.inflateSync(new Buffer(data, 'base64')).toString());
     };
 
-    static convertCategoriesListToString = (categories: CategoriesType) => {
-        const categoriesList = CategoriesListMessage.create({
-            categories: categories.map((category: CategoryType) => CategoryMessage.create(category)),
-        });
-        const buffer = CategoriesListMessage.encode(categoriesList).finish();
-        return buffer.toString('latin1');
-    };
+    static convertCategoriesListToString = (categories: CategoriesType) => zlib.deflateSync(JSON.stringify(categories)).toString('base64');
 
     static convertStringToCategoriesList = (data: string): CategoriesType => {
-        if (data === '' || data.length < 5) return {categories: []};
-        return CategoriesListMessage.decode(Buffer.from(data, 'latin1'));
+        if (data === '' || data.length < 5) return [];
+        return JSON.parse(zlib.inflateSync(new Buffer(data, 'base64')).toString());
     };
 }
 

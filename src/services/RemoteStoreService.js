@@ -5,7 +5,6 @@ import LocalStorageService from 'services/LocalStorageService';
 import type {SerializationServiceType} from 'services/SerializationService';
 // eslint-disable-next-line no-duplicate-imports
 import SerializationService from 'services/SerializationService';
-import JSZip from 'jszip';
 import {
     NOTE_DAY_DATE_FORMAT,
     NOTE_MONTH_DATE_FORMAT,
@@ -17,8 +16,6 @@ import type {
 import {FormattedMessage as Fm} from 'react-intl';
 import {createClient} from 'webdav';
 import {categoryComparator} from 'utils/ComparatorsUtils';
-
-const zip = new JSZip();
 
 const WEBDAV_CREDENTIALS = 'WEBDAV_CREDENTIALS';
 const WEBDAV_PROJECT_PATH = '/easy-notes';
@@ -67,7 +64,7 @@ const getErrorByStatusCode = (status: number) => {
     if (!status) return null;
     if (status === 401) return <Fm id="RemoteStoreService.getErrorByStatusCode" defaultMessage="Authorisation error"/>;
 };
-var zlib = require('zlib');
+
 export default class RemoteStoreService {
     static isClientInitialized = () => !!webdavClient;
 
@@ -181,23 +178,9 @@ export default class RemoteStoreService {
     static saveNoteContent = (note: NoteType, error: () => {} = () => {
     }, success: () => {} = () => {
     }) => {
-        // const noteAsString = serializationService.convertNoteToString(note);
-        webdavClient.putFileContents(WEBDAV_PROJECT_NOTE_FILE(note), JSON.stringify(note), {overwrite: true, onUploadProgress: progress => {
-                console.log(`Uploaded ${progress.loaded} bytes of ${progress.total}`);
-            }})
+        const noteAsString = serializationService.convertNoteToString(note);
+        webdavClient.putFileContents(WEBDAV_PROJECT_NOTE_FILE(note), noteAsString)
             .then(success)
-            .catch(error);
-        const input = new Buffer(JSON.stringify(note), 'utf8')
-        webdavClient.putFileContents(WEBDAV_PROJECT_NOTE_FILE(note) + '.z', zlib.deflateSync(input), {overwrite: true, onUploadProgress: progress => {
-            console.log(`Uploaded ${progress.loaded} bytes of ${progress.total}`);
-        }})
-            .then(() => {
-                webdavClient.getFileContents(WEBDAV_PROJECT_NOTE_FILE(note) + '.z')
-                    .then((data: ArrayBuffer) => {
-                        let optionalParams = zlib.inflateSync(data);
-                        console.log(11112222, JSON.parse(optionalParams.toString()));
-                    })
-            })
             .catch(error);
     };
 

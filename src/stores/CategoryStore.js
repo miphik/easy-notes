@@ -58,6 +58,7 @@ class CategoryStore {
     @action
     setCategories = (categories: Array<CategoryType>) => {
         this.debounceChangeSyncingStatus(false);
+        console.log(1111, categories);
         const cats = categories
             .map((category: CategoryType) => {
                 if (!category.parentUUID || !category.parentUUID.length) {

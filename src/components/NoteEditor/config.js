@@ -20,7 +20,7 @@ export default {
     showCharsCounter:     false,
     showWordsCounter:     false,
     // iframeStyle: IFRAME_EDITOR_STYLES(theme),
-    // askBeforePasteHTML:   false,
+    askBeforePasteHTML:   false,
     // iframe: true,
     defaultActionOnPaste: 'insert_as_html',
     showXPathInStatusbar: false,
@@ -42,10 +42,10 @@ export default {
     extraButtons: [
         CODE_CONTROL_NAME,
         clearCode,
-        listDecreaseIndent,
-        listIncreaseIndent,
         INVERT_CONTROL_NAME,
         REMOVE_BACKGROUND_CONTROL_NAME,
+        listDecreaseIndent,
+        listIncreaseIndent,
     ],
     events: {
         getIcon,
