@@ -1,5 +1,5 @@
 {
-  "name": "easy-note",
+  "name": "easy-notes",
   "version": "0.1.1",
   "description": "",
   "main": "main.js",
@@ -26,7 +26,7 @@
     "postinstall": "install-app-deps"
   },
   "build": {
-    "productName": "Easy-Note",
+    "productName": "Easy-Notes",
     "appId": "omatic.app.easy.note",
     "mac": {
       "category": "your.app.category.type"

@@ -5,7 +5,7 @@ import LocalStoreService from 'services/LocalStoreService';
 import RemoteStoreService from 'services/RemoteStoreService';
 import {loadLocalNotes, syncRemoteAndLocalNotes} from 'services/SyncService';
 import categoryStore from 'stores/CategoryStore';
-import type {CategoryType, NoteType} from 'types/NoteType';
+import type {CategoryType, NoteHistoryType, NoteType} from 'types/NoteType';
 import type {StoreType} from 'types/StoreType';
 import uuidv4 from 'uuid/v4';
 
@@ -134,9 +134,15 @@ class NoteStore {
     };
 
     @action
-    setSelectedNoteText = (savingNote: NoteType, category: CategoryType, text: string) => {
+    setSelectedNoteText = (
+        savingNote: NoteType,
+        category: CategoryType,
+        text: string,
+        history: Array<NoteHistoryType>,
+    ) => {
         const note = {...savingNote};
         note.text = text;
+        note.history = history;
         note.updatedAt = moment().format();
         const notes = this.noteItems.map((noteItem: NoteType) => {
             if (note.uuid === noteItem.uuid) {

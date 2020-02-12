@@ -9,10 +9,13 @@ import Radium, {Style} from 'radium';
 import JoditEditor from 'components/Jodit';
 import 'prismjs/themes/prism-twilight.css';
 import 'highlight.js/styles/a11y-dark.css';
+import Jodit from 'jodit';
 import styles from './styles.styl';
 import {STYLES, getTextStyles} from './styles';
 import config from './config';
 import 'components/NoteEditor/plugins/search';
+import {Command, SnapshotType} from 'components/NoteEditor/plugins/types';
+import type {NoteHistoryType} from 'types/NoteType';
 
 const toolbarClassName = 'NoteText__toolbar';
 
@@ -33,6 +36,7 @@ class NoteEditor extends React.Component {
         if (!prevState.currentNote
             || !nextProps.selectedNote.text
             || nextProps.selectedNote.uuid !== prevState.currentNote.uuid) {
+            NoteEditor.isChanged = true;
             const state = {currentNote: nextProps.selectedNote};
             if ((!prevState.currentNoteText || nextProps.selectedNote.uuid !== prevState.currentNote.uuid)) {
                 state.currentNoteText = nextProps.noteText;
@@ -44,10 +48,26 @@ class NoteEditor extends React.Component {
         return null;
     }
 
+    static isChanged = false;
+
     constructor(props) {
         super(props);
         const {noteText, selectedNote} = props;
         this.state = {currentNoteText: noteText, currentNote: selectedNote};
+    }
+
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        if (NoteEditor.isChanged) {
+            const {selectedNote} = this.props;
+            NoteEditor.isChanged = false;
+            setTimeout(() => {
+                const editor = Jodit.instances[Object.keys(Jodit.instances)[0]];
+                editor.observer.stack.clear();
+                if (selectedNote.history) selectedNote.history.forEach(item => {
+                    editor.observer.stack.push(new Command(item.oldValue, item.newValue, editor.observer));
+                });
+            }, 500);
+        }
     }
 
     onChangeNote = data => {
@@ -57,7 +77,16 @@ class NoteEditor extends React.Component {
             currentNote:     selectedNote,
         }, () => {
             if (!this.props.selectedNote.text || !isEqual(this.props.selectedNote.text, data)) {
-                setSelectedNoteText(selectedNote, selectedCategory, data);
+                const editor = Jodit.instances[Object.keys(Jodit.instances)[0]];
+                const history: Array<NoteHistoryType> = [];
+                if (editor && editor.observer.stack.commands.length) {
+                    editor.observer.stack.commands.forEach(command => history.push({
+                        createdAt: moment().format(),
+                        oldValue:  command.oldValue,
+                        newValue:  command.newValue,
+                    }));
+                }
+                setSelectedNoteText(selectedNote, selectedCategory, data, history);
             }
         });
     };
@@ -67,14 +96,13 @@ class NoteEditor extends React.Component {
         if (selectedNote.text !== data) setSelectedNoteText(selectedNote, selectedCategory, data);
     };
 
-    editor = null;
-
     render() {
         const {selectedNote, offset, theme} = this.props;
         const {currentNoteText} = this.state;
         const showComponent = currentNoteText !== null && selectedNote;
         const style = STYLES(theme);
         const textStyle = getTextStyles(style);
+        console.log(111, selectedNote);
         return (
             <ScrollableColumn
                 autoHideScrollbar

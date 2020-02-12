@@ -73,7 +73,10 @@ export default class StatusIcon extends React.Component<PropsType> {
             <div style={style.container}>
                 <NavLink to={WEBDAV_AUTH_PATH}>
                     {syncErrors || remoteStoreIsError ? (
-                        <Tooltip placement="top" title={remoteStoreIsError || syncErrors}>
+                        <Tooltip
+                            placement="top"
+                            title={remoteStoreIsError || (syncErrors && syncErrors.message) || syncErrors.toString}
+                        >
                             {icon}
                         </Tooltip>
                     ) : icon}

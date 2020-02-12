@@ -28,7 +28,7 @@ jobs:
         env:
           CI: true
       - name: copy artefact
-        run: mv build/Easy-Note-*.dmg build/Easy-Note.dmg
+        run: mv build/Easy-Notes-*.dmg build/Easy-Notes.dmg
       - name: Cache
         uses: actions/cache@v1.0.3
         with:
@@ -41,4 +41,4 @@ jobs:
       - uses: actions/upload-artifact@v1
         with:
           name: easy-notes
-          path: build/Easy-Note.dmg
+          path: build/Easy-Notes.dmg
