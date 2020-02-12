@@ -25,5 +25,5 @@ Jodit.defaultOptions.controls[INVERT_CONTROL_NAME] = {
 
     template: (editor, key, value) => value,
 
-    tooltip: 'Highlight code block',
+    tooltip: 'Invert colors',
 };

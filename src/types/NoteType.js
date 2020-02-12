@@ -1,5 +1,24 @@
 // @flow
 
+export type NoteHistoryMessageRangeType = {
+    startContainer: Array<number>,
+    startOffset: number,
+    endContainer: Array<number>,
+    endOffset: number,
+};
+
+export type NoteHistoryMessageType = {
+    html: string,
+    range: NoteHistoryMessageRangeType,
+};
+
+export type NoteHistoryType = {
+    createdAt: string,
+    device: string,
+    oldValue: NoteHistoryMessageType,
+    newValue: NoteHistoryMessageType,
+};
+
 export type NoteType = {
     uuid: string,
     categoryUUIDs: Array<string>,
@@ -12,6 +31,7 @@ export type NoteType = {
     updatedAt: string,
     createdAt: string,
     isDeleted: boolean,
+    history: Array<NoteHistoryType>,
 };
 
 export type CategoryType = {

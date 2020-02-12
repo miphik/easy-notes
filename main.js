@@ -44,6 +44,7 @@ app.on('web-contents-created', (event, contents) => {
 
 function createMainWindow(data = {}) {
     mainWindow = new BrowserWindow({
+        icon:           path.join(__dirname, 'build_code', 'icon.icns'),
         width:          data.bounds && data.bounds.width ? data.bounds.width : 1280,
         x:              data.bounds && data.bounds.x ? data.bounds.x : null,
         // fullscreen:   true,

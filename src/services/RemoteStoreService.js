@@ -179,7 +179,7 @@ export default class RemoteStoreService {
     }, success: () => {} = () => {
     }) => {
         const noteAsString = serializationService.convertNoteToString(note);
-        webdavClient.putFileContents(WEBDAV_PROJECT_NOTE_FILE(note), noteAsString, {overwrite: true})
+        webdavClient.putFileContents(WEBDAV_PROJECT_NOTE_FILE(note), noteAsString)
             .then(success)
             .catch(error);
     };

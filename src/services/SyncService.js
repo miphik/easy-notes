@@ -237,7 +237,7 @@ export const loadLocalCategories = (
 ) => {
     localStorageService.getCategoriesList(
         (err: Error) => errorCallback(err),
-        (localCategories: CategoriesType) => successCallback(localCategories.categories),
+        (localCategories: CategoriesType) => successCallback(localCategories),
     );
 };
 
@@ -247,7 +247,7 @@ export const loadLocalNotes = (
 ) => {
     localStorageService.getNotesList(
         (err: Error) => errorCallback([err]),
-        (localNotes: NotesType) => successCallback(localNotes.notes),
+        (localNotes: NotesType) => successCallback(localNotes),
     );
 };
 
@@ -258,7 +258,7 @@ export const syncRemoteAndLocalCategories = (
     if (!remoteStorageService.isClientInitialized()) {
         localStorageService.getCategoriesList(
             (err: Error) => errorCallback([err]),
-            (localCategories: CategoriesType) => successCallback(localCategories.categories),
+            (localCategories: CategoriesType) => successCallback(localCategories),
         );
         return;
     }
@@ -268,8 +268,8 @@ export const syncRemoteAndLocalCategories = (
             localStorageService.getCategoriesList(
                 (err: Error) => errorCallback([err]),
                 (localCategories: CategoriesType) => syncCategoriesData(
-                    remoteCategories.categories,
-                    localCategories.categories,
+                    remoteCategories,
+                    localCategories,
                     successCallback,
                 ),
             );
@@ -284,14 +284,14 @@ export const syncRemoteAndLocalNotes = (
     if (!remoteStorageService.isClientInitialized()) {
         localStorageService.getNotesList(
             (err: Error) => errorCallback([err]),
-            (localNotes: NotesType) => successCallback(localNotes.notes),
+            (localNotes: NotesType) => successCallback(localNotes),
         );
         return;
     }
     remoteStorageService.getNotesList((err: Error) => errorCallback([err]), (remoteNotes: NotesType) => {
         localStorageService.getNotesList(
             (err: Error) => errorCallback([err]),
-            (localNotes: NotesType) => syncData(remoteNotes.notes, localNotes.notes, successCallback, errorCallback),
+            (localNotes: NotesType) => syncData(remoteNotes, localNotes, successCallback, errorCallback),
         );
     });
 };

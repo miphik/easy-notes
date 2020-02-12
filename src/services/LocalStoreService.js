@@ -13,7 +13,7 @@ import {
 import type {
     CategoriesType, CategoryType, NotesType, NoteType,
 } from 'types/NoteType';
-import {categoryComparator} from "utils/ComparatorsUtils";
+import {categoryComparator} from 'utils/ComparatorsUtils';
 
 const LOCAL_PROJECT_PATH = 'easy-notes';
 const INDEX_FILE_NAME = 'notes.index';
@@ -52,14 +52,19 @@ export const setSerializationService = (serializeService: SerializationServiceTy
 };
 
 class LocalStoreService {
-
-    static getDirectoryContent = (directory = '/', error: () => {} = () => {}, success: () => {} = () => {}) => {
+    static getDirectoryContent = (directory = '/', error: () => {} = () => {
+    }, success: () => {} = () => {
+    }) => {
     };
 
-    static createMainDirectory = (error: () => {} = () => {}, success: () => {} = () => {}) => {
+    static createMainDirectory = (error: () => {} = () => {
+    }, success: () => {} = () => {
+    }) => {
     };
 
-    static getNote = (note: NoteType, error: () => {} = () => {}, success: (note: NotesType) => {} = () => {}) => {
+    static getNote = (note: NoteType, error: () => {} = () => {
+    }, success: (note: NotesType) => {} = () => {
+    }) => {
         const notePath = LOCAL_PROJECT_NOTE_FILE(note);
         fs.readFile(notePath, 'utf8', (err: Error, contents: string) => {
             if (err) {
@@ -77,11 +82,15 @@ class LocalStoreService {
         });
     };
 
-    static createNotesDir = (notes: Array<NoteType>, error: () => {} = () => {}, success: () => {} = () => {}) => {
+    static createNotesDir = (notes: Array<NoteType>, error: () => {} = () => {
+    }, success: () => {} = () => {
+    }) => {
         notes.forEach((note: NoteType) => LocalStoreService.createNoteDir(note, error, success));
     };
 
-    static createNoteDir = (note: NoteType, error: () => {} = () => {}, success: () => {} = () => {}) => {
+    static createNoteDir = (note: NoteType, error: () => {} = () => {
+    }, success: () => {} = () => {
+    }) => {
         const noteYearDir = LOCAL_PROJECT_YEAR_NOTE_DIR(note);
         const noteMonthDir = LOCAL_PROJECT_MONTH_NOTE_DIR(note);
         const noteDayDir = LOCAL_PROJECT_DAY_NOTE_DIR(note);
@@ -105,8 +114,10 @@ class LocalStoreService {
 
     static saveNote = (
         note: NoteType,
-        error: () => {} = () => {},
-        success: () => {} = () => {},
+        error: () => {} = () => {
+        },
+        success: () => {} = () => {
+        },
         createNoteDir: boolean = true,
     ) => {
         console.info('localeStoreService.saveNote', note);
@@ -118,7 +129,9 @@ class LocalStoreService {
         });
     };
 
-    static getNotesList = (error: () => {} = () => {}, success: (notes: NotesType) => {} = () => {}) => {
+    static getNotesList = (error: () => {} = () => {
+    }, success: (notes: NotesType) => {} = () => {
+    }) => {
         fs.readFile(LOCAL_PROJECT_MAIN_FILE, 'utf8', (err: Error, contents: string) => {
             if (err) {
                 fs.writeFile(LOCAL_PROJECT_MAIN_FILE, '', (errW: Error) => {
@@ -133,7 +146,9 @@ class LocalStoreService {
         });
     };
 
-    static saveNotesList = (data: Array<NoteType>, error: () => {} = () => {}, success: () => {} = () => {}) => {
+    static saveNotesList = (data: Array<NoteType>, error: () => {} = () => {
+    }, success: () => {} = () => {
+    }) => {
         console.info('localeStoreService.saveNotesList', data);
         const notes = serializationService.convertNotesListToString(data);
         fs.writeFile(LOCAL_PROJECT_MAIN_FILE, notes, (errW: Error) => {
@@ -143,8 +158,10 @@ class LocalStoreService {
     };
 
     static getCategoriesList = (
-        error: () => {} = () => {},
-        success: (categories: CategoriesType) => {} = () => {},
+        error: () => {} = () => {
+        },
+        success: (categories: CategoriesType) => {} = () => {
+        },
     ): Array<CategoryType> => {
         fs.readFile(LOCAL_PROJECT_CATEGORIES_MAIN_FILE, 'utf8', (err: Error, contents: string) => {
             if (err) {
@@ -162,8 +179,10 @@ class LocalStoreService {
 
     static saveCategoriesList = (
         data: Array<CategoryType>,
-        error: () => {} = () => {},
-        success: () => {} = () => {},
+        error: () => {} = () => {
+        },
+        success: () => {} = () => {
+        },
     ) => {
         data.sort(categoryComparator);
         console.info('localeStoreService.saveCategoriesList', data);
@@ -176,7 +195,9 @@ class LocalStoreService {
         });
     };
 
-    static deleteNote = (data, error: () => {} = () => {}, success: () => {} = () => {}) => {
+    static deleteNote = (data, error: () => {} = () => {
+    }, success: () => {} = () => {
+    }) => {
     };
 }
 

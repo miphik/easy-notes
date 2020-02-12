@@ -13,9 +13,23 @@ message Category {
     optional int32 order_number = 8;
 }
 
+message NoteHistoryMessageRange {
+    repeated int32 startContainer = 1;
+    required int32 startOffset = 2;
+    repeated int32 endContainer = 3;
+    required int32 endOffset = 4;
+}
+
+message NoteHistoryMessage {
+    required string html = 1;
+    required NoteHistoryMessageRange range = 2;
+}
+
 message NoteHistory {
     required string created_at = 1;
-    required string device = 2;
+    optional string device = 2;
+    required NoteHistoryMessage old_value = 3;
+    required NoteHistoryMessage new_value = 4;
 }
 
 message Note {
@@ -37,12 +51,12 @@ message Note {
      optional bool is_favorite = 10;
      optional string link = 11;
      optional string icon = 12;
-     optional NoteHistory history = 13;
 }
 
 message NoteFull {
     extend Note {
         required string text = 9;
+        repeated NoteHistory history = 14;
     }
 }
 

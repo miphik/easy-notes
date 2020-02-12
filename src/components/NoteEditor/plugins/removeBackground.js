@@ -25,5 +25,5 @@ Jodit.defaultOptions.controls[REMOVE_BACKGROUND_CONTROL_NAME] = {
 
     template: (editor, key, value) => value,
 
-    tooltip: 'Highlight code block',
+    tooltip: 'Remove background colors',
 };
