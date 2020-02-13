@@ -9,6 +9,7 @@ import Radium, {Style} from 'radium';
 import JoditEditor from 'components/Jodit';
 import 'prismjs/themes/prism-twilight.css';
 import 'highlight.js/styles/a11y-dark.css';
+import listIncreaseIndent from 'components/NoteEditor/plugins/listIncreaseIndent';
 import Jodit from 'jodit';
 import styles from './styles.styl';
 import {STYLES, getTextStyles} from './styles';
@@ -18,7 +19,7 @@ import {Command} from 'components/NoteEditor/plugins/types';
 import type {NoteHistoryType} from 'types/NoteType';
 
 const toolbarClassName = 'NoteText__toolbar';
-const maxHistoryElements = 50;
+const maxHistoryElements = 100;
 
 @inject(stores => (
     {
@@ -109,6 +110,7 @@ class NoteEditor extends React.Component {
         return (
             <ScrollableColumn
                 autoHideScrollbar
+                renderScrollbar={false}
                 shadowColor={theme.color.second}
                 scrollColor={theme.color.second}
                 width="inherit"
