@@ -1,8 +1,9 @@
 import {closest} from 'components/NoteEditor/plugins/helpers';
 
-export default {
+const command = {
     name:    'list-increase-indent',
     icon:    'increaseIndentIcon',
+    hotkeys: ['ctrl+.', 'cmd+.'],
     tooltip: 'Increase list indent',
     exec:    editor => {
         const current = editor.selection.current(false);
@@ -41,3 +42,5 @@ export default {
         editor.selection.restore(snapshot);
     },
 };
+
+export default command;

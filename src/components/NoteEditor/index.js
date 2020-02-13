@@ -18,7 +18,7 @@ import {Command} from 'components/NoteEditor/plugins/types';
 import type {NoteHistoryType} from 'types/NoteType';
 
 const toolbarClassName = 'NoteText__toolbar';
-const maxHistoryElements = 50;
+const maxHistoryElements = 100;
 
 @inject(stores => (
     {
@@ -109,6 +109,7 @@ class NoteEditor extends React.Component {
         return (
             <ScrollableColumn
                 autoHideScrollbar
+                renderScrollbar={false}
                 shadowColor={theme.color.second}
                 scrollColor={theme.color.second}
                 width="inherit"

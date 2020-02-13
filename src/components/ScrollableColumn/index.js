@@ -99,7 +99,7 @@ export default class ScrollableColumn extends React.Component {
         } = this.props;
         const style = STYLES(shadowColor, scrollColor);
         return (
-            <div className={styles.scroll_container}>
+            <div className={`${styles.scroll_container} ScrollableColumn-column_container`}>
                 <Scrollbars
                     onUpdate={showScrollShadow ? this.handleUpdate : undefined}
                     autoHideTimeout={autoHideTimeout}
