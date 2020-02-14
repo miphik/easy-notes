@@ -10,7 +10,7 @@ import 'jodit/build/jodit.min.css';
 
 // .fire('afterInit', this)
 const JoditEditor = forwardRef(({
-    value, config, onChange, onBlur, tabIndex, name,
+    value, config, onChange, onBlur, tabIndex, name, onFocus,
 }, ref) => {
     const textArea = useRef(null);
 
@@ -27,6 +27,10 @@ const JoditEditor = forwardRef(({
             onBlur && onBlur(val);
         };
 
+        const focusHandler = (val: string) => {
+            onFocus && onFocus(val);
+        };
+
         const changeHandler = (val: string) => {
             onChange && onChange(val);
         };
@@ -36,6 +40,7 @@ const JoditEditor = forwardRef(({
 
         textArea.current.value = value;
         textArea.current.events.on('blur', () => blurHandler(textArea.current.value));
+        textArea.current.events.on('focus', () => focusHandler(textArea.current.value));
         textArea.current.events.on('change', () => changeHandler(textArea.current.value));
         textArea.current.workplace.tabIndex = tabIndex || -1;
 
