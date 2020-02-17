@@ -76,6 +76,7 @@ class AppLayout extends Component<PropsType> {
                 !remoteStoreIsInitedPrev || isAuthAndItChanged
             )) {
             syncCategories(syncNotes);
+            setInterval(() => syncCategories(syncNotes), 60000);
         }
     }
 

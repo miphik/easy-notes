@@ -26,7 +26,7 @@ export default {
     showXPathInStatusbar: false,
     disablePlugins:       'cleanHTML',
     enter:                'div',
-    language:             'auto',
+    language:             'en',
     observer:             {
         timeout: 300,
     },
@@ -74,11 +74,11 @@ export default {
         getIcon,
         afterInit: editor => {
             editor.registerCommand('list-increase-indent-hotkey', {
-                hotkeys: ['ctrl+shift+i', 'cmd+shift+i'],
+                hotkeys: ['ctrl+shift+i', 'cmd+shift+i', 'tab'],
                 exec: () => listIncreaseIndent.exec(editor),
             });
             editor.registerCommand('list-decrease-indent-hotkey', {
-                hotkeys: ['ctrl+shift+d', 'cmd+shift+d'],
+                hotkeys: ['ctrl+shift+d', 'cmd+shift+d', 'shift+tab'],
                 exec: () => listDecreaseIndent.exec(editor),
             });
         },

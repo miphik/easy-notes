@@ -198,7 +198,7 @@ const syncData = (
             }
         });
         if (errors.length) errorCallback(errors);
-        else {
+        else if (updateOperations.length) {
             remoteStorageService.saveNotesList(mergedIndex);
             localStorageService.saveNotesList(mergedIndex);
         }

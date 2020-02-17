@@ -115,7 +115,7 @@
     "electron-builder": "^21.2.0",
     "electron-reload": "^1.4.0",
     "electron-timber": "^0.5.1",
-    "electron-util": "^0.13.1",
+    "electron-util": "^0.14.0",
     "electron-webpack": "^2.7.2",
     "eslint": "^6.8.0",
     "eslint-config-airbnb": "^18.0.1",
@@ -170,7 +170,7 @@
     "webpackbar": "^4.0.0"
   },
   "dependencies": {
-    "antd": "3.26.8",
+    "antd": "3.26.11",
     "axios": "^0.19.1",
     "color": "^3.1.2",
     "core-js": "^2",

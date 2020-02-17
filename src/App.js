@@ -13,9 +13,13 @@ import 'react-toastify/dist/ReactToastify.css';
 import SerializationService from 'services/SerializationService';
 import 'utils/momentUtils';
 import 'draft-js-inline-toolbar-plugin/lib/plugin.css';
+import {Style} from 'radium';
+import memoizeOne from 'memoize-one';
+import {STYLES} from 'components/NoteEditor/styles';
+import type {ThemeType} from 'stores/ThemeStore';
 
 require('v8-compile-cache');
-const remote = require('electron').remote;
+const {remote} = require('electron');
 // `remote.require` since `Menu` is a main-process module.
 const buildEditorContextMenu = remote.require('electron-editor-context-menu');
 // import {LocaleProvider} from 'antd';
@@ -38,9 +42,36 @@ window.addEventListener('contextmenu', e => {
     }, 30);
 });
 
+const styles = memoizeOne((theme: ThemeType) => ({
+    '.Toast__left_side-success': {
+        backgroundColor: theme.color.marker,
+    },
+    '.Toast__left_side-error': {
+        backgroundColor: theme.color.dangerButton,
+    },
+    '.Toast__left_side': {
+        height:   '100%',
+        width:    5,
+        position: 'absolute',
+        left:     0,
+        top:      0,
+    },
+    '.Toast__content': {
+        marginLeft: '1em',
+    },
+    '.Toastify__close-button': {
+        display: 'none',
+    },
+    '.Toastify__toast': {
+        background:   theme.color.first,
+        borderRadius: 4,
+    },
+}));
+
 @hot
 @inject(mobxStores => (
     {
+        theme:               mobxStores.themeStore.getTheme,
         remoteStoreAuth:     mobxStores.remoteAuthStore.remoteStoreAuth,
         remoteStoreIsAuth:   mobxStores.remoteAuthStore.isAuth,
         remoteStoreIsInited: mobxStores.remoteAuthStore.isInited,
@@ -60,23 +91,26 @@ class App extends Component {
 
     render() {
         const {remoteStoreIsInited, serializationInited} = this.state;
+        const {theme} = this.props;
         return (
-            <React.Fragment>
+            <>
                 <IntlProvider key="en" locale="en">
                     <Router>
                         {serializationInited ? <Route exact path="*" component={Layout}/> : null}
                     </Router>
                 </IntlProvider>
                 <Spinner size="big" show={!remoteStoreIsInited && !serializationInited} fullSize/>
+                <Style rules={styles(theme)}/>
                 <ToastContainer
                     transition={Slide}
+                    hideProgressBar
                     newestOnTop
                     toastClassName="dark-toast"
                     progressClassName={{
                         height: '1px',
                     }}
                 />
-            </React.Fragment>
+            </>
         );
     }
 }
@@ -85,7 +119,8 @@ App.propTypes = {
     remoteStoreAuth: PropTypes.func,
 };
 App.defaultProps = {
-    remoteStoreAuth: () => {},
+    remoteStoreAuth: () => {
+    },
 };
 
 export default App;

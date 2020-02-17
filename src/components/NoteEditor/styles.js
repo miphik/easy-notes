@@ -145,7 +145,7 @@ a {
 `);
 
 const STYLES = memoizeOne((theme: ThemeType, editorIsActive: boolean = false) => {
-    const opacity = 0.6;
+    const opacity = 0.8;
     const backgroundOpacity = editorIsActive ? 1 : opacity;
 
     const buttonColor = theme.color.button;

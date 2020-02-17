@@ -63,12 +63,12 @@ class NoteEditor extends React.Component {
             NoteEditor.isChanged = false;
             setTimeout(() => {
                 const editor = Jodit.instances[Object.keys(Jodit.instances)[0]];
+                if (!editor) return;
                 editor.observer.stack.clear();
-                if (selectedNote.history) {
-                    selectedNote.history.forEach(item => {
-                        editor.observer.stack.push(new Command(item.oldValue, item.newValue, editor.observer));
-                    });
-                }
+                if (!selectedNote.history) return;
+                selectedNote.history.forEach(item => {
+                    editor.observer.stack.push(new Command(item.oldValue, item.newValue, editor.observer));
+                });
             }, 500);
         }
     }
