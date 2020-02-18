@@ -15,8 +15,8 @@ export default {
     link:            {
         followOnDblClick: false,
     },
-    toolbarAdaptive: false,
-    toolbarSticky: false,
+    toolbarAdaptive: true,
+    toolbarSticky: true,
     // useSearch:            false,
     showCharsCounter:     false,
     showWordsCounter:     false,

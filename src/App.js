@@ -48,6 +48,8 @@ const styles = memoizeOne((theme: ThemeType) => ({
     },
     '.Toastify__toast': {
         background:   theme.color.first,
+        boxShadow: `0 0 7px 2px ${theme.color.lightBlack}`,
+        border: `1px solid ${theme.color.selected}`,
         borderRadius: 4,
     },
 }));

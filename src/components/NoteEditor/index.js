@@ -112,7 +112,8 @@ class NoteEditor extends React.Component {
         return (
             <ScrollableColumn
                 autoHideScrollbar
-                renderScrollbar={false}
+                renderScrollbar
+                showScrollShadow={false}
                 shadowColor={theme.color.second}
                 scrollColor={theme.color.second}
                 width="inherit"
@@ -126,7 +127,6 @@ class NoteEditor extends React.Component {
                         ) : null}
                     </>
                 )}
-                footer={<div className={styles.footer}/>}
             >
                 <Style rules={textStyle}/>
                 {showComponent ? (

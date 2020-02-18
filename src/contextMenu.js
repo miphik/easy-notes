@@ -226,7 +226,7 @@ const create = (win, options) => {
             defaultActions.separator(),
             ...dictionarySuggestions,
             defaultActions.separator(),
-            defaultActions.correctAutomatically(),
+            // defaultActions.correctAutomatically(),
             defaultActions.separator(),
             defaultActions.learnSpelling(),
             defaultActions.separator(),
