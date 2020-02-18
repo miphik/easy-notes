@@ -91,10 +91,10 @@ class WebdavAuthForm extends React.PureComponent {
     });
 
     render() {
-        const {formValues} = this.props;
+        const {formValues, buttonStyle, formStyle} = this.props;
         const type = formValues.type || WEBDAV_CUSTOM_TYPE;
         return (
-            <CustomForm layout="vertical" onSubmit={this.onFormSubmit} className="WebdavAuthForm">
+            <CustomForm style={formStyle} layout="vertical" onSubmit={this.onFormSubmit} className="WebdavAuthForm">
                 <FormField
                     size="small"
                     defaultValue={WEBDAV_CUSTOM_TYPE}
@@ -133,7 +133,12 @@ class WebdavAuthForm extends React.PureComponent {
                     prefix={<Icon type="user" style={{color: 'rgba(0,0,0,.25)'}}/>}
                     Component={InputField}
                 />
-                <Button className="WebdavAuthForm__submit" type="primary" onClick={this.onFormSubmit}>
+                <Button
+                    style={buttonStyle}
+                    className="WebdavAuthForm__submit"
+                    type="primary"
+                    onClick={this.onFormSubmit}
+                >
                     {MESSAGES.loginButton}
                 </Button>
             </CustomForm>

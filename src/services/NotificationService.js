@@ -10,7 +10,7 @@ export const showLittleNotification = (text, type = 'success') => {
 
 export const showNotification = (title, text, additionalParams = {}) => {
     const {
-        onClickButton, renderButton, type = 'default', duration = 7, placement = 'bottom-right',
+        onClickButton, renderButton, type = 'default', duration = 700, placement = 'bottom-right',
     } = additionalParams;
     const key = `open${Date.now()}`;
     const onClick = () => {
@@ -49,7 +49,12 @@ export const showNotification = (title, text, additionalParams = {}) => {
             </Button>
         );
     }
-    toast(title, {
+    toast((
+        <div>
+            <div className={`Toast__left_side Toast__left_side-${type}`}/>
+            <div className="Toast__content">{title}</div>
+        </div>
+    ), {
         position: placement,
         type,
         text,

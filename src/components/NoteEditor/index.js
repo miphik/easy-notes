@@ -22,10 +22,10 @@ const maxHistoryElements = 100;
 
 @inject(stores => (
     {
-        theme:               stores.themeStore.getTheme,
-        noteText:            stores.noteStore.getNoteText,
-        selectedNote:        stores.noteStore.getSelectedNote,
-        selectedCategory:    stores.categoryStore.getSelectedCategory,
+        theme: stores.themeStore.getTheme,
+        noteText: stores.noteStore.getNoteText,
+        selectedNote: stores.noteStore.getSelectedNote,
+        selectedCategory: stores.categoryStore.getSelectedCategory,
         setSelectedNoteText: stores.noteStore.setSelectedNoteText,
     }
 ))
@@ -54,7 +54,7 @@ class NoteEditor extends React.Component {
     constructor(props) {
         super(props);
         const {noteText, selectedNote} = props;
-        this.state = {currentNoteText: noteText, currentNote: selectedNote};
+        this.state = {currentNoteText: noteText, currentNote: selectedNote, focused: false};
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
@@ -63,12 +63,12 @@ class NoteEditor extends React.Component {
             NoteEditor.isChanged = false;
             setTimeout(() => {
                 const editor = Jodit.instances[Object.keys(Jodit.instances)[0]];
+                if (!editor) return;
                 editor.observer.stack.clear();
-                if (selectedNote.history) {
-                    selectedNote.history.forEach(item => {
-                        editor.observer.stack.push(new Command(item.oldValue, item.newValue, editor.observer));
-                    });
-                }
+                if (!selectedNote.history) return;
+                selectedNote.history.forEach(item => {
+                    editor.observer.stack.push(new Command(item.oldValue, item.newValue, editor.observer));
+                });
             }, 500);
         }
     }
@@ -76,8 +76,9 @@ class NoteEditor extends React.Component {
     onChangeNote = data => {
         const {selectedNote, selectedCategory, setSelectedNoteText} = this.props;
         this.setState({
+            focused: false,
             currentNoteText: data,
-            currentNote:     selectedNote,
+            currentNote: selectedNote,
         }, () => {
             if (!this.props.selectedNote.text || !isEqual(this.props.selectedNote.text, data)) {
                 const editor = Jodit.instances[Object.keys(Jodit.instances)[0]];
@@ -86,8 +87,8 @@ class NoteEditor extends React.Component {
                     const {commands} = editor.observer.stack;
                     commands.slice(Math.max(commands.length - maxHistoryElements, 1)).forEach(command => history.push({
                         createdAt: moment().format(),
-                        oldValue:  command.oldValue,
-                        newValue:  command.newValue,
+                        oldValue: command.oldValue,
+                        newValue: command.newValue,
                     }));
                 }
                 setSelectedNoteText(selectedNote, selectedCategory, data, history);
@@ -100,16 +101,19 @@ class NoteEditor extends React.Component {
         if (selectedNote.text !== data) setSelectedNoteText(selectedNote, selectedCategory, data);
     };
 
+    onFocus = () => this.setState({focused: true});
+
     render() {
         const {selectedNote, offset, theme} = this.props;
-        const {currentNoteText} = this.state;
+        const {currentNoteText, focused} = this.state;
         const showComponent = currentNoteText !== null && selectedNote;
-        const style = STYLES(theme);
+        const style = STYLES(theme, focused);
         const textStyle = getTextStyles(style);
         return (
             <ScrollableColumn
                 autoHideScrollbar
-                renderScrollbar={false}
+                renderScrollbar
+                showScrollShadow={false}
                 shadowColor={theme.color.second}
                 scrollColor={theme.color.second}
                 width="inherit"
@@ -123,7 +127,6 @@ class NoteEditor extends React.Component {
                         ) : null}
                     </>
                 )}
-                footer={<div className={styles.footer}/>}
             >
                 <Style rules={textStyle}/>
                 {showComponent ? (
@@ -133,6 +136,7 @@ class NoteEditor extends React.Component {
                             config={config}
                             // tabIndex={1} // tabIndex of textarea
                             onBlur={this.onChangeNote} // preferred to use
+                            // onFocus={this.onFocus}
                             // only this option to update the content for performance reasons
                             onChange={newContent => {
                             }}

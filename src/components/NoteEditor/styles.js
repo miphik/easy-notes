@@ -3,6 +3,7 @@
 
 import memoizeOne from 'memoize-one';
 import type {ThemeType} from 'stores/ThemeStore';
+import Color from 'color';
 
 const IFRAME_EDITOR_STYLES = memoizeOne((theme: ThemeType) => `
 .jodit_resizer,
@@ -143,147 +144,163 @@ a {
 }
 `);
 
-const STYLES = memoizeOne((theme: ThemeType) => (
-    {
-        headers: {
-            color: 'inherit',
-        },
-        joditHeaders: {
-            color: theme.color.button,
-        },
-        joditWorkplaceHeaders: {
-            color: theme.color.buttonActive,
-        },
-        joditPopupTriangle: {
-            backgroundColor: `${theme.color.button} !important`,
-        },
-        toolbar: {
-            color: theme.color.gray,
-        },
-        joditBtn: {
-            color: `${theme.color.buttonActive} !important`,
-            backgroundColor: `${theme.color.second} !important`,
-            border: `1px solid ${theme.color.gray}`,
-        },
-        joditDisabled: {
-            backgroundColor: `${theme.color.second} !important`,
-        },
-        joditColorpickerHover: {
-            fill: `${theme.color.buttonActive} !important`,
-        },
-        joditColorpicker: {
-            fill: `${theme.color.button} !important`,
-        },
-        joditToolbarBtn: {
-            color: theme.color.button,
-        },
-        joditToolbarPopup: {
-            backgroundColor: `${theme.color.second} !important`,
-            color: `${theme.color.buttonActive} !important`,
-            border: `1px solid ${theme.color.gray} !important`,
-        },
-        backgroundTransparent: {
-            backgroundColor: `${theme.color.selected} !important`,
-        },
-        joditTabBtn: {
-            border: 'none',
-            margin: '1.2em 0 !important',
-            backgroundColor: `${theme.color.selected} !important`,
-        },
-        joditIconA: {
-            fill: `${theme.color.button} !important`,
-            color: theme.color.button,
-        },
-        joditInserterAfter: {
-            color: theme.color.buttonActive,
-            backgroundColor: theme.color.buttonActive,
-        },
-        joditToolbarHover: {
-            color: theme.color.buttonActive,
-            backgroundColor: 'transparent !important',
-        },
-        joditToolbarTrigger: {
-            borderTopColor: theme.color.buttonActive,
-        },
-        joditTooltipHover2: {
-            fill: `${theme.color.buttonActive} !important`,
-        },
-        joditTooltipHover: {
-            // backgroundColor: `${theme.color.second} !important`,
-        },
-        joditToolbar: {
-            borderColor: 'transparent',
-            backgroundColor: `${theme.color.second} !important`,
-        },
-        joditToolbar3: {
-            border: `1px solid ${theme.color.gray}`,
-        },
-        joditTooltipCheckbox: {
-            color: `${theme.color.buttonActive} !important`,
-        },
-        joditTooltip: {
-            padding: '0.3em 0.5em !important',
-            borderRadius: '0.2em !important',
-            backgroundColor: `${theme.color.second} !important`,
-            fontSize: '0.8em !important',
-            border: `1px solid ${theme.color.gray}`,
-            color: `${theme.color.buttonActive} !important`,
-            textAlign: 'center',
-        },
-        joditToolbarSeparator: {
-            borderRightColor: theme.color.selected,
-        },
-        joditToolbarTopSeparator: {
-            borderTopColor: theme.color.selected,
-        },
-        ace_gutter: {
-            zIndex: 1,
-        },
-        iframe: {
-            color: `${theme.color.buttonActive} !important`,
-            backgroundColor: 'transparent !important',
-            height: '100%',
-            flex: 1,
-        },
-        joditPre: {
-            border: `1px solid ${theme.color.selected}`,
-            background: 'transparent',
-            boxShadow: '1px 1px 0.5em rgba(0, 0, 0, 0.4) inset',
-            margin: '1em',
-        },
-        joditlanguageButton: {
-            display: 'flex !important',
-            justifyContent: 'flex-start !important',
-        },
-        joditSearchBoxCounts: {
-            borderLeft: `solid 1px ${theme.color.selected}`,
-            width: '35%',
-        },
-        joditSearchBox: {
-            backgroundColor: theme.color.first,
-            border: `solid 1px ${theme.color.selected}`,
-            boxShadow: 'box-shadow: -5px 5px 5em 5px rgba(0, 0, 0, 0.4)',
-            right: '1em',
-            position: 'fixed',
-            top: '3em',
-            zIndex: 111,
-        },
-        joditSearchBoxInputPlaceholder: {
-            color: theme.color.button,
-        },
-        joditSearchBoxButton: {
-            cursor: 'pointer',
-            border: 'none !important',
-        },
-        joditSearchBoxButtonSvg: {
-            fill: theme.color.button,
-        },
-        joditSearchBoxButtonHover: {
-            fill: theme.color.buttonActive,
-            backgroundColor: 'transparent',
-        },
-    }
-));
+const STYLES = memoizeOne((theme: ThemeType, editorIsActive: boolean = false) => {
+    const opacity = 0.8;
+    const backgroundOpacity = editorIsActive ? 1 : opacity;
+
+    const buttonColor = theme.color.button;
+    const buttonActiveColor = theme.color.buttonActive;
+    const grayColor = theme.color.gray;
+    const secondColor = theme.color.second;
+    const selectedColor = theme.color.selected;
+    return (
+        {
+            headers: {
+                color: 'inherit',
+            },
+            joditHeaders: {
+                color: buttonColor,
+            },
+            joditWorkplaceHeaders: {
+                color: buttonActiveColor,
+            },
+            joditPopupTriangle: {
+                backgroundColor: `${buttonColor} !important`,
+            },
+            toolbar: {
+                color: grayColor,
+            },
+            joditBtn: {
+                color: `${buttonActiveColor} !important`,
+                backgroundColor: `${secondColor} !important`,
+                border: `1px solid ${grayColor}`,
+            },
+            joditDisabled: {
+                backgroundColor: `${secondColor} !important`,
+            },
+            joditColorpickerHover: {
+                fill: `${buttonActiveColor} !important`,
+            },
+            joditColorpicker: {
+                fill: `${buttonColor} !important`,
+            },
+            joditToolbarBtn: {
+                color: buttonColor,
+            },
+            joditToolbarPopup: {
+                backgroundColor: `${secondColor} !important`,
+                color: `${buttonActiveColor} !important`,
+                border: `1px solid ${grayColor} !important`,
+            },
+            backgroundTransparent: {
+                backgroundColor: `${selectedColor} !important`,
+            },
+            joditTabBtn: {
+                border: 'none',
+                margin: '1.2em 0 !important',
+                backgroundColor: `${selectedColor} !important`,
+            },
+            joditIconA: {
+                fill: `${buttonColor} !important`,
+                color: buttonColor,
+            },
+            joditInserterAfter: {
+                color: buttonActiveColor,
+                backgroundColor: buttonActiveColor,
+            },
+            joditToolbarHover: {
+                color: buttonActiveColor,
+                backgroundColor: 'transparent !important',
+            },
+            joditToolbarTrigger: {
+                borderTopColor: buttonActiveColor,
+            },
+            joditTooltipHover2: {
+                fill: `${buttonActiveColor} !important`,
+            },
+            joditTooltipHover: {
+                // backgroundColor: `${secondColor} !important`,
+            },
+            joditToolbar: {
+                borderColor: 'transparent',
+                backgroundColor: `${secondColor} !important`,
+            },
+            joditToolbar3: {
+                border: `1px solid ${grayColor}`,
+            },
+            joditTooltipCheckbox: {
+                color: `${buttonActiveColor} !important`,
+            },
+            joditTooltip: {
+                padding: '0.3em 0.5em !important',
+                borderRadius: '0.2em !important',
+                backgroundColor: `${secondColor} !important`,
+                fontSize: '0.8em !important',
+                border: `1px solid ${grayColor}`,
+                color: `${buttonActiveColor} !important`,
+                textAlign: 'center',
+            },
+            joditToolbarSeparator: {
+                borderRightColor: selectedColor,
+            },
+            joditToolbarTopSeparator: {
+                borderTopColor: selectedColor,
+            },
+            ace_gutter: {
+                zIndex: 1,
+            },
+            iframe: {
+                color: `${buttonActiveColor} !important`,
+                backgroundColor: 'transparent !important',
+                height: '100%',
+                flex: 1,
+            },
+            joditPre: {
+                border: `1px solid ${selectedColor}`,
+                background: 'transparent',
+                boxShadow: '1px 1px 0.5em rgba(0, 0, 0, 0.4) inset',
+                margin: '1em',
+            },
+            joditlanguageButton: {
+                display: 'flex !important',
+                justifyContent: 'flex-start !important',
+            },
+            joditSearchBoxCounts: {
+                borderLeft: `solid 1px ${selectedColor}`,
+                width: '35%',
+            },
+            joditSearchBox: {
+                backgroundColor: theme.color.first,
+                border: `solid 1px ${selectedColor}`,
+                boxShadow: 'box-shadow: -5px 5px 5em 5px rgba(0, 0, 0, 0.4)',
+                right: '1em',
+                position: 'fixed',
+                top: '3em',
+                zIndex: 111,
+            },
+            joditSearchBoxInputPlaceholder: {
+                color: buttonColor,
+            },
+            joditSearchBoxButton: {
+                cursor: 'pointer',
+                padding: '1px 3px',
+                border: 'none !important',
+            },
+            joditSearchBoxButtonSvg: {
+                fill: buttonColor,
+                marginTop: '3px',
+                pointerEvents: 'none',
+            },
+            joditSearchBoxButtonHover: {
+                fill: buttonActiveColor,
+                backgroundColor: 'transparent',
+            },
+            joditContainer: {
+                opacity: backgroundOpacity,
+            },
+        }
+    );
+});
 
 const getTextStyles = memoizeOne((style: STYLES) => ({
     '.jodit_search .jodit_search_box .jodit_search_buttons button': style.joditSearchBoxButton,
@@ -336,6 +353,7 @@ const getTextStyles = memoizeOne((style: STYLES) => ({
     '.jodit_toolbar h1, .jodit_toolbar h2, .jodit_toolbar h3, .jodit_toolbar h4, .jodit_toolbar h5, .jodit_toolbar h6': style.joditHeaders,
     // '.jodit_workplace h1, .jodit_workplace h2, .jodit_workplace h3, .jodit_workplace h4, .jodit_workplace h5, .jodit_workplace h6': style.joditWorkplaceHeaders,
     'iframe.jodit_wysiwyg_iframe html': style.iframe,
+    '.jodit_container': style.joditContainer,
     // 'h1:hover, h2:hover, h3:hover, h4:hover, h5:hover, h6:hover': style.joditToolbarHover,
 }));
 

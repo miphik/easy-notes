@@ -17,6 +17,7 @@ export type ThemeType = {
         buttonActive: string,
         dangerButton: string,
         black: string,
+        lightBlack: string,
         white: string,
         first: string,
         second: string,
@@ -47,8 +48,9 @@ const DEFAULT_THEME = (scale: number) => (
 
             dangerButton: '#f5222d',
 
-            black: '#000',
-            white: '#fff',
+            lightBlack: '#1d1d1d',
+            black:      '#000',
+            white:      '#fff',
 
             first:  '#242E32',
             second: '#1C262A',

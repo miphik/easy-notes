@@ -145,7 +145,7 @@ export default class ScrollableColumn extends React.Component {
                 )}
 
                 <div className={styles.column_content}>
-                    {renderScrollbar ? renderProps(children) : this.renderWithScrollbar(children)}
+                    {!renderScrollbar ? renderProps(children) : this.renderWithScrollbar(children)}
                     {!!contentAbsolute && (
                         <div className={styles.column_content_absolute}>
                             {contentAbsolute}

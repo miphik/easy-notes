@@ -15,8 +15,9 @@ export default {
     link:            {
         followOnDblClick: false,
     },
-    toolbarStickyOffset:  0,
-    useSearch:            true,
+    toolbarAdaptive: true,
+    toolbarSticky: true,
+    // useSearch:            false,
     showCharsCounter:     false,
     showWordsCounter:     false,
     // iframeStyle: IFRAME_EDITOR_STYLES(theme),
@@ -26,7 +27,7 @@ export default {
     showXPathInStatusbar: false,
     disablePlugins:       'cleanHTML',
     enter:                'div',
-    language:             'auto',
+    language:             'en',
     observer:             {
         timeout: 300,
     },
@@ -74,12 +75,16 @@ export default {
         getIcon,
         afterInit: editor => {
             editor.registerCommand('list-increase-indent-hotkey', {
-                hotkeys: ['ctrl+shift+i', 'cmd+shift+i'],
+                hotkeys: ['ctrl+shift+i', 'cmd+shift+i', 'tab'],
                 exec: () => listIncreaseIndent.exec(editor),
             });
             editor.registerCommand('list-decrease-indent-hotkey', {
-                hotkeys: ['ctrl+shift+d', 'cmd+shift+d'],
+                hotkeys: ['ctrl+shift+d', 'cmd+shift+d', 'shift+tab'],
                 exec: () => listDecreaseIndent.exec(editor),
+            });
+            editor.registerCommand('list-decrease-indent-hotkey', {
+                hotkeys: ['ctrl+f', 'cmd+f'],
+                exec: () => search.exec(editor),
             });
         },
     },

@@ -13,34 +13,51 @@ import 'react-toastify/dist/ReactToastify.css';
 import SerializationService from 'services/SerializationService';
 import 'utils/momentUtils';
 import 'draft-js-inline-toolbar-plugin/lib/plugin.css';
+import {Style} from 'radium';
+import memoizeOne from 'memoize-one';
+import {STYLES} from 'components/NoteEditor/styles';
+import type {ThemeType} from 'stores/ThemeStore';
 
 require('v8-compile-cache');
-const remote = require('electron').remote;
 // `remote.require` since `Menu` is a main-process module.
-const buildEditorContextMenu = remote.require('electron-editor-context-menu');
 // import {LocaleProvider} from 'antd';
 
 // import enUS from 'antd/lib/locale-provider/en_US';
 // import 'antd/lib/button/style/index.css';
 // import 'app/styles/base.styl';
 
-window.addEventListener('contextmenu', e => {
-    // Only show the context menu in text editors.
-    if (!e.target.closest('textarea, input, [contenteditable="true"]')) return;
-
-    const menu = buildEditorContextMenu();
-
-    // The 'contextmenu' event is emitted after 'selectionchange' has fired but possibly before the
-    // visible selection has changed. Try to wait to show the menu until after that, otherwise the
-    // visible selection will update after the menu dismisses and look weird.
-    setTimeout(() => {
-        menu.popup(remote.getCurrentWindow());
-    }, 30);
-});
+const styles = memoizeOne((theme: ThemeType) => ({
+    '.Toast__left_side-success': {
+        backgroundColor: theme.color.marker,
+    },
+    '.Toast__left_side-error': {
+        backgroundColor: theme.color.dangerButton,
+    },
+    '.Toast__left_side': {
+        height:   '100%',
+        width:    5,
+        position: 'absolute',
+        left:     0,
+        top:      0,
+    },
+    '.Toast__content': {
+        marginLeft: '1em',
+    },
+    '.Toastify__close-button': {
+        display: 'none',
+    },
+    '.Toastify__toast': {
+        background:   theme.color.first,
+        boxShadow: `0 0 7px 2px ${theme.color.lightBlack}`,
+        border: `1px solid ${theme.color.selected}`,
+        borderRadius: 4,
+    },
+}));
 
 @hot
 @inject(mobxStores => (
     {
+        theme:               mobxStores.themeStore.getTheme,
         remoteStoreAuth:     mobxStores.remoteAuthStore.remoteStoreAuth,
         remoteStoreIsAuth:   mobxStores.remoteAuthStore.isAuth,
         remoteStoreIsInited: mobxStores.remoteAuthStore.isInited,
@@ -60,23 +77,26 @@ class App extends Component {
 
     render() {
         const {remoteStoreIsInited, serializationInited} = this.state;
+        const {theme} = this.props;
         return (
-            <React.Fragment>
+            <>
                 <IntlProvider key="en" locale="en">
                     <Router>
                         {serializationInited ? <Route exact path="*" component={Layout}/> : null}
                     </Router>
                 </IntlProvider>
                 <Spinner size="big" show={!remoteStoreIsInited && !serializationInited} fullSize/>
+                <Style rules={styles(theme)}/>
                 <ToastContainer
                     transition={Slide}
+                    hideProgressBar
                     newestOnTop
                     toastClassName="dark-toast"
                     progressClassName={{
                         height: '1px',
                     }}
                 />
-            </React.Fragment>
+            </>
         );
     }
 }
@@ -85,7 +105,8 @@ App.propTypes = {
     remoteStoreAuth: PropTypes.func,
 };
 App.defaultProps = {
-    remoteStoreAuth: () => {},
+    remoteStoreAuth: () => {
+    },
 };
 
 export default App;

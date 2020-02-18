@@ -52,7 +52,7 @@ class SerializationService {
 
     static convertStringToNote = (data: string): NoteType => {
         if (data === '' || data.length < 5) return {};
-        return JSON.parse(zlib.inflateSync(new Buffer(data, 'base64')).toString());
+        return JSON.parse(zlib.inflateSync(Buffer.from(data, 'base64')).toString());
     };
 
     static convertNotesListToString = (notes: NotesType): string => {
@@ -67,14 +67,14 @@ class SerializationService {
 
     static convertStringToNotesList = (data: string): NotesType => {
         if (data === '' || data.length < 5) return [];
-        return JSON.parse(zlib.inflateSync(new Buffer(data, 'base64')).toString());
+        return JSON.parse(zlib.inflateSync(Buffer.from(data, 'base64')).toString());
     };
 
     static convertCategoriesListToString = (categories: CategoriesType) => zlib.deflateSync(JSON.stringify(categories)).toString('base64');
 
     static convertStringToCategoriesList = (data: string): CategoriesType => {
         if (data === '' || data.length < 5) return [];
-        return JSON.parse(zlib.inflateSync(new Buffer(data, 'base64')).toString());
+        return JSON.parse(zlib.inflateSync(Buffer.from(data, 'base64')).toString());
     };
 }
 
