@@ -1,10 +1,11 @@
 const {
-    app, BrowserWindow, Menu, shell, ipcMain, Tray, session, protocol,
+    app, BrowserWindow, Menu, shell, ipcMain, Tray, session, protocol, webContents,
 } = require('electron');
 // const {setContentSecurityPolicy} = require('electron-util');
 const path = require('path');
 const url = require('url');
 const storage = require('electron-json-storage');
+const contextMenu = require('./src/contextMenu');
 
 const BOUNDS_KEY = 'WINDOW_POSITION';
 const PORT = process.env.PORT || 8080;
@@ -31,6 +32,10 @@ let mainWindow;
     electron: require(`${__dirname}/node_modules/electron`),
 }); */
 
+contextMenu({
+    // shouldShowMenu: (event, params) => !params.misspelledWord,
+    prepend: (defaultActions, params, browserWindow) => defaultActions,
+});
 
 app.on('web-contents-created', (event, contents) => {
     contents.on('new-window', (event, navigationUrl) => {
@@ -51,6 +56,7 @@ function createMainWindow(data = {}) {
         height:         data.bounds && data.bounds.height ? data.bounds.height : 880,
         y:              data.bounds && data.bounds.y ? data.bounds.y : null,
         webPreferences: {
+            spellcheck:      true,
             webSecurity:     false,
             nodeIntegration: true,
         },
@@ -93,6 +99,7 @@ function createMainWindow(data = {}) {
     }
 
     mainWindow.webContents.on('did-finish-load', () => {
+        // mainWindow.webContents.session.setSpellCheckLanguages(['en-US', 'de', 'ru']);
         mainWindow.show();
         mainWindow.focus();
     });

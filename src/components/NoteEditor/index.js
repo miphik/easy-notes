@@ -136,7 +136,7 @@ class NoteEditor extends React.Component {
                             config={config}
                             // tabIndex={1} // tabIndex of textarea
                             onBlur={this.onChangeNote} // preferred to use
-                            onFocus={this.onFocus}
+                            // onFocus={this.onFocus}
                             // only this option to update the content for performance reasons
                             onChange={newContent => {
                             }}

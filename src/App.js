@@ -19,28 +19,12 @@ import {STYLES} from 'components/NoteEditor/styles';
 import type {ThemeType} from 'stores/ThemeStore';
 
 require('v8-compile-cache');
-const {remote} = require('electron');
 // `remote.require` since `Menu` is a main-process module.
-const buildEditorContextMenu = remote.require('electron-editor-context-menu');
 // import {LocaleProvider} from 'antd';
 
 // import enUS from 'antd/lib/locale-provider/en_US';
 // import 'antd/lib/button/style/index.css';
 // import 'app/styles/base.styl';
-
-window.addEventListener('contextmenu', e => {
-    // Only show the context menu in text editors.
-    if (!e.target.closest('textarea, input, [contenteditable="true"]')) return;
-
-    const menu = buildEditorContextMenu();
-
-    // The 'contextmenu' event is emitted after 'selectionchange' has fired but possibly before the
-    // visible selection has changed. Try to wait to show the menu until after that, otherwise the
-    // visible selection will update after the menu dismisses and look weird.
-    setTimeout(() => {
-        menu.popup(remote.getCurrentWindow());
-    }, 30);
-});
 
 const styles = memoizeOne((theme: ThemeType) => ({
     '.Toast__left_side-success': {

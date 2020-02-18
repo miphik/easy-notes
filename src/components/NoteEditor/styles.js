@@ -283,10 +283,13 @@ const STYLES = memoizeOne((theme: ThemeType, editorIsActive: boolean = false) =>
             },
             joditSearchBoxButton: {
                 cursor: 'pointer',
+                padding: '1px 3px',
                 border: 'none !important',
             },
             joditSearchBoxButtonSvg: {
                 fill: buttonColor,
+                marginTop: '3px',
+                pointerEvents: 'none',
             },
             joditSearchBoxButtonHover: {
                 fill: buttonActiveColor,

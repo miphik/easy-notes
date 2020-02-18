@@ -15,8 +15,9 @@ export default {
     link:            {
         followOnDblClick: false,
     },
-    toolbarStickyOffset:  0,
-    useSearch:            true,
+    toolbarAdaptive: false,
+    toolbarSticky: false,
+    // useSearch:            false,
     showCharsCounter:     false,
     showWordsCounter:     false,
     // iframeStyle: IFRAME_EDITOR_STYLES(theme),
@@ -80,6 +81,10 @@ export default {
             editor.registerCommand('list-decrease-indent-hotkey', {
                 hotkeys: ['ctrl+shift+d', 'cmd+shift+d', 'shift+tab'],
                 exec: () => listDecreaseIndent.exec(editor),
+            });
+            editor.registerCommand('list-decrease-indent-hotkey', {
+                hotkeys: ['ctrl+f', 'cmd+f'],
+                exec: () => search.exec(editor),
             });
         },
     },
