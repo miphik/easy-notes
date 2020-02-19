@@ -5,12 +5,12 @@ const {
 const path = require('path');
 const url = require('url');
 const storage = require('electron-json-storage');
-const contextMenu = require('./src/contextMenu');
-
 const BOUNDS_KEY = 'WINDOW_POSITION';
+
 const PORT = process.env.PORT || 8080;
 const IP = process.env.IP || '127.0.0.1';
 const isDevelopment = (process.env.WEBPACK_MODE === 'development' || process.env.NODE_ENV === 'dev');
+const contextMenu = require(isDevelopment ? './src/contextMenu' : `${__dirname}/build_code/contextMenu`);
 const logger = () => {
 };
 const is = () => {
