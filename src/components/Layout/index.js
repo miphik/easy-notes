@@ -76,7 +76,13 @@ class AppLayout extends Component<PropsType> {
                 !remoteStoreIsInitedPrev || isAuthAndItChanged
             )) {
             syncCategories(syncNotes);
-            setInterval(() => syncCategories(syncNotes), 60000);
+            setInterval(() => {
+                try {
+                    syncCategories(syncNotes);
+                } catch (e) {
+                    console.error(e);
+                }
+            }, 60000);
         }
     }
 

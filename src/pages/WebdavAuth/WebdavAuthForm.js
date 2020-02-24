@@ -10,8 +10,9 @@ import {YANDEX_WEBDAV_URL} from 'src/constants/general';
 import InputField from 'utils/simpleForm/InputField';
 import ToogleListField from 'utils/simpleForm/ToogleListField';
 import {required} from 'utils/simpleForm/validators';
-import './styles.styl';
+import styles from './styles.styl';
 
+const S = styles;
 const WEBDAV_CUSTOM_TYPE = 'custom';
 const WEBDAV_YANDEX_TYPE = 'yandex';
 const WEBDAV_TYPES = [
