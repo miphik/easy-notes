@@ -37,6 +37,7 @@ const common = merge([
 
 module.exports = function (env, argv) {
     common.mode = argv.mode;
+    common.externals = {sqlite3: 'commonjs sqlite3'};
     if (argv.mode === 'production') {
         common.plugins.push(new ExtractCssChunksPlugin());
         /* common.plugins.push(new MiniCssExtractPlugin({

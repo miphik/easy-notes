@@ -17,6 +17,7 @@ import {Style} from 'radium';
 import memoizeOne from 'memoize-one';
 import {STYLES} from 'components/NoteEditor/styles';
 import type {ThemeType} from 'stores/ThemeStore';
+import SqliteService from "services/SqliteService";
 
 require('v8-compile-cache');
 // `remote.require` since `Menu` is a main-process module.
@@ -73,6 +74,7 @@ class App extends Component {
         const setStateSerialization = () => this.setState({serializationInited: true});
         remoteStoreAuth();
         SerializationService.init(setStateSerialization);
+        SqliteService.init();
     }
 
     render() {
