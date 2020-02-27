@@ -2,6 +2,7 @@
 import * as fs from 'fs';
 import moment from 'moment';
 import type {SerializationServiceType} from 'services/SerializationService';
+import SqliteService from 'services/SqliteService';
 import SerializationService from 'services/SerializationService';
 import {
     NOTE_DAY_DATE_FORMAT,
@@ -115,7 +116,10 @@ class LocalStoreService {
         const noteAsString = serializationService.convertNoteToString(note);
         fs.writeFile(LOCAL_PROJECT_NOTE_FILE(note), noteAsString, (errW: Error) => {
             if (errW) error(errW);
-            else success();
+            else {
+                success();
+                SqliteService.upsertNote(note);
+            }
         });
     };
 
