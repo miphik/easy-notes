@@ -1,4 +1,4 @@
-import {Button, Icon} from 'antd';
+import {Button} from 'antd';
 import CustomForm from 'components/Form/CustomForm';
 import FormField from 'components/Form/FormField';
 import simpleForm from 'components/Form/simpleForm';
@@ -10,8 +10,10 @@ import {YANDEX_WEBDAV_URL} from 'src/constants/general';
 import InputField from 'utils/simpleForm/InputField';
 import ToogleListField from 'utils/simpleForm/ToogleListField';
 import {required} from 'utils/simpleForm/validators';
-import './styles.styl';
+import {UserOutlined, CloudOutlined,} from '@ant-design/icons';
+import styles from './styles.styl';
 
+const S = styles;
 const WEBDAV_CUSTOM_TYPE = 'custom';
 const WEBDAV_YANDEX_TYPE = 'yandex';
 const WEBDAV_TYPES = [
@@ -111,7 +113,7 @@ class WebdavAuthForm extends React.PureComponent {
                     inputRef={this.urlInputRef}
                     disabled={type !== WEBDAV_CUSTOM_TYPE}
                     placeholder={formatMessageIntl(MESSAGES.urlPlaceholder)}
-                    prefix={<Icon type="cloud-o" style={{color: 'rgba(0,0,0,.25)'}}/>}
+                    prefix={<CloudOutlined style={{color: 'rgba(0,0,0,.25)'}}/>}
                     Component={InputField}
                 />
                 <FormField
@@ -120,7 +122,7 @@ class WebdavAuthForm extends React.PureComponent {
                     validators={required}
                     required
                     placeholder={formatMessageIntl(MESSAGES.usernamePlaceholder)}
-                    prefix={<Icon type="user" style={{color: 'rgba(0,0,0,.25)'}}/>}
+                    prefix={<UserOutlined style={{color: 'rgba(0,0,0,.25)'}}/>}
                     Component={InputField}
                 />
                 <FormField
@@ -130,7 +132,7 @@ class WebdavAuthForm extends React.PureComponent {
                     required
                     type="password"
                     placeholder={formatMessageIntl(MESSAGES.passwordPlaceholder)}
-                    prefix={<Icon type="user" style={{color: 'rgba(0,0,0,.25)'}}/>}
+                    prefix={<UserOutlined style={{color: 'rgba(0,0,0,.25)'}}/>}
                     Component={InputField}
                 />
                 <Button

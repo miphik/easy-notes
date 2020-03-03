@@ -54,7 +54,6 @@ a {
   border: none !important;
 }
 .jodit_container .jodit_toolbar .jodit_toolbar_btn {
-  min-width: 2.29em;
   height: 2.29em;
   line-height: 2.29em;
 }
@@ -62,7 +61,6 @@ a {
 .jodit_container .jodit_toolbar,
 .jodit_container .jodit_statusbar,
 .jodit_dark_theme .jodit_toolbar,
-.jodit_container .jodit_toolbar > li.jodit_toolbar_btn.jodit_toolbar_btn-separator,
 .jodit_container .jodit_toolbar > li.jodit_toolbar_btn.jodit_toolbar_btn-break {
   border-color: transparent;
 }
@@ -151,6 +149,7 @@ const STYLES = memoizeOne((theme: ThemeType, editorIsActive: boolean = false) =>
     const buttonColor = theme.color.button;
     const buttonActiveColor = theme.color.buttonActive;
     const grayColor = theme.color.gray;
+    const firstColor = theme.color.first;
     const secondColor = theme.color.second;
     const selectedColor = theme.color.selected;
     return (
@@ -176,7 +175,7 @@ const STYLES = memoizeOne((theme: ThemeType, editorIsActive: boolean = false) =>
                 border: `1px solid ${grayColor}`,
             },
             joditDisabled: {
-                backgroundColor: `${secondColor} !important`,
+                backgroundColor: `${firstColor} !important`,
             },
             joditColorpickerHover: {
                 fill: `${buttonActiveColor} !important`,
@@ -334,7 +333,7 @@ const getTextStyles = memoizeOne((style: STYLES) => ({
     '.jodit_popup_triangle': style.joditPopupTriangle,
     '.jodit_statusbar': style.joditToolbar,
     '.jodit_toolbar .jodit_toolbar .jodit_toolbar': style.joditToolbar3,
-    '.jodit_toolbar>.jodit_toolbar_btn:not(.jodit_toolbar-input):hover': style.joditToolbarHover,
+    '.jodit_toolbar>.jodit_toolbar_btn:not(.jodit_toolbar-input):not(.jodit_active):hover': style.joditToolbarHover,
     '.jodit_toolbar > .jodit_toolbar_btn:not(.jodit_toolbar-input):hover': style.joditTooltipHover,
     '.jodit_dark_theme .jodit_toolbar li.jodit_toolbar_btn.active, .jodit_dark_theme .jodit_toolbar li.jodit_toolbar_btn.jodit_active, .jodit_dark_theme .jodit_toolbar li.jodit_toolbar_btn:active, .jodit_dark_theme .jodit_toolbar li.jodit_toolbar_btn:hover': style.joditTooltipHover,
     '.jodit_toolbar > li.jodit_toolbar_btn.jodit_with_dropdownlist.jodit_with_dropdownlist-trigger': style.joditToolbarTrigger,

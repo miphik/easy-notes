@@ -7,6 +7,9 @@ import * as React from 'react';
 import {NavLink} from 'react-router-dom';
 import {WEBDAV_AUTH_PATH} from 'src/constants/routes';
 import type {ThemeType} from 'stores/ThemeStore';
+import {
+    DisconnectOutlined, WarningOutlined, SyncOutlined, ShareAltOutlined
+} from '@ant-design/icons';
 
 const STYLES = memoizeOne((theme: ThemeType, areErrors: boolean) => (
     {
@@ -53,13 +56,13 @@ export default class StatusIcon extends React.Component<PropsType> {
         const {theme, categoriesAreSyncing, remoteStoreIsAuth, syncErrors, remoteStoreIsError} = this.props;
         const style = STYLES(theme, !!syncErrors || !!remoteStoreIsError);
 
-        let icon = <Icon type="disconnect"/>;
+        let icon = <DisconnectOutlined />;
         if (!!syncErrors || !!remoteStoreIsError) {
-            icon = <Icon type="warning"/>;
+            icon = <WarningOutlined />;
         } else if (categoriesAreSyncing) {
-            icon = <Icon type="sync" spin/>;
+            icon = <SyncOutlined spin/>;
         } else if (remoteStoreIsAuth) {
-            icon = <Icon type="share-alt"/>;
+            icon = <ShareAltOutlined />;
         }
         icon = (
             <span style={style.button}>

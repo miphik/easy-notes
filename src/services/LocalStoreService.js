@@ -1,32 +1,23 @@
 // @flow
-import * as electron from 'electron';
 import * as fs from 'fs';
 import moment from 'moment';
-import * as path from 'path';
 import type {SerializationServiceType} from 'services/SerializationService';
+import SqliteService from 'services/SqliteService';
 import SerializationService from 'services/SerializationService';
 import {
     NOTE_DAY_DATE_FORMAT,
     NOTE_MONTH_DATE_FORMAT,
     NOTE_YAER_DATE_FORMAT,
+    LOCAL_PROJECT_FULL_PATH,
 } from 'src/constants/general';
 import type {
     CategoriesType, CategoryType, NotesType, NoteType,
 } from 'types/NoteType';
 import {categoryComparator} from 'utils/ComparatorsUtils';
 
-const LOCAL_PROJECT_PATH = 'easy-notes';
 const INDEX_FILE_NAME = 'notes.index';
 const INDEX_CATEGORIES_FILE_NAME = 'categories.index';
 
-const USER_DATA_PATH_TEMP = (
-    electron.app
-    || (
-        electron.remote && electron.remote.app
-    )
-);
-const USER_DATA_PATH = USER_DATA_PATH_TEMP ? USER_DATA_PATH_TEMP.getPath('userData') : '';
-const LOCAL_PROJECT_FULL_PATH = path.resolve(USER_DATA_PATH, LOCAL_PROJECT_PATH);
 const LOCAL_PROJECT_CATEGORIES_MAIN_FILE = `${LOCAL_PROJECT_FULL_PATH}/${INDEX_CATEGORIES_FILE_NAME}`;
 const LOCAL_PROJECT_MAIN_FILE = `${LOCAL_PROJECT_FULL_PATH}/${INDEX_FILE_NAME}`;
 
@@ -125,7 +116,10 @@ class LocalStoreService {
         const noteAsString = serializationService.convertNoteToString(note);
         fs.writeFile(LOCAL_PROJECT_NOTE_FILE(note), noteAsString, (errW: Error) => {
             if (errW) error(errW);
-            else success();
+            else {
+                success();
+                SqliteService.upsertNote(note);
+            }
         });
     };
 

@@ -9,8 +9,7 @@ import {FormattedMessage as Fm} from 'react-intl';
 import type {CategoryType} from 'types/NoteType';
 import {emptyFunc} from 'utils/General';
 import InputField from 'utils/simpleForm/InputField';
-import SelectField from 'utils/simpleForm/SelectField';
-import TransferField from 'utils/simpleForm/TransferField';
+import { SaveOutlined } from '@ant-design/icons';
 import TreeSelectField from 'utils/simpleForm/TreeSelectField';
 import {required} from 'utils/simpleForm/validators';
 import './styles.styl';
@@ -81,7 +80,7 @@ class CategoryForm extends React.PureComponent {
                             type="primary"
                             onClick={this.onFormSubmit}
                             loading={isUpdating}
-                            icon="save"
+                            icon={<SaveOutlined />}
                         >
                             {isNew ? MESSAGES.buttonCreate : MESSAGES.buttonUpdate}
                         </Button>

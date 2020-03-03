@@ -37,6 +37,7 @@ const common = merge([
 
 module.exports = function (env, argv) {
     common.mode = argv.mode;
+    common.externals = {sqlite3: 'commonjs sqlite3'};
     if (argv.mode === 'production') {
         common.plugins.push(new ExtractCssChunksPlugin());
         /* common.plugins.push(new MiniCssExtractPlugin({
@@ -107,6 +108,7 @@ module.exports = function (env, argv) {
         common.plugins.push(new CopyPlugin([
             {from: 'proto', to: `${PATHS.buildCode}/proto`},
             {from: 'src/images/icon.icns', to: `${PATHS.buildCode}/icon.icns`},
+            {from: 'src/contextMenu.js', to: `${PATHS.buildCode}/contextMenu.js`},
         ]));
         common.plugins.push(new CompressionPlugin({
             algorithm: 'gzip',
