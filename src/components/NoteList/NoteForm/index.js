@@ -9,6 +9,7 @@ import type {NoteType} from 'types/NoteType';
 import {emptyFunc} from 'utils/General';
 import InputField from 'utils/simpleForm/InputField';
 import {required} from 'utils/simpleForm/validators';
+import {SaveOutlined} from '@ant-design/icons';
 import './styles.styl';
 
 type PropsType = {
@@ -62,7 +63,7 @@ class NoteForm extends React.PureComponent<PropsType> {
             <Modal
                 title={isNew ? MESSAGES.createNoteTitle : MESSAGES.updateNoteTitle}
                 footer={(
-                    <React.Fragment>
+                    <>
                         <Button disabled={isUpdating} key="close" onClick={this.onClose}>
                             {MESSAGES.buttonCancel}
                         </Button>
@@ -70,11 +71,11 @@ class NoteForm extends React.PureComponent<PropsType> {
                             type="primary"
                             onClick={this.onFormSubmit}
                             loading={isUpdating}
-                            icon="save"
+                            icon={<SaveOutlined/>}
                         >
                             {isNew ? MESSAGES.buttonCreate : MESSAGES.buttonUpdate}
                         </Button>
-                    </React.Fragment>
+                    </>
                 )}
                 visible={isVisible}
                 onCancel={this.onClose}

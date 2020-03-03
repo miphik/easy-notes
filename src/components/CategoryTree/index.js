@@ -1,5 +1,4 @@
 // @flow
-import {Icon} from 'antd';
 import CategoryItem from 'components/CategoryTree/CategoryItem';
 import FileExplorerTheme from 'components/CategoryTree/CategorySortebleTreeTheme';
 import StatusIcon from 'components/CategoryTree/StatusIcon';
@@ -20,6 +19,7 @@ import {REMOVED_CATEGORY, WITHOUT_CATEGORY} from 'stores/NoteStore';
 import type {ThemeType} from 'stores/ThemeStore';
 import type {CategoryType} from 'types/NoteType';
 import {emptyFunc} from 'utils/General';
+import {InboxOutlined, DeleteOutlined} from '@ant-design/icons';
 import styles from './styles.styl';
 
 const MESSAGES = {
@@ -275,7 +275,7 @@ class CategoryTree extends React.Component<PropsType> {
                 >
                     <CategoryItem
                         theme={theme}
-                        icons={[<Icon type="inbox"/>]}
+                        icons={[<InboxOutlined/>]}
                         scaffold={scaffoldCategory(theme, withoutCategorySelected)}
                         category={EMPTY_CATEGORY}
                         onSelectCategory={this.onSelectCategory}
@@ -286,7 +286,7 @@ class CategoryTree extends React.Component<PropsType> {
                     />
                     <CategoryItem
                         theme={theme}
-                        icons={[<Icon type="delete"/>]}
+                        icons={[<DeleteOutlined/>]}
                         scaffold={scaffoldCategory(theme, removeCategorySelected)}
                         category={DELETED_CATEGORY}
                         onSelectCategory={this.onSelectRemovedCategory}

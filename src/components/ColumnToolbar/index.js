@@ -5,6 +5,9 @@ import memoizeOne from 'memoize-one';
 import * as React from 'react';
 import {CANCEL_CONFIRM_BUTTON_TEXT, CONFIRM_BUTTON_TEXT} from 'src/constants/text';
 import type {ThemeType} from 'stores/ThemeStore';
+import {
+    PlusOutlined, EditOutlined, CloseOutlined, CheckOutlined, DeleteOutlined,
+} from '@ant-design/icons';
 import styles from './styles.styl';
 
 const STYLES = memoizeOne((theme: ThemeType) => (
@@ -75,7 +78,7 @@ export default class ColumnToolbar extends React.PureComponent<PropsType> {
                         className={styles.add_button}
                         disabled={addButtonIsDisabled}
                         ghost
-                        icon="plus"
+                        icon={<PlusOutlined/>}
                         onClick={createNewItem}
                         style={style.addButton}
                     />
@@ -86,7 +89,7 @@ export default class ColumnToolbar extends React.PureComponent<PropsType> {
                     <CButton
                         className={styles.add_button}
                         ghost
-                        icon="edit"
+                        icon={<EditOutlined/>}
                         onClick={updateItem}
                         style={style.addButton}
                     />
@@ -103,21 +106,23 @@ export default class ColumnToolbar extends React.PureComponent<PropsType> {
                                     <CButton
                                         className={styles.add_button}
                                         ghost
-                                        icon="close"
+                                        icon={<CloseOutlined/>}
                                         onClick={this.toggleOpenDeleteConfirm}
                                         style={style.addButton}
                                     >
-                                        &nbsp;{CANCEL_CONFIRM_BUTTON_TEXT}
+                                        &nbsp;
+                                        {CANCEL_CONFIRM_BUTTON_TEXT}
                                     </CButton>
                                     <CButton
                                         className={styles.add_button}
                                         ghost
-                                        icon="check"
+                                        icon={<CheckOutlined/>}
                                         type="danger"
                                         onClick={this.onClickConfirm}
                                         style={style.removeButton}
                                     >
-                                        &nbsp;{CONFIRM_BUTTON_TEXT}
+                                        &nbsp;
+                                        {CONFIRM_BUTTON_TEXT}
                                     </CButton>
                                 </div>
                             </div>
@@ -126,7 +131,7 @@ export default class ColumnToolbar extends React.PureComponent<PropsType> {
                             <CButton
                                 className={styles.add_button}
                                 ghost
-                                icon="delete"
+                                icon={<DeleteOutlined/>}
                                 type="danger"
                                 style={style.removeButton}
                             />
