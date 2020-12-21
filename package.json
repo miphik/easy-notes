@@ -197,7 +197,7 @@
     "mobx": "^5.15.1",
     "mobx-react": "^6.1.4",
     "moment": "^2.24.0",
-    "node-notifier": "^6.0.0",
+    "node-notifier": "^8.0.1",
     "normalize.css": "^8.0.1",
     "prismjs": "^1.19.0",
     "protobufjs": "^6.8.8",
