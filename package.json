@@ -146,7 +146,7 @@
     "postcss-flexbugs-fixes": "^4.2.0",
     "postcss-loader": "^3.0.0",
     "prop-types": "^15.7.2",
-    "pug": "^2.0.4",
+    "pug": "^3.0.1",
     "pug-loader": "^2.4.0",
     "react-dev-utils": "^10.0.0",
     "react-hot-loader": "^4.12.18",
